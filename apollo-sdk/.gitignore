@@ -1,0 +1,46 @@
+# Generated SDK outputs
+generated-sdks/
+
+# Fetched specs (will be regenerated)
+specs/openapi.json
+specs/external-openapi.json
+
+# Environment variables
+.env
+.env.local
+
+# Node modules (if any)
+node_modules/
+
+# Build outputs
+dist/
+build/
+*.pyc
+__pycache__/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+

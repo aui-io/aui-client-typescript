@@ -1,0 +1,17 @@
+{
+  "name": "apollo-sdk-scripts",
+  "version": "1.0.0",
+  "description": "Automation scripts for Apollo SDK generation",
+  "private": true,
+  "scripts": {
+    "fetch": "./fetch-openapi.sh",
+    "filter": "node filter-external-api.js",
+    "test": "node test-scripts.js"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+

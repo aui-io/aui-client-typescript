@@ -1,0 +1,7 @@
+name: apollo-api
+
+error-discrimination:
+  strategy: status-code
+
+imports:
+  openapi: openapi.json

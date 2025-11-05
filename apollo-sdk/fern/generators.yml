@@ -1,0 +1,54 @@
+default-group: production-sdks
+
+groups:
+  production-sdks:
+    generators:
+      # TypeScript SDK - Publish to npm
+      - name: fernapi/fern-typescript-sdk
+        version: 3.19.1
+        output:
+          location: npm
+          package-name: "@aui/apollo-sdk"
+          token: ${NPM_TOKEN}
+        config:
+          namespaceExport: AuiApolloApi
+          allowCustomFetcher: true
+          requireDefaultEnvironment: false
+          defaultTimeoutInSeconds: 60
+      
+      # Python SDK - Publish to PyPI
+      - name: fernapi/fern-python-sdk
+        version: 4.6.0
+        output:
+          location: pypi
+          package-name: aui-apollo-api
+          token: ${PYPI_TOKEN}
+        config:
+          client_class_name: AuiApolloApiClient
+          package_name: aui_apollo_api
+          timeout_in_seconds: 60
+
+  local-testing:
+    generators:
+      # TypeScript SDK - Local output for testing
+      - name: fernapi/fern-typescript-sdk
+        version: 3.19.1
+        output:
+          location: local-file-system
+          path: ../generated-sdks/typescript
+        config:
+          namespaceExport: AuiApolloApi
+          allowCustomFetcher: true
+          requireDefaultEnvironment: false
+          defaultTimeoutInSeconds: 60
+      
+      # Python SDK - Local output for testing
+      - name: fernapi/fern-python-sdk
+        version: 4.6.0
+        output:
+          location: local-file-system
+          path: ../generated-sdks/python
+        config:
+          client_class_name: AuiApolloApiClient
+          package_name: aui_apollo_api
+          timeout_in_seconds: 60

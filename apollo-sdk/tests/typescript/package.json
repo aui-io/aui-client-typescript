@@ -1,0 +1,16 @@
+{
+  "name": "apollo-sdk-test",
+  "version": "1.0.0",
+  "description": "Test project for Apollo SDK",
+  "type": "module",
+  "scripts": {
+    "test": "tsx test-tasks.js"
+  },
+  "dependencies": {
+    "tsx": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  }
+}
+

@@ -1,0 +1,137 @@
+types:
+  CreateExternalTaskRequest:
+    properties:
+      user_id: string
+  CreateExternalTaskResponse:
+    properties:
+      id: string
+      user_id: string
+      title: string
+      welcome_message: string
+      followup_suggestions: string
+  HTTPValidationError:
+    properties:
+      errors: optional<list<ValidationError>>
+  ListExternalTasksResponse:
+    properties:
+      tasks: optional<list<CreateExternalTaskResponse>>
+      total: integer
+      page: integer
+      size: integer
+  ExternalTaskMessage:
+    properties:
+      id: string
+      created_at: string
+      text: string
+      sender: MessageContactParty
+      receiver: MessageContactParty
+      cards: list<ExternalMessageCard>
+      followup_suggestions: list<string>
+  SubmitExternalMessageRequest:
+    properties:
+      task_id: string
+      text: string
+      context: optional<string>
+  ValidationError:
+    properties:
+      loc: list<string>
+      msg: string
+      type: string
+  MessageContactParty:
+    properties:
+      id: string
+      type: Actor
+      email: optional<string>
+  ExternalMessageCard:
+    properties:
+      id: string
+      name: string
+      parameters: list<ExternalMessageCardParameter>
+      is_recommended: boolean
+  Context:
+    properties:
+      url: string
+      lead_details: string
+  Actor:
+    enum:
+      - user
+      - name: V_3P
+        value: 3p
+      - agent
+  ExternalMessageCardParameter:
+    properties:
+      title: string
+      value: string
+      type: ParameterType
+  ParameterType:
+    enum:
+      - boolean
+      - numeric
+      - string
+      - datetime
+      - date
+      - time
+      - object
+      - list_of_objects
+errors:
+  Error422:
+    status-code: 422
+    type: HTTPValidationError
+service:
+  auth: false
+  base-path: /api/v1
+  endpoints:
+    taskApiV1ExternalTasksPost:
+      method: POST
+      path: /external/tasks
+      display-name: Task
+      request:
+        name: TaskApiV1ExternalTasksPostRequest
+        headers:
+          x-network-api-key: optional<string>
+        body: CreateExternalTaskRequest
+      response: CreateExternalTaskResponse
+      errors:
+        - Error422
+    getTasksByUserIdApiV1ExternalTasksGet:
+      method: GET
+      path: /external/tasks
+      display-name: Get Tasks By User Id
+      request:
+        name: GetTasksByUserIdApiV1ExternalTasksGetRequest
+        query-parameters:
+          user_id: string
+          page: optional<integer>
+          size: optional<integer>
+        headers:
+          x-network-api-key: optional<string>
+      response: ListExternalTasksResponse
+      errors:
+        - Error422
+    getTaskMessagesApiV1ExternalTasksTaskIdMessagesGet:
+      method: GET
+      path: /external/tasks/{task_id}/messages
+      display-name: Get Task Messages
+      request:
+        name: GetTaskMessagesApiV1ExternalTasksTaskIdMessagesGetRequest
+        headers:
+          x-network-api-key: optional<string>
+        path-parameters:
+          task_id: string
+      response: list<ExternalTaskMessage>
+      errors:
+        - Error422
+    messageApiV1ExternalMessagePost:
+      method: POST
+      path: /external/message
+      display-name: Message
+      request:
+        name: MessageApiV1ExternalMessagePostRequest
+        query-parameters:
+          is_external_api: optional<boolean>
+        headers:
+          x-network-api-key: optional<string>
+        body: SubmitExternalMessageRequest
+      response: ExternalTaskMessage
+      errors:
+        - Error422

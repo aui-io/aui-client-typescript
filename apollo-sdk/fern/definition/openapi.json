@@ -1,0 +1,666 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "intelligent-agent-controller - External API",
+    "version": "0.5.2",
+    "description": "External API endpoints only"
+  },
+  "servers": [
+    {
+      "url": "https://azure.aui.io/api/ia-controller",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/api/v1/external/tasks": {
+      "post": {
+        "tags": [
+          "external-apis",
+          "external_apis"
+        ],
+        "summary": "Task",
+        "operationId": "task_api_v1_external_tasks_post",
+        "parameters": [
+          {
+            "name": "x-network-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Network-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateExternalTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateExternalTaskResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "external-apis",
+          "external_apis"
+        ],
+        "summary": "Get Tasks By User Id",
+        "operationId": "get_tasks_by_user_id_api_v1_external_tasks_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "title": "Page"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "title": "Size"
+            }
+          },
+          {
+            "name": "x-network-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Network-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListExternalTasksResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/external/tasks/{task_id}/messages": {
+      "get": {
+        "tags": [
+          "external-apis",
+          "external_apis"
+        ],
+        "summary": "Get Task Messages",
+        "operationId": "get_task_messages_api_v1_external_tasks__task_id__messages_get",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          },
+          {
+            "name": "x-network-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Network-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExternalTaskMessage"
+                  },
+                  "title": "Response Get Task Messages Api V1 External Tasks  Task Id  Messages Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/external/message": {
+      "post": {
+        "tags": [
+          "external-apis",
+          "external_apis"
+        ],
+        "summary": "Message",
+        "operationId": "message_api_v1_external_message_post",
+        "parameters": [
+          {
+            "name": "is_external_api",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Is External Api"
+            }
+          },
+          {
+            "name": "x-network-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Network-Api-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitExternalMessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalTaskMessage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateExternalTaskRequest": {
+        "properties": {
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "title": "CreateExternalTaskRequest"
+      },
+      "CreateExternalTaskResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "user_id": {
+            "type": "string",
+            "title": "User Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "welcome_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Welcome Message"
+          },
+          "followup_suggestions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Followup Suggestions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "user_id",
+          "title",
+          "welcome_message",
+          "followup_suggestions"
+        ],
+        "title": "CreateExternalTaskResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Errors"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ListExternalTasksResponse": {
+        "properties": {
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/CreateExternalTaskResponse"
+            },
+            "type": "array",
+            "title": "Tasks",
+            "default": []
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "page": {
+            "type": "integer",
+            "title": "Page"
+          },
+          "size": {
+            "type": "integer",
+            "title": "Size"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total",
+          "page",
+          "size"
+        ],
+        "title": "ListExternalTasksResponse"
+      },
+      "ExternalTaskMessage": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/ExternalTaskMessageContactParty"
+          },
+          "receiver": {
+            "$ref": "#/components/schemas/ExternalTaskMessageContactParty"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/ExternalTaskMessageOption"
+            },
+            "type": "array",
+            "title": "Options"
+          },
+          "variants_options": {
+            "items": {
+              "$ref": "#/components/schemas/ExternalTaskMessageOption"
+            },
+            "type": "array",
+            "title": "Variants Options"
+          },
+          "followup_suggestions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Followup Suggestions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "created_at",
+          "text",
+          "sender",
+          "receiver",
+          "options",
+          "variants_options",
+          "followup_suggestions"
+        ],
+        "title": "ExternalTaskMessage"
+      },
+      "SubmitExternalMessageRequest": {
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "title": "Task Id"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "context": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Context"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "task_id",
+          "text"
+        ],
+        "title": "SubmitExternalMessageRequest"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ExternalTaskMessageContactParty": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "type": {
+            "$ref": "#/components/schemas/Actor"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "type"
+        ],
+        "title": "ExternalTaskMessageContactParty"
+      },
+      "ExternalTaskMessageOption": {
+        "properties": {
+          "is_recommended": {
+            "type": "boolean",
+            "title": "Is Recommended"
+          },
+          "widget_parameters": {
+            "items": {
+              "$ref": "#/components/schemas/ExternalTaskMessageOptionParameter"
+            },
+            "type": "array",
+            "title": "Widget Parameters"
+          }
+        },
+        "type": "object",
+        "required": [
+          "is_recommended",
+          "widget_parameters"
+        ],
+        "title": "ExternalTaskMessageOption"
+      },
+      "Context": {
+        "properties": {
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "lead_details": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lead Details"
+          }
+        },
+        "type": "object",
+        "title": "Context"
+      },
+      "Actor": {
+        "type": "string",
+        "enum": [
+          "user",
+          "3p",
+          "agent"
+        ],
+        "title": "Actor"
+      },
+      "ExternalTaskMessageOptionParameter": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ParameterType"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "value",
+          "type"
+        ],
+        "title": "ExternalTaskMessageOptionParameter"
+      },
+      "ParameterType": {
+        "type": "string",
+        "enum": [
+          "boolean",
+          "numeric",
+          "string",
+          "datetime",
+          "date",
+          "time",
+          "object",
+          "list_of_objects"
+        ],
+        "title": "ParameterType"
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
+}
