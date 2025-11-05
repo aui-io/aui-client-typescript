@@ -1,4 +1,4 @@
-import { AuiApolloApiClient } from '../../generated-sdks/typescript/index.ts';
+import { AuiApolloApiClient } from '../../generated-sdks/typescript';
 
 // Configuration
 const API_KEY = process.env.API_KEY || 'API_KEY_01K92N5BD5M7239VRK7YTK4Y6N';
