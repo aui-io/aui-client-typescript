@@ -248,6 +248,46 @@ The SDK version is auto-incremented by Fern with each publish. To check the curr
 npm view @aui.io/apollo-sdk version
 ```
 
+## 📄 SDK Version Tracking
+
+After each successful SDK generation/publish, the script automatically creates/updates `generatedSDK.json` with:
+
+### File Location
+```
+apollo-sdk/generatedSDK.json
+```
+
+### File Contents (Example)
+```json
+{
+  "generatedAt": "2025-11-06T13:30:00Z",
+  "generatedAtReadable": "November 06, 2025 at 01:30 PM UTC",
+  "version": "0.0.55",
+  "packages": {
+    "npm": {
+      "name": "@aui.io/apollo-sdk",
+      "version": "0.0.55",
+      "registry": "https://www.npmjs.com/package/@aui.io/apollo-sdk",
+      "install": "npm install @aui.io/apollo-sdk@0.0.55"
+    },
+    "pypi": {
+      "name": "aui-apollo-sdk",
+      "version": "0.0.55",
+      "registry": "https://pypi.org/project/aui-apollo-sdk",
+      "install": "pip install aui-apollo-sdk==0.0.55"
+    }
+  }
+}
+```
+
+### Use Cases
+- **Documentation**: Track what version was last published
+- **CI/CD**: Reference in automated workflows
+- **Monitoring**: Check when SDKs were last updated
+- **Quick Reference**: Installation commands ready to copy
+
+**Note:** This file is auto-generated and overwritten with each run. It's ignored by git (`.gitignore`).
+
 ---
 
 **Last Updated:** November 2025  

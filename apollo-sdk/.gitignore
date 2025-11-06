@@ -1,5 +1,6 @@
 # Generated SDK outputs
 generated-sdks/
+generatedSDK.json
 
 # Fetched specs (will be regenerated)
 specs/openapi.json

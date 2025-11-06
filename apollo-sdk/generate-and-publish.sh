@@ -89,6 +89,60 @@ build_version_arg() {
     fi
 }
 
+# Function to save SDK version info to file
+save_sdk_version_info() {
+    local version=$1
+    local has_pypi=$2
+    local output_file="../generatedSDK.json"
+    
+    # Get current timestamp
+    local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    local date_readable=$(date +"%B %d, %Y at %I:%M %p %Z")
+    
+    # Build JSON content
+    if [ "$has_pypi" = true ]; then
+        cat > "$output_file" << EOF
+{
+  "generatedAt": "$timestamp",
+  "generatedAtReadable": "$date_readable",
+  "version": "$version",
+  "packages": {
+    "npm": {
+      "name": "@aui.io/apollo-sdk",
+      "version": "$version",
+      "registry": "https://www.npmjs.com/package/@aui.io/apollo-sdk",
+      "install": "npm install @aui.io/apollo-sdk@$version"
+    },
+    "pypi": {
+      "name": "aui-apollo-sdk",
+      "version": "$version",
+      "registry": "https://pypi.org/project/aui-apollo-sdk",
+      "install": "pip install aui-apollo-sdk==$version"
+    }
+  }
+}
+EOF
+    else
+        cat > "$output_file" << EOF
+{
+  "generatedAt": "$timestamp",
+  "generatedAtReadable": "$date_readable",
+  "version": "$version",
+  "packages": {
+    "npm": {
+      "name": "@aui.io/apollo-sdk",
+      "version": "$version",
+      "registry": "https://www.npmjs.com/package/@aui.io/apollo-sdk",
+      "install": "npm install @aui.io/apollo-sdk@$version"
+    }
+  }
+}
+EOF
+    fi
+    
+    echo -e "${GREEN}✅ SDK version info saved to: $output_file${NC}"
+}
+
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -287,13 +341,14 @@ check_env_vars
 echo -e "${GREEN}✅ All pre-flight checks passed${NC}"
 
 ################################################################################
-# STEP 1: Fetch OpenAPI from Production
+# STEP 1: Fetch API Specifications
 ################################################################################
-print_step "📥 STEP 1: Fetching OpenAPI from Production"
+print_step "📥 STEP 1: Fetching API Specifications"
 
 if [ "$DRY_RUN" = true ]; then
     echo -e "${YELLOW}🔍 DRY RUN: Would fetch OpenAPI from production${NC}"
 else
+    echo "📥 Fetching OpenAPI specification..."
     ./fetch-openapi.sh
 fi
 
@@ -367,6 +422,16 @@ if [ "$LOCAL_ONLY" = true ]; then
     echo "📦 Local SDK paths:"
     echo "   - TypeScript: apollo-sdk/generated-sdks/typescript/"
     echo "   - Python: apollo-sdk/generated-sdks/python/"
+    
+    # Save version info for local generation
+    if [ -n "$VERSION" ]; then
+        LOCAL_VERSION="$VERSION"
+    else
+        LOCAL_VERSION="local-$(date +%Y%m%d-%H%M%S)"
+    fi
+    echo ""
+    save_sdk_version_info "$LOCAL_VERSION" true
+    
     exit 0
 fi
 
@@ -404,6 +469,17 @@ if [ "$SKIP_PUBLISH" = false ]; then
             echo ""
             echo "📦 Published package:"
             echo "   - npm: @aui.io/apollo-sdk"
+            
+            # Get the published version (either explicit or fetch from npm)
+            if [ -z "$VERSION" ]; then
+                PUBLISHED_VERSION=$(get_current_version)
+            else
+                PUBLISHED_VERSION="$VERSION"
+            fi
+            
+            # Save SDK version info
+            echo ""
+            save_sdk_version_info "$PUBLISHED_VERSION" false
         else
             echo "🚀 Publishing to npm and PyPI..."
             fern generate --group publish-all --log-level info $VERSION_ARG
@@ -414,6 +490,17 @@ if [ "$SKIP_PUBLISH" = false ]; then
             echo "📦 Published packages:"
             echo "   - npm: @aui.io/apollo-sdk"
             echo "   - PyPI: aui-apollo-sdk"
+            
+            # Get the published version (either explicit or fetch from npm)
+            if [ -z "$VERSION" ]; then
+                PUBLISHED_VERSION=$(get_current_version)
+            else
+                PUBLISHED_VERSION="$VERSION"
+            fi
+            
+            # Save SDK version info
+            echo ""
+            save_sdk_version_info "$PUBLISHED_VERSION" true
         fi
     fi
 fi
