@@ -28,6 +28,57 @@ DRY_RUN=false
 SKIP_PUBLISH=false
 LOCAL_ONLY=false
 VERSION=""
+VERSION_BUMP=""
+
+# Function to get current published version from npm
+get_current_version() {
+    local package_name="@aui.io/apollo-sdk"
+    local version=$(npm view "$package_name" version 2>/dev/null)
+    
+    if [ -z "$version" ]; then
+        echo "0.0.0"  # Default if package not found
+    else
+        echo "$version"
+    fi
+}
+
+# Function to increment version based on bump type
+increment_version() {
+    local current_version=$1
+    local bump_type=$2
+    
+    # Parse version (MAJOR.MINOR.PATCH)
+    local major=$(echo "$current_version" | cut -d. -f1)
+    local minor=$(echo "$current_version" | cut -d. -f2)
+    local patch=$(echo "$current_version" | cut -d. -f3)
+    
+    # Validate version parts are numbers
+    if ! [[ "$major" =~ ^[0-9]+$ ]] || ! [[ "$minor" =~ ^[0-9]+$ ]] || ! [[ "$patch" =~ ^[0-9]+$ ]]; then
+        echo -e "${RED}❌ Invalid version format: $current_version${NC}" >&2
+        return 1
+    fi
+    
+    case "$bump_type" in
+        major)
+            major=$((major + 1))
+            minor=0
+            patch=0
+            ;;
+        minor)
+            minor=$((minor + 1))
+            patch=0
+            ;;
+        patch)
+            patch=$((patch + 1))
+            ;;
+        *)
+            echo -e "${RED}❌ Invalid bump type: $bump_type${NC}" >&2
+            return 1
+            ;;
+    esac
+    
+    echo "$major.$minor.$patch"
+}
 
 # Helper function to build version argument for fern generate
 build_version_arg() {
@@ -58,8 +109,23 @@ while [[ $# -gt 0 ]]; do
             ;;
         --version)
             VERSION="$2"
-            echo -e "${BLUE}📌 Publishing version: ${VERSION}${NC}"
+            echo -e "${BLUE}📌 Explicit version: ${VERSION}${NC}"
             shift 2
+            ;;
+        --major)
+            VERSION_BUMP="major"
+            echo -e "${BLUE}📈 Version bump: MAJOR${NC}"
+            shift
+            ;;
+        --minor)
+            VERSION_BUMP="minor"
+            echo -e "${BLUE}📈 Version bump: MINOR${NC}"
+            shift
+            ;;
+        --patch)
+            VERSION_BUMP="patch"
+            echo -e "${BLUE}📈 Version bump: PATCH${NC}"
+            shift
             ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
@@ -68,14 +134,27 @@ while [[ $# -gt 0 ]]; do
             echo "  --dry-run        Run without publishing (validate only)"
             echo "  --skip-publish   Generate SDKs but skip publishing"
             echo "  --local-only     Generate SDKs locally without npm/PyPI"
-            echo "  --version X.Y.Z  Specify version to publish (e.g., --version 1.2.3)"
-            echo "                   If not provided, Fern will auto-increment"
+            echo ""
+            echo "Version Management:"
+            echo "  --version X.Y.Z  Specify exact version (e.g., --version 1.2.3)"
+            echo "  --major          Auto-increment major version (e.g., 0.0.53 → 1.0.0)"
+            echo "  --minor          Auto-increment minor version (e.g., 0.0.53 → 0.1.0)"
+            echo "  --patch          Auto-increment patch version (e.g., 0.0.53 → 0.0.54)"
+            echo "                   (If none specified, Fern will auto-increment patch)"
+            echo ""
             echo "  --help           Show this help message"
             echo ""
             echo "Examples:"
+            echo "  # Auto-increment patch (default)"
             echo "  NPM_TOKEN=\"token\" ./generate-and-publish.sh"
+            echo ""
+            echo "  # Explicit version bumps"
+            echo "  NPM_TOKEN=\"token\" ./generate-and-publish.sh --patch"
+            echo "  NPM_TOKEN=\"token\" ./generate-and-publish.sh --minor"
+            echo "  NPM_TOKEN=\"token\" ./generate-and-publish.sh --major"
+            echo ""
+            echo "  # Specific version"
             echo "  NPM_TOKEN=\"token\" ./generate-and-publish.sh --version 1.0.0"
-            echo "  ./generate-and-publish.sh --local-only --version 0.1.0"
             exit 0
             ;;
         *)
@@ -84,6 +163,41 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Validate version arguments (can't specify both --version and bump type)
+if [ -n "$VERSION" ] && [ -n "$VERSION_BUMP" ]; then
+    echo -e "${RED}❌ Error: Cannot specify both --version and --major/--minor/--patch${NC}"
+    echo "Use either:"
+    echo "  --version X.Y.Z  (for explicit version)"
+    echo "  --major/--minor/--patch  (for auto-increment)"
+    exit 1
+fi
+
+# Calculate version from bump type if specified
+if [ -n "$VERSION_BUMP" ]; then
+    echo ""
+    echo -e "${BLUE}🔍 Fetching current published version...${NC}"
+    CURRENT_VERSION=$(get_current_version)
+    
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}❌ Failed to fetch current version${NC}"
+        exit 1
+    fi
+    
+    echo -e "${BLUE}   Current version: ${CURRENT_VERSION}${NC}"
+    
+    # Calculate new version
+    NEW_VERSION=$(increment_version "$CURRENT_VERSION" "$VERSION_BUMP")
+    
+    if [ $? -ne 0 ] || [ -z "$NEW_VERSION" ]; then
+        echo -e "${RED}❌ Failed to calculate new version${NC}"
+        exit 1
+    fi
+    
+    VERSION="$NEW_VERSION"
+    BUMP_UPPER=$(echo "$VERSION_BUMP" | tr '[:lower:]' '[:upper:]')
+    echo -e "${GREEN}   New version: ${VERSION} (${BUMP_UPPER} bump)${NC}"
+fi
 
 # Function to print step headers
 print_step() {

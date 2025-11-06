@@ -14,26 +14,45 @@ This guide is for DevOps teams to publish the Apollo SDK with **manually provide
 
 ### Version Management 📊
 
-#### Auto-Increment (Default - Recommended) ⭐
+The script supports three versioning modes:
+
+#### 1. Auto-Increment (Default) ⭐
 Let Fern automatically increment the patch version:
 ```bash
 NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh
 ```
-**Result:** Fern auto-bumps patch version (e.g., `0.0.53` → `0.0.54`)
+**Result:** Fern auto-bumps patch (e.g., `0.0.53` → `0.0.54`)
 
-#### Specify Exact Version
-For major/minor releases or specific version control:
+#### 2. Semantic Version Bumps (Recommended) 🎯
+Script automatically fetches current version and increments:
+
 ```bash
 # Patch (bug fixes): 0.0.53 → 0.0.54
-NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --version 0.0.54
+NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --patch
 
 # Minor (new features): 0.0.53 → 0.1.0
-NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --version 0.1.0
+NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --minor
 
 # Major (breaking changes): 0.0.53 → 1.0.0
-NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --version 1.0.0
+NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --major
 ```
-**Result:** Publishes the exact version you specify
+
+**How it works:**
+1. Script fetches current published version from npm
+2. Calculates new version based on semver rules
+3. Publishes with the calculated version
+
+**Edge Cases Handled:**
+- Package not found → Uses `0.0.0` as baseline
+- Invalid version format → Error with helpful message
+- Can't specify both `--version` and `--major/--minor/--patch`
+
+#### 3. Explicit Version
+For specific version numbers:
+```bash
+NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --version 1.2.3
+```
+**Result:** Publishes exactly `1.2.3`
 
 ---
 

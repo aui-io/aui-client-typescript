@@ -1,7 +1,7 @@
 import { AuiApiClient } from '@aui.io/apollo-sdk';
 
 // Configuration from environment or defaults
-const API_KEY = process.env.API_KEY || 'your-api-key-here';
+const API_KEY = process.env.API_KEY || 'API_KEY_01K92N5BD5M7239VRK7YTK4Y6N';
 const TASK_ID = process.env.TASK_ID || '6909127a8b91758e2d2f4ff9';
 const MESSAGE_TEXT = process.env.MESSAGE_TEXT || 'I am looking for a built-in microwave with at least 20 liters capacity';
 
