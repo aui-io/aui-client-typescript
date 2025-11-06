@@ -12,6 +12,31 @@ This guide is for DevOps teams to publish the Apollo SDK with **manually provide
 
 ## 🚀 Publishing the SDK
 
+### Version Management 📊
+
+#### Auto-Increment (Default - Recommended) ⭐
+Let Fern automatically increment the patch version:
+```bash
+NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh
+```
+**Result:** Fern auto-bumps patch version (e.g., `0.0.53` → `0.0.54`)
+
+#### Specify Exact Version
+For major/minor releases or specific version control:
+```bash
+# Patch (bug fixes): 0.0.53 → 0.0.54
+NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --version 0.0.54
+
+# Minor (new features): 0.0.53 → 0.1.0
+NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --version 0.1.0
+
+# Major (breaking changes): 0.0.53 → 1.0.0
+NPM_TOKEN="npm_YOUR_TOKEN_HERE" ./generate-and-publish.sh --version 1.0.0
+```
+**Result:** Publishes the exact version you specify
+
+---
+
 ### Option 1: TypeScript Only (Most Common) ⭐
 
 Publish only to npm (no Python SDK):

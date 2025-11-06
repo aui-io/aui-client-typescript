@@ -27,6 +27,16 @@ NC='\033[0m' # No Color
 DRY_RUN=false
 SKIP_PUBLISH=false
 LOCAL_ONLY=false
+VERSION=""
+
+# Helper function to build version argument for fern generate
+build_version_arg() {
+    if [ -n "$VERSION" ]; then
+        echo "--version $VERSION"
+    else
+        echo ""
+    fi
+}
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -46,14 +56,26 @@ while [[ $# -gt 0 ]]; do
             echo -e "${YELLOW}💻 Local generation only (no npm/PyPI)${NC}"
             shift
             ;;
+        --version)
+            VERSION="$2"
+            echo -e "${BLUE}📌 Publishing version: ${VERSION}${NC}"
+            shift 2
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
-            echo "  --dry-run       Run without publishing (validate only)"
-            echo "  --skip-publish  Generate SDKs but skip publishing"
-            echo "  --local-only    Generate SDKs locally without npm/PyPI"
-            echo "  --help          Show this help message"
+            echo "  --dry-run        Run without publishing (validate only)"
+            echo "  --skip-publish   Generate SDKs but skip publishing"
+            echo "  --local-only     Generate SDKs locally without npm/PyPI"
+            echo "  --version X.Y.Z  Specify version to publish (e.g., --version 1.2.3)"
+            echo "                   If not provided, Fern will auto-increment"
+            echo "  --help           Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  NPM_TOKEN=\"token\" ./generate-and-publish.sh"
+            echo "  NPM_TOKEN=\"token\" ./generate-and-publish.sh --version 1.0.0"
+            echo "  ./generate-and-publish.sh --local-only --version 0.1.0"
             exit 0
             ;;
         *)
@@ -218,12 +240,13 @@ else
 fi
 
 if [ "$LOCAL_ONLY" = true ]; then
+    VERSION_ARG=$(build_version_arg)
     echo ""
     echo "💻 Generating TypeScript SDK locally..."
-    fern generate --group typescript --log-level info
+    fern generate --group typescript --log-level info $VERSION_ARG
     echo ""
     echo "💻 Generating Python SDK locally..."
-    fern generate --group python --log-level info
+    fern generate --group python --log-level info $VERSION_ARG
     echo ""
     echo -e "${GREEN}✅ SDKs generated locally in generated-sdks/${NC}"
     echo ""
@@ -239,6 +262,14 @@ fi
 if [ "$SKIP_PUBLISH" = false ]; then
     print_step "📦 STEP 5: Publishing SDKs"
     
+    # Display version information
+    if [ -n "$VERSION" ]; then
+        echo -e "${BLUE}📌 Publishing version: ${VERSION}${NC}"
+    else
+        echo -e "${BLUE}📊 Fern will auto-increment version${NC}"
+    fi
+    echo ""
+    
     if [ "$DRY_RUN" = true ]; then
         if [ -z "$PYPI_TOKEN" ]; then
             echo -e "${YELLOW}🔍 DRY RUN: Would publish SDK to npm only${NC}"
@@ -247,11 +278,12 @@ if [ "$SKIP_PUBLISH" = false ]; then
         fi
     else
         # Determine which group to use based on available tokens
+        VERSION_ARG=$(build_version_arg)
         if [ -z "$PYPI_TOKEN" ]; then
             echo "🚀 Publishing to npm only..."
             echo -e "${YELLOW}⚠️  Skipping PyPI (PYPI_TOKEN not set)${NC}"
             echo ""
-            fern generate --group npm --log-level info
+            fern generate --group npm --log-level info $VERSION_ARG
             
             echo ""
             echo -e "${GREEN}✅ SDK published successfully!${NC}"
@@ -260,7 +292,7 @@ if [ "$SKIP_PUBLISH" = false ]; then
             echo "   - npm: @aui.io/apollo-sdk"
         else
             echo "🚀 Publishing to npm and PyPI..."
-            fern generate --group publish-all --log-level info
+            fern generate --group publish-all --log-level info $VERSION_ARG
             
             echo ""
             echo -e "${GREEN}✅ SDKs published successfully!${NC}"
