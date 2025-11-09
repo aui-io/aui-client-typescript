@@ -32,7 +32,7 @@ export class ExternalSession {
         const socket = new core.ReconnectingWebSocket({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
-                    ((await core.Supplier.get(this._options.environment)) ?? environments.AuiApiEnvironment.Default)
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Default)
                         .staging,
                 "/ia-controller/api/v1/external/session",
             ),
