@@ -1,11 +1,8 @@
 # .fernignore
 # Files listed here will NOT be overwritten by Fern during SDK generation
-# This allows us to maintain custom fixes (like WebSocket query param auth)
-# until Fern adds native support
+# This allows us to maintain custom fixes until Fern adds native support
 
-# TypeScript WebSocket Client (custom query param auth fix)
-src/api/resources/externalSession/client/Client.ts
-
-# Python WebSocket Client (custom query param auth fix)
-src/aui/external_session/client.py
-
+# TypeScript WebSocket fix (empty protocols array bug for Node.js v21+)
+# Fix: Don't pass empty protocols array to WebSocket constructor
+# This prevents header authentication issues in Node.js v21+ built-in WebSocket
+generated-sdks/typescript/core/websocket/ws.ts
