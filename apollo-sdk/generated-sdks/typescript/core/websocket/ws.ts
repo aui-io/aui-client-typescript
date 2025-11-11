@@ -5,15 +5,11 @@ import { toQueryString } from "../url/qs.js";
 import * as Events from "./events.js";
 
 const getGlobalWebSocket = (): WebSocket | undefined => {
-    // FIX: In Node.js, ALWAYS use the ws library, not the built-in WebSocket
-    // Node.js v21+ added a built-in WebSocket that has a bug where protocols: []
-    // breaks header authentication. The ws library handles this correctly.
-    // This fix is protected by .fernignore to persist across regenerations.
-    if (RUNTIME.type === "node") {
-        return NodeWebSocket as unknown as WebSocket;
-    } else if (typeof WebSocket !== "undefined") {
+    if (typeof WebSocket !== "undefined") {
         // @ts-ignore
         return WebSocket;
+    } else if (RUNTIME.type === "node") {
+        return NodeWebSocket as unknown as WebSocket;
     }
     return undefined;
 };
