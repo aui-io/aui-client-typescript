@@ -7,7 +7,11 @@ import { mockServerPool } from "../mock-server/MockServerPool";
 describe("ControllerApi", () => {
     test("list_user_tasks (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ apiKey: "test", networkApiKey: "test", environment: server.baseUrl });
+        const client = new ApolloClient({
+            apiKey: "test",
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
 
         const rawResponseBody = {
             tasks: [
@@ -54,7 +58,11 @@ describe("ControllerApi", () => {
 
     test("list_user_tasks (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ apiKey: "test", networkApiKey: "test", environment: server.baseUrl });
+        const client = new ApolloClient({
+            apiKey: "test",
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
 
         const rawResponseBody = {};
         server
@@ -74,7 +82,11 @@ describe("ControllerApi", () => {
 
     test("create_task (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ apiKey: "test", networkApiKey: "test", environment: server.baseUrl });
+        const client = new ApolloClient({
+            apiKey: "test",
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
         const rawRequestBody = { user_id: "user_id" };
         const rawResponseBody = {
             id: "id",
@@ -106,7 +118,11 @@ describe("ControllerApi", () => {
 
     test("create_task (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ apiKey: "test", networkApiKey: "test", environment: server.baseUrl });
+        const client = new ApolloClient({
+            apiKey: "test",
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
         const rawRequestBody = { user_id: "user_id" };
         const rawResponseBody = {};
         server
@@ -127,7 +143,11 @@ describe("ControllerApi", () => {
 
     test("get_task_messages (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ apiKey: "test", networkApiKey: "test", environment: server.baseUrl });
+        const client = new ApolloClient({
+            apiKey: "test",
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
 
         const rawResponseBody = [
             {
@@ -179,7 +199,11 @@ describe("ControllerApi", () => {
 
     test("get_task_messages (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ apiKey: "test", networkApiKey: "test", environment: server.baseUrl });
+        const client = new ApolloClient({
+            apiKey: "test",
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
 
         const rawResponseBody = {};
         server
@@ -197,7 +221,11 @@ describe("ControllerApi", () => {
 
     test("send_message (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ apiKey: "test", networkApiKey: "test", environment: server.baseUrl });
+        const client = new ApolloClient({
+            apiKey: "test",
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
         const rawRequestBody = { task_id: "task_id", text: "text" };
         const rawResponseBody = {
             id: "id",
@@ -250,7 +278,11 @@ describe("ControllerApi", () => {
 
     test("send_message (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ apiKey: "test", networkApiKey: "test", environment: server.baseUrl });
+        const client = new ApolloClient({
+            apiKey: "test",
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
         const rawRequestBody = { task_id: "task_id", text: "text" };
         const rawResponseBody = {};
         server
