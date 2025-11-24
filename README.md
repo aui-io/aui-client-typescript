@@ -11,8 +11,6 @@
 npm install @aui.io/aui-client
 ```
 
-**Also available in Python:** `pip install aui-client` - [Python Documentation](https://github.com/aui-io/aui-client-python)
-
 ## ⚡ Quick Start
 
 ```typescript
@@ -540,7 +538,6 @@ npm install --save-dev typescript@latest
 
 - **GitHub Repository:** [aui-io/aui-client-typescript](https://github.com/aui-io/aui-client-typescript)
 - **npm Package:** [@aui.io/aui-client](https://www.npmjs.com/package/@aui.io/aui-client)
-- **Python SDK:** [aui-client on PyPI](https://pypi.org/project/aui-client) | [Python Docs](https://github.com/aui-io/aui-client-python)
 - **API Documentation:** [Full API Reference](https://docs.aui.io)
 - **Report Issues:** [GitHub Issues](https://github.com/aui-io/aui-client-typescript/issues)
 
