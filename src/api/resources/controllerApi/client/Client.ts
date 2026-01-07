@@ -374,4 +374,91 @@ export class ControllerApi {
                 });
         }
     }
+
+    /**
+     * @param {Apollo.GetProductMetadataRequest} request
+     * @param {ControllerApi.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Apollo.UnprocessableEntityError}
+     *
+     * @example
+     *     await client.controllerApi.getProductMetadata({
+     *         link: "link"
+     *     })
+     */
+    public getProductMetadata(
+        request: Apollo.GetProductMetadataRequest,
+        requestOptions?: ControllerApi.RequestOptions,
+    ): core.HttpResponsePromise<Record<string, unknown>> {
+        return core.HttpResponsePromise.fromPromise(this.__getProductMetadata(request, requestOptions));
+    }
+
+    private async __getProductMetadata(
+        request: Apollo.GetProductMetadataRequest,
+        requestOptions?: ControllerApi.RequestOptions,
+    ): Promise<core.WithRawResponse<Record<string, unknown>>> {
+        const { link } = request;
+        const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
+        _queryParams.link = link;
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "x-network-api-key": requestOptions?.networkApiKey ?? this._options?.networkApiKey,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Default)
+                        .base,
+                "api/v1/external/product-metadata",
+            ),
+            method: "GET",
+            headers: _headers,
+            queryParameters: { ..._queryParams, ...requestOptions?.queryParams },
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as Record<string, unknown>, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 422:
+                    throw new Apollo.UnprocessableEntityError(
+                        _response.error.body as Apollo.HttpValidationError,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApolloError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        switch (_response.error.reason) {
+            case "non-json":
+                throw new errors.ApolloError({
+                    statusCode: _response.error.statusCode,
+                    body: _response.error.rawBody,
+                    rawResponse: _response.rawResponse,
+                });
+            case "timeout":
+                throw new errors.ApolloTimeoutError(
+                    "Timeout exceeded when calling GET /api/v1/external/product-metadata.",
+                );
+            case "unknown":
+                throw new errors.ApolloError({
+                    message: _response.error.errorMessage,
+                    rawResponse: _response.rawResponse,
+                });
+        }
+    }
 }

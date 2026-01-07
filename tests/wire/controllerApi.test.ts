@@ -151,8 +151,10 @@ describe("ControllerApi", () => {
                 text: "text",
                 sender: { id: "id", type: "user", email: "email" },
                 receiver: { id: "id", type: "user", email: "email" },
-                cards: [{ id: "id", name: "name", parameters: [], is_recommended: true }],
+                cards: [{ id: "id", name: "name", category: "category", parameters: [], is_recommended: true }],
+                welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
+                executed_workflows: ["executed_workflows"],
             },
         ];
         server
@@ -183,11 +185,14 @@ describe("ControllerApi", () => {
                     {
                         id: "id",
                         name: "name",
+                        category: "category",
                         parameters: [],
                         is_recommended: true,
                     },
                 ],
+                welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
+                executed_workflows: ["executed_workflows"],
             },
         ]);
     });
@@ -226,8 +231,21 @@ describe("ControllerApi", () => {
             text: "text",
             sender: { id: "id", type: "user", email: "email" },
             receiver: { id: "id", type: "user", email: "email" },
-            cards: [{ id: "id", name: "name", parameters: [], is_recommended: true }],
+            cards: [
+                {
+                    id: "id",
+                    name: "name",
+                    category: "category",
+                    query: { key: "value" },
+                    parameters: [],
+                    sub_entities: [{ name: "name", items: [{ parameters: [{ param: "param", title: "title" }] }] }],
+                    self_review: { score: { label: "HIGH", method: "INVENTORY_CLASSIFICATION" }, type: "WORKFLOW" },
+                    is_recommended: true,
+                },
+            ],
+            welcome_message: "welcome_message",
             followup_suggestions: ["followup_suggestions"],
+            executed_workflows: ["executed_workflows"],
         };
         server
             .mockEndpoint()
@@ -261,11 +279,39 @@ describe("ControllerApi", () => {
                 {
                     id: "id",
                     name: "name",
+                    category: "category",
+                    query: {
+                        key: "value",
+                    },
                     parameters: [],
+                    sub_entities: [
+                        {
+                            name: "name",
+                            items: [
+                                {
+                                    parameters: [
+                                        {
+                                            param: "param",
+                                            title: "title",
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                    self_review: {
+                        score: {
+                            label: "HIGH",
+                            method: "INVENTORY_CLASSIFICATION",
+                        },
+                        type: "WORKFLOW",
+                    },
                     is_recommended: true,
                 },
             ],
+            welcome_message: "welcome_message",
             followup_suggestions: ["followup_suggestions"],
+            executed_workflows: ["executed_workflows"],
         });
     });
 
@@ -290,6 +336,53 @@ describe("ControllerApi", () => {
             return await client.controllerApi.sendMessage({
                 task_id: "task_id",
                 text: "text",
+            });
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
+
+    test("get_product_metadata (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
+
+        const rawResponseBody = { key: "value" };
+        server
+            .mockEndpoint()
+            .get("/api/v1/external/product-metadata")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.controllerApi.getProductMetadata({
+            link: "link",
+        });
+        expect(response).toEqual({
+            key: "value",
+        });
+    });
+
+    test("get_product_metadata (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, staging: server.baseUrl },
+        });
+
+        const rawResponseBody = {};
+        server
+            .mockEndpoint()
+            .get("/api/v1/external/product-metadata")
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.controllerApi.getProductMetadata({
+                link: "link",
             });
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });

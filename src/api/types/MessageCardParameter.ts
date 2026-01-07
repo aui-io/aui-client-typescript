@@ -2,9 +2,10 @@
 
 import type * as Apollo from "../index.js";
 
-export interface CardParameter {
+export interface MessageCardParameter {
     param: string;
     title: string;
+    name?: string;
     value?: unknown;
-    type: Apollo.ParameterType;
+    type?: Apollo.ParameterType;
 }

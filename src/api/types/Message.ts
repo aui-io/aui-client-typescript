@@ -9,5 +9,7 @@ export interface Message {
     sender: Apollo.MessageContactParty;
     receiver: Apollo.MessageContactParty;
     cards: Apollo.Card[];
+    welcome_message?: string;
     followup_suggestions: string[];
+    executed_workflows?: string[];
 }

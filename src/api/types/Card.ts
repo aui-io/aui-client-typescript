@@ -5,6 +5,10 @@ import type * as Apollo from "../index.js";
 export interface Card {
     id: string;
     name: string;
+    category: string;
+    query?: Record<string, unknown>;
     parameters: Apollo.CardParameter[];
+    sub_entities?: Apollo.MessageCardSubEntity[];
+    self_review?: Apollo.TaskInteractionOptionSelfReview;
     is_recommended: boolean;
 }

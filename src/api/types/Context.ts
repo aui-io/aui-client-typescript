@@ -3,4 +3,5 @@
 export interface Context {
     url?: string;
     lead_details?: Record<string, unknown>;
+    welcome_message?: string;
 }
