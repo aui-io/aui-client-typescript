@@ -31,7 +31,8 @@ const client = new ApolloClient({
 ```typescript
 // Create a new task
 const taskResponse = await client.controllerApi.createTask({
-    user_id: 'user123'
+    user_id: 'user123',
+    task_origin_type: 'web-widget'  // Required: identifies the source of the task
 });
 
 console.log('Task ID:', taskResponse.id);
@@ -165,11 +166,14 @@ Create a new task for the agent.
 
 ```typescript
 const taskResponse = await client.controllerApi.createTask({
-    user_id: string    // Unique user identifier
+    user_id: string,              // Unique user identifier
+    task_origin_type: string      // Required: origin type (e.g., 'web-widget', 'mobile-app', 'api')
 });
 
 // Returns: { id: string, user_id: string, title: string, welcome_message?: string }
 ```
+
+**Note:** `task_origin_type` is required in v1.2.17+. Common values: `'web-widget'`, `'mobile-app'`, `'api'`, `'internal-tool'`
 
 #### `getTaskMessages(taskId)` - Get Task Messages
 Retrieve all messages for a specific task.
@@ -204,6 +208,17 @@ const tasksResponse = await client.controllerApi.listUserTasks({
 });
 
 // Returns: { tasks: Task[], total: number, page: number, size: number }
+```
+
+#### `getProductMetadata(link)` - Get Product Metadata
+Retrieve metadata for a product from a given URL/link.
+
+```typescript
+const metadata = await client.controllerApi.getProductMetadata({
+    link: string    // Product URL or link
+});
+
+// Returns: Record<string, any> - Product metadata object
 ```
 
 ---
@@ -246,6 +261,11 @@ socket.on('close', (event: CloseEvent) => void);
 - `final_message` - Complete response with optional product cards
 - `error` - Error message from the agent
 
+**New in v0.6.0:**
+- **Message fields:** `welcome_message`, `executed_workflows` - Track workflow execution and welcome messages
+- **Card fields:** `category`, `query`, `sub_entities`, `self_review` - Enhanced product card information with self-review scoring
+- **Product Metadata API:** New endpoint to retrieve metadata from product URLs
+
 #### Socket Methods
 
 ```typescript
@@ -280,7 +300,8 @@ const client = new ApolloClient({
 async function searchProducts(userId: string, query: string) {
     // Step 1: Create a task
     const taskResponse = await client.controllerApi.createTask({
-        user_id: userId
+        user_id: userId,
+        task_origin_type: 'web-widget'
     });
     
     const taskId = taskResponse.id;
@@ -367,6 +388,40 @@ async function getTaskHistory(userId: string) {
 getTaskHistory('user123');
 ```
 
+### Get Product Metadata
+
+```typescript
+import { ApolloClient } from '@aui.io/aui-client';
+
+const client = new ApolloClient({
+    networkApiKey: 'API_KEY_YOUR_KEY_HERE'
+});
+
+async function fetchProductMetadata(productLink: string) {
+    try {
+        // Fetch metadata for a product
+        const metadata = await client.controllerApi.getProductMetadata({
+            link: productLink
+        });
+        
+        console.log('Product Metadata:', metadata);
+        
+        // Metadata might include: name, price, description, images, etc.
+        if (metadata) {
+            console.log('Available fields:', Object.keys(metadata));
+        }
+        
+        return metadata;
+    } catch (error) {
+        console.error('Error fetching product metadata:', error);
+        throw error;
+    }
+}
+
+// Example usage
+fetchProductMetadata('https://www.example.com/product/12345');
+```
+
 ## 🔧 Advanced Configuration
 
 ### Custom Timeout and Retries
@@ -380,7 +435,10 @@ const client = new ApolloClient({
 
 // Per-request overrides
 const taskResponse = await client.controllerApi.createTask(
-    { user_id: 'user123' },
+    { 
+        user_id: 'user123',
+        task_origin_type: 'web-widget'
+    },
     {
         timeoutInSeconds: 30,  // Override for this request only
         maxRetries: 2
@@ -414,7 +472,8 @@ const client = new ApolloClient({
 
 try {
     const taskResponse = await client.controllerApi.createTask({
-        user_id: 'user123'
+        user_id: 'user123',
+        task_origin_type: 'web-widget'
     });
 } catch (error) {
     if (error instanceof UnprocessableEntityError) {
@@ -533,6 +592,23 @@ const client = new ApolloClient({
 ```bash
 npm install --save-dev typescript@latest
 ```
+
+## 📚 Examples
+
+The `examples/` directory contains ready-to-run code examples:
+
+- **Product Metadata API** - [`examples/test-product-metadata.js`](./examples/test-product-metadata.js)
+  - Fetch product information from URLs
+  - Handle errors and edge cases
+  - Extract and use metadata
+
+Run examples:
+```bash
+export NETWORK_API_KEY="API_KEY_YOUR_KEY_HERE"
+node examples/test-product-metadata.js
+```
+
+See the [examples README](./examples/README.md) for more details.
 
 ## 🔗 Resources
 
