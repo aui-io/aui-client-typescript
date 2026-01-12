@@ -123,7 +123,8 @@ export class ControllerApi {
      *
      * @example
      *     await client.controllerApi.createTask({
-     *         user_id: "user_id"
+     *         user_id: "user_id",
+     *         task_origin_type: "stores"
      *     })
      */
     public createTask(

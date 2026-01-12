@@ -16,6 +16,7 @@ export * from "./OptionsSearchSelfReviewMethod.js";
 export * from "./ParameterType.js";
 export * from "./ProductCard.js";
 export * from "./ProductParameter.js";
+export * from "./RecordOriginType.js";
 export * from "./StreamingUpdatePayload.js";
 export * from "./TaskInteractionOptionSelfReview.js";
 export * from "./TaskInteractionOptionSelfReviewScore.js";

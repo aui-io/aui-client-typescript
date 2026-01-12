@@ -84,7 +84,7 @@ describe("ControllerApi", () => {
             networkApiKey: "test",
             environment: { base: server.baseUrl, staging: server.baseUrl },
         });
-        const rawRequestBody = { user_id: "user_id" };
+        const rawRequestBody = { user_id: "user_id", task_origin_type: "stores" };
         const rawResponseBody = {
             id: "id",
             user_id: "user_id",
@@ -103,6 +103,7 @@ describe("ControllerApi", () => {
 
         const response = await client.controllerApi.createTask({
             user_id: "user_id",
+            task_origin_type: "stores",
         });
         expect(response).toEqual({
             id: "id",
@@ -119,7 +120,7 @@ describe("ControllerApi", () => {
             networkApiKey: "test",
             environment: { base: server.baseUrl, staging: server.baseUrl },
         });
-        const rawRequestBody = { user_id: "user_id" };
+        const rawRequestBody = { user_id: "user_id", task_origin_type: "stores" };
         const rawResponseBody = {};
         server
             .mockEndpoint()
@@ -133,6 +134,7 @@ describe("ControllerApi", () => {
         await expect(async () => {
             return await client.controllerApi.createTask({
                 user_id: "user_id",
+                task_origin_type: "stores",
             });
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
@@ -155,6 +157,7 @@ describe("ControllerApi", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 executed_workflows: ["executed_workflows"],
+                url: "url",
             },
         ];
         server
@@ -193,6 +196,7 @@ describe("ControllerApi", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 executed_workflows: ["executed_workflows"],
+                url: "url",
             },
         ]);
     });
@@ -246,6 +250,7 @@ describe("ControllerApi", () => {
             welcome_message: "welcome_message",
             followup_suggestions: ["followup_suggestions"],
             executed_workflows: ["executed_workflows"],
+            url: "url",
         };
         server
             .mockEndpoint()
@@ -312,6 +317,7 @@ describe("ControllerApi", () => {
             welcome_message: "welcome_message",
             followup_suggestions: ["followup_suggestions"],
             executed_workflows: ["executed_workflows"],
+            url: "url",
         });
     });
 

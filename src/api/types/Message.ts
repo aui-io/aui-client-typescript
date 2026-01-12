@@ -12,4 +12,5 @@ export interface Message {
     welcome_message?: string;
     followup_suggestions: string[];
     executed_workflows?: string[];
+    url?: string;
 }

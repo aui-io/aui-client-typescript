@@ -1,56 +1,5 @@
 # Reference
 ## ControllerApi
-<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getProductMetadata</a>({ ...params }) -> Record<string, any></code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```typescript
-await client.controllerApi.getProductMetadata({
-    link: "https://example.com/product/12345"
-});
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**request:** `Apollo.GetProductMetadataRequest` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**requestOptions:** `ControllerApi.RequestOptions` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">listUserTasks</a>({ ...params }) -> Apollo.ListTasksResponse</code></summary>
 <dl>
 <dd>
@@ -118,7 +67,8 @@ await client.controllerApi.listUserTasks({
 
 ```typescript
 await client.controllerApi.createTask({
-    user_id: "user_id"
+    user_id: "user_id",
+    task_origin_type: "stores"
 });
 
 ```
