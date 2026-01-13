@@ -65,8 +65,7 @@ export class ControllerApi {
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
-                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Default)
-                        .base,
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
                 "api/v1/external/tasks",
             ),
             method: "GET",
@@ -148,8 +147,7 @@ export class ControllerApi {
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
-                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Default)
-                        .base,
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
                 "api/v1/external/tasks",
             ),
             method: "POST",
@@ -231,8 +229,7 @@ export class ControllerApi {
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
-                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Default)
-                        .base,
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
                 `api/v1/external/tasks/${core.url.encodePathParam(taskId)}/messages`,
             ),
             method: "GET",
@@ -323,8 +320,7 @@ export class ControllerApi {
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
-                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Default)
-                        .base,
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
                 "api/v1/external/message",
             ),
             method: "POST",
@@ -411,8 +407,7 @@ export class ControllerApi {
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
-                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Default)
-                        .base,
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
                 "api/v1/external/product-metadata",
             ),
             method: "GET",
