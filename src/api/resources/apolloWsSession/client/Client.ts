@@ -32,7 +32,7 @@ export class ApolloWsSession {
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Default)
-                        .staging,
+                        .gcp,
                 "/ia-controller/api/v1/external/session",
             ),
             protocols: [],

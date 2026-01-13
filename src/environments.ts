@@ -2,13 +2,15 @@
 
 export interface ApolloEnvironmentUrls {
     base: string;
-    staging: string;
+    gcp: string;
+    azure: string;
 }
 
 export const ApolloEnvironment = {
     Default: {
         base: "https://azure.aui.io/api/ia-controller",
-        staging: "wss://api.aui.io",
+        gcp: "wss://api.aui.io",
+        azure: "wss://azure-v2.aui.io",
     },
 } as const;
 
