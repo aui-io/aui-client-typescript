@@ -3,3 +3,10 @@ src/core/websocket/ws.ts
 
 # Custom comprehensive README
 README.md
+
+# Environment switching fix (GCP/AZURE support)
+# Fern generates incorrect environment structure, these are manually fixed:
+# - environments.ts: Added GCP/AZURE environments with wsUrl property
+# - Client.ts: Changed .gcp to .wsUrl for WebSocket URL resolution
+src/environments.ts
+src/api/resources/apolloWsSession/client/Client.ts

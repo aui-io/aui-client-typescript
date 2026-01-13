@@ -14,15 +14,23 @@ npm install @aui.io/aui-client
 ## ⚡ Quick Start
 
 ```typescript
-import { ApolloClient } from '@aui.io/aui-client';
+import { ApolloClient, ApolloEnvironment } from '@aui.io/aui-client';
 
+// Default: Uses GCP environment
 const client = new ApolloClient({
     networkApiKey: 'API_KEY_YOUR_KEY_HERE'
 });
 
-// This connects to production:
-// - REST API: https://azure.aui.io/api/ia-controller
-// - WebSocket: wss://api.aui.io/ia-controller/api/v1/external/session
+// Or explicitly choose an environment:
+const gcpClient = new ApolloClient({
+    environment: ApolloEnvironment.GCP,
+    networkApiKey: 'API_KEY_YOUR_KEY_HERE'
+});
+
+const azureClient = new ApolloClient({
+    environment: ApolloEnvironment.AZURE,
+    networkApiKey: 'API_KEY_YOUR_KEY_HERE'
+});
 ```
 
 
@@ -145,15 +153,46 @@ interface ApolloClient.Options {
 }
 ```
 
-**Production Environment (Default):**
+### Available Environments
+
+The SDK supports multiple environments for both REST API and WebSocket connections:
+
 ```typescript
-{
-    base: "https://azure.aui.io/api/ia-controller",    // REST API
-    production: "wss://api.aui.io"                     // WebSocket
+import { ApolloEnvironment } from '@aui.io/aui-client';
+
+// GCP Environment (Default)
+ApolloEnvironment.GCP = {
+    base: "https://api.aui.io/ia-controller",      // REST API
+    wsUrl: "wss://api.aui.io"                       // WebSocket
+}
+
+// Azure Environment
+ApolloEnvironment.AZURE = {
+    base: "https://azure-v2.aui.io/ia-controller", // REST API
+    wsUrl: "wss://azure-v2.aui.io"                  // WebSocket
+}
+
+// Default (same as GCP)
+ApolloEnvironment.Default = {
+    base: "https://api.aui.io/ia-controller",
+    wsUrl: "wss://api.aui.io"
 }
 ```
 
-The SDK is configured for production use. All REST and WebSocket connections use production servers.
+**Usage Example:**
+```typescript
+import { ApolloClient, ApolloEnvironment } from '@aui.io/aui-client';
+
+// Use Azure environment
+const client = new ApolloClient({
+    environment: ApolloEnvironment.AZURE,
+    networkApiKey: 'API_KEY_YOUR_KEY_HERE'
+});
+
+// Both REST and WebSocket will use Azure endpoints
+const task = await client.controllerApi.createTask({...});
+const socket = await client.apolloWsSession.connect();
+```
 
 ---
 
