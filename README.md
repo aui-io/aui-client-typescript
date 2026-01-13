@@ -16,19 +16,19 @@ npm install @aui.io/aui-client
 ```typescript
 import { ApolloClient, ApolloEnvironment } from '@aui.io/aui-client';
 
-// Default: Uses GCP environment
+// Default: Uses Gcp environment
 const client = new ApolloClient({
     networkApiKey: 'API_KEY_YOUR_KEY_HERE'
 });
 
 // Or explicitly choose an environment:
 const gcpClient = new ApolloClient({
-    environment: ApolloEnvironment.GCP,
+    environment: ApolloEnvironment.Gcp,
     networkApiKey: 'API_KEY_YOUR_KEY_HERE'
 });
 
 const azureClient = new ApolloClient({
-    environment: ApolloEnvironment.AZURE,
+    environment: ApolloEnvironment.Azure,
     networkApiKey: 'API_KEY_YOUR_KEY_HERE'
 });
 ```
@@ -160,19 +160,19 @@ The SDK supports multiple environments for both REST API and WebSocket connectio
 ```typescript
 import { ApolloEnvironment } from '@aui.io/aui-client';
 
-// GCP Environment (Default)
-ApolloEnvironment.GCP = {
+// Gcp Environment (Default)
+ApolloEnvironment.Gcp = {
     base: "https://api.aui.io/ia-controller",      // REST API
     wsUrl: "wss://api.aui.io"                       // WebSocket
 }
 
 // Azure Environment
-ApolloEnvironment.AZURE = {
+ApolloEnvironment.Azure = {
     base: "https://azure-v2.aui.io/ia-controller", // REST API
     wsUrl: "wss://azure-v2.aui.io"                  // WebSocket
 }
 
-// Default (same as GCP)
+// Default (same as Gcp)
 ApolloEnvironment.Default = {
     base: "https://api.aui.io/ia-controller",
     wsUrl: "wss://api.aui.io"
@@ -185,7 +185,7 @@ import { ApolloClient, ApolloEnvironment } from '@aui.io/aui-client';
 
 // Use Azure environment
 const client = new ApolloClient({
-    environment: ApolloEnvironment.AZURE,
+    environment: ApolloEnvironment.Azure,
     networkApiKey: 'API_KEY_YOUR_KEY_HERE'
 });
 
