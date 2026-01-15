@@ -393,10 +393,10 @@ export class ReconnectingWebSocket {
                 if (isBrowser) {
                     // Browser: Can only pass URL and optionally protocols (string/array)
                     // Add API key to URL as query parameter for browser authentication
-                    // NOTE: Backend must also accept x-network-api-key from query params for this to work
+                    // Backend accepts 'network_api_key' query param (without x- prefix)
                     if (this._headers && (this._headers as Record<string, string>)["x-network-api-key"]) {
                         const separator = url.includes("?") ? "&" : "?";
-                        url = `${url}${separator}x-network-api-key=${encodeURIComponent(
+                        url = `${url}${separator}network_api_key=${encodeURIComponent(
                             (this._headers as Record<string, string>)["x-network-api-key"]
                         )}`;
                     }
