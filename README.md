@@ -72,8 +72,14 @@ console.log('Total tasks:', userTasks.total);
 ### WebSocket - Real-time Agent Communication
 
 ```typescript
-// Connect to WebSocket
-const socket = await client.apolloWsSession.connect();
+// Connect to WebSocket with authentication headers
+const socket = await client.apolloWsSession.connect({
+    debug: false,
+    reconnectAttempts: 3,
+    headers: {
+        'x-network-api-key': 'API_KEY_YOUR_KEY_HERE'
+    }
+});
 
 // Listen for connection open
 socket.on('open', () => {
@@ -191,7 +197,13 @@ const client = new ApolloClient({
 
 // Both REST and WebSocket will use Azure endpoints
 const task = await client.controllerApi.createTask({...});
-const socket = await client.apolloWsSession.connect();
+const socket = await client.apolloWsSession.connect({
+    debug: false,
+    reconnectAttempts: 3,
+    headers: {
+        'x-network-api-key': 'API_KEY_YOUR_KEY_HERE'
+    }
+});
 ```
 
 ---
@@ -346,8 +358,14 @@ async function searchProducts(userId: string, query: string) {
     const taskId = taskResponse.id;
     console.log('Created task:', taskId);
     
-    // Step 2: Connect to WebSocket
-    const socket = await client.apolloWsSession.connect();
+    // Step 2: Connect to WebSocket with authentication
+    const socket = await client.apolloWsSession.connect({
+        debug: false,
+        reconnectAttempts: 3,
+        headers: {
+            'x-network-api-key': 'API_KEY_YOUR_KEY_HERE'
+        }
+    });
     
     // Step 3: Set up event handlers
     socket.on('open', () => {
@@ -489,8 +507,11 @@ const taskResponse = await client.controllerApi.createTask(
 
 ```typescript
 const socket = await client.apolloWsSession.connect({
-    reconnectAttempts: 50,  // Try to reconnect up to 50 times
-    debug: true             // Enable debug logging
+    debug: true,                // Enable debug logging
+    reconnectAttempts: 50,      // Try to reconnect up to 50 times
+    headers: {
+        'x-network-api-key': 'API_KEY_YOUR_KEY_HERE'
+    }
 });
 
 // The WebSocket will automatically attempt to reconnect on failure
