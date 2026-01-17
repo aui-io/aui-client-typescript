@@ -1,1 +1,1 @@
-export {};
+export { ApolloWsSessionSocket } from "./Socket.js";
