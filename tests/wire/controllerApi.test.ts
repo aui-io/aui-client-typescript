@@ -392,4 +392,67 @@ describe("ControllerApi", () => {
             });
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
+
+    test("get_workflows_metadata (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl },
+        });
+
+        const rawResponseBody = {
+            workflows: [
+                {
+                    id: "id",
+                    name: "name",
+                    metadata: { key: "value" },
+                    produce_options: true,
+                    is_internal_context: true,
+                },
+            ],
+        };
+        server
+            .mockEndpoint()
+            .get("/api/v1/external/workflows/metadata")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.controllerApi.getWorkflowsMetadata();
+        expect(response).toEqual({
+            workflows: [
+                {
+                    id: "id",
+                    name: "name",
+                    metadata: {
+                        key: "value",
+                    },
+                    produce_options: true,
+                    is_internal_context: true,
+                },
+            ],
+        });
+    });
+
+    test("get_workflows_metadata (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl },
+        });
+
+        const rawResponseBody = {};
+        server
+            .mockEndpoint()
+            .get("/api/v1/external/workflows/metadata")
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.controllerApi.getWorkflowsMetadata();
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
 });

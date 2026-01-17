@@ -24,4 +24,6 @@ export * from "./TaskInteractionOptionSelfReviewScoreLabel.js";
 export * from "./TaskInteractionOptionSelfReviewType.js";
 export * from "./UserMessagePayload.js";
 export * from "./ValidationError.js";
+export * from "./WorkflowMetadata.js";
+export * from "./WorkflowsMetadataResponse.js";
 export * from "./WsActor.js";
