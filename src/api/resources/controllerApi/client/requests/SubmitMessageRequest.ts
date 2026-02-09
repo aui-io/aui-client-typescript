@@ -15,4 +15,5 @@ export interface SubmitMessageRequest {
     task_id: string;
     text: string;
     context?: Apollo.Context;
+    agent_variables?: Record<string, unknown>;
 }

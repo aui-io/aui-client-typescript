@@ -393,6 +393,168 @@ describe("ControllerApi", () => {
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
+    test("get_agent_context (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl },
+        });
+        const rawRequestBody = { key: "value" };
+        const rawResponseBody = {
+            title: "title",
+            params: [
+                {
+                    param: "param",
+                    title: "title",
+                    type: "REGULAR",
+                    value: { source: "user_message", value: "value" },
+                    value_history: [{ source: "user_message", value: "value" }],
+                    presence_level: "MANDATORY",
+                    facet_match_group: "HARD",
+                    is_anchor: true,
+                    is_value_filled: true,
+                    is_visible: true,
+                    param_type: "boolean",
+                },
+            ],
+            entities: [
+                {
+                    uuid: "uuid",
+                    created_at: "2024-01-15T09:30:00Z",
+                    name: "name",
+                    is_displayable: true,
+                    populate_to_user_profile: true,
+                    items: [{}],
+                    source: "direct_topic_creation",
+                    interaction_id: "interaction_id",
+                },
+            ],
+            static_context: [{ key: "value" }],
+        };
+        server
+            .mockEndpoint()
+            .post("/api/v1/external/agent-context")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.controllerApi.getAgentContext({
+            key: "value",
+        });
+        expect(response).toEqual({
+            title: "title",
+            params: [
+                {
+                    param: "param",
+                    title: "title",
+                    type: "REGULAR",
+                    value: {
+                        source: "user_message",
+                        value: "value",
+                    },
+                    value_history: [
+                        {
+                            source: "user_message",
+                            value: "value",
+                        },
+                    ],
+                    presence_level: "MANDATORY",
+                    facet_match_group: "HARD",
+                    is_anchor: true,
+                    is_value_filled: true,
+                    is_visible: true,
+                    param_type: "boolean",
+                },
+            ],
+            entities: [
+                {
+                    uuid: "uuid",
+                    created_at: "2024-01-15T09:30:00Z",
+                    name: "name",
+                    is_displayable: true,
+                    populate_to_user_profile: true,
+                    items: [{}],
+                    source: "direct_topic_creation",
+                    interaction_id: "interaction_id",
+                },
+            ],
+            static_context: [
+                {
+                    key: "value",
+                },
+            ],
+        });
+    });
+
+    test("get_agent_context (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl },
+        });
+        const rawRequestBody = { string: { key: "value" } };
+        const rawResponseBody = {};
+        server
+            .mockEndpoint()
+            .post("/api/v1/external/agent-context")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.controllerApi.getAgentContext({
+                string: {
+                    key: "value",
+                },
+            });
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
+
+    test("get_direct_followup_suggestions (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl },
+        });
+
+        const rawResponseBody = ["string"];
+        server
+            .mockEndpoint()
+            .get("/api/v1/external/tasks/task_id/direct-followup-suggestions")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.controllerApi.getDirectFollowupSuggestions("task_id");
+        expect(response).toEqual(["string"]);
+    });
+
+    test("get_direct_followup_suggestions (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl },
+        });
+
+        const rawResponseBody = {};
+        server
+            .mockEndpoint()
+            .get("/api/v1/external/tasks/task_id/direct-followup-suggestions")
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.controllerApi.getDirectFollowupSuggestions("task_id");
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
+
     test("get_workflows_metadata (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
