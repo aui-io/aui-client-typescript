@@ -144,9 +144,7 @@ The `ApolloClient` constructor accepts the following options:
 
 ```typescript
 interface ApolloClient.Options {
-    // Choose ONE of the following:
-    baseUrl?: string;                    // Custom base URL (e.g., staging)
-    environment?: ApolloEnvironment;      // Or use predefined environment
+    environment?: ApolloEnvironment;      // Use predefined environment (Gcp or Azure)
     
     // Authentication (required)
     networkApiKey: string;               // Your API key (x-network-api-key header)
@@ -299,7 +297,8 @@ Retrieve the agent's context configuration including parameters, entities, and s
 
 ```typescript
 const agentContext = await client.controllerApi.getAgentContext({
-    // Request body (optional parameters may vary)
+    task_id: 'your-task-id',
+    query: 'test context'
 });
 
 // Returns: CreateTopicRequestBody - Agent context with:
@@ -313,7 +312,10 @@ const agentContext = await client.controllerApi.getAgentContext({
 
 ```typescript
 // Get agent context to understand available parameters
-const context = await client.controllerApi.getAgentContext({});
+const context = await client.controllerApi.getAgentContext({
+    task_id: 'your-task-id',
+    query: 'test context'
+});
 
 console.log('Agent Title:', context.title);
 console.log('Available Parameters:', context.params?.length);
@@ -325,7 +327,7 @@ console.log('Static Context:', context.static_context);
 Retrieve AI-generated followup suggestions for a specific task.
 
 ```typescript
-const suggestions = await client.controllerApi.getDirectFollowupSuggestions(taskId: string);
+const suggestions: string[] = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
 
 // Returns: string[] - Array of suggested followup questions
 ```
@@ -334,17 +336,12 @@ const suggestions = await client.controllerApi.getDirectFollowupSuggestions(task
 
 ```typescript
 // Get followup suggestions for a task
-const suggestions = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
+const suggestions: string[] = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
 
 console.log('Suggested followups:');
 suggestions.forEach((suggestion, index) => {
     console.log(`${index + 1}. ${suggestion}`);
 });
-
-// Example output:
-// 1. "What colors are available?"
-// 2. "Do you offer financing options?"
-// 3. "Can I schedule a test drive?"
 ```
 
 ---
@@ -608,7 +605,10 @@ const client = new ApolloClient({
 async function exploreAgentCapabilities() {
     try {
         // Get the agent's context configuration
-        const context = await client.controllerApi.getAgentContext({});
+        const context = await client.controllerApi.getAgentContext({
+            task_id: 'your-task-id',
+            query: 'test context'
+        });
         
         console.log('Agent Configuration:');
         console.log('  Title:', context.title);
