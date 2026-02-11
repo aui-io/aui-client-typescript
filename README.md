@@ -242,10 +242,32 @@ Submit a new message to an existing task (non-streaming).
 const messageResponse = await client.controllerApi.sendMessage({
     task_id: string,          // Task identifier
     text: string,             // Message text
-    is_external_api?: boolean // Optional: mark as external API call
+    is_external_api?: boolean, // Optional: mark as external API call
+    context?: {               // Optional: additional context
+        url?: string,
+        lead_details?: Record<string, any>,
+        welcome_message?: string
+    },
+    agent_variables?: Record<string, unknown>  // Optional: custom agent variables (NEW in v1.2.28)
 });
 
 // Returns: Message - Complete agent response with optional product cards
+```
+
+**New in v1.2.28:** The `agent_variables` parameter allows you to pass custom context to the agent:
+
+```typescript
+// Example: Send message with agent variables
+const response = await client.controllerApi.sendMessage({
+    task_id: 'your-task-id',
+    text: 'What products do you recommend?',
+    is_external_api: true,
+    agent_variables: {
+        context: 'User is interested in electric vehicles',
+        user_preference: 'eco-friendly',
+        budget: 'mid-range'
+    }
+});
 ```
 
 #### `listUserTasks(request)` - List User Tasks
@@ -270,6 +292,59 @@ const metadata = await client.controllerApi.getProductMetadata({
 });
 
 // Returns: Record<string, any> - Product metadata object
+```
+
+#### `getAgentContext(request)` - Get Agent Context (NEW in v1.2.28)
+Retrieve the agent's context configuration including parameters, entities, and static context.
+
+```typescript
+const agentContext = await client.controllerApi.getAgentContext({
+    // Request body (optional parameters may vary)
+});
+
+// Returns: CreateTopicRequestBody - Agent context with:
+// - title: string
+// - params: TaskParameter[]
+// - entities: TaskTopicEntity[]
+// - static_context: string
+```
+
+**Example:**
+
+```typescript
+// Get agent context to understand available parameters
+const context = await client.controllerApi.getAgentContext({});
+
+console.log('Agent Title:', context.title);
+console.log('Available Parameters:', context.params?.length);
+console.log('Entities:', context.entities?.length);
+console.log('Static Context:', context.static_context);
+```
+
+#### `getDirectFollowupSuggestions(taskId)` - Get Direct Followup Suggestions (NEW in v1.2.28)
+Retrieve AI-generated followup suggestions for a specific task.
+
+```typescript
+const suggestions = await client.controllerApi.getDirectFollowupSuggestions(taskId: string);
+
+// Returns: string[] - Array of suggested followup questions
+```
+
+**Example:**
+
+```typescript
+// Get followup suggestions for a task
+const suggestions = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
+
+console.log('Suggested followups:');
+suggestions.forEach((suggestion, index) => {
+    console.log(`${index + 1}. ${suggestion}`);
+});
+
+// Example output:
+// 1. "What colors are available?"
+// 2. "Do you offer financing options?"
+// 3. "Can I schedule a test drive?"
 ```
 
 ---
@@ -479,6 +554,125 @@ async function fetchProductMetadata(productLink: string) {
 fetchProductMetadata('https://www.example.com/product/12345');
 ```
 
+### Send Message with Agent Variables (NEW in v1.2.28)
+
+```typescript
+import { ApolloClient } from '@aui.io/aui-client';
+
+const client = new ApolloClient({
+    networkApiKey: 'API_KEY_YOUR_KEY_HERE'
+});
+
+async function sendContextualMessage(taskId: string, message: string, userContext: Record<string, unknown>) {
+    try {
+        // Send a message with custom agent variables for contextual responses
+        const response = await client.controllerApi.sendMessage({
+            task_id: taskId,
+            text: message,
+            is_external_api: true,
+            agent_variables: userContext
+        });
+        
+        console.log('Agent Response:', response.text);
+        
+        // The agent will use the provided context to tailor its response
+        if (response.cards && response.cards.length > 0) {
+            console.log('Recommended products:', response.cards.length);
+        }
+        
+        return response;
+    } catch (error) {
+        console.error('Error sending message:', error);
+        throw error;
+    }
+}
+
+// Example usage - provide context about user preferences
+sendContextualMessage('task-123', 'What do you recommend?', {
+    context: 'User is browsing electric vehicles',
+    user_preference: 'eco-friendly',
+    budget_range: '$30,000 - $50,000',
+    location: 'California'
+});
+```
+
+### Get Agent Context (NEW in v1.2.28)
+
+```typescript
+import { ApolloClient } from '@aui.io/aui-client';
+
+const client = new ApolloClient({
+    networkApiKey: 'API_KEY_YOUR_KEY_HERE'
+});
+
+async function exploreAgentCapabilities() {
+    try {
+        // Get the agent's context configuration
+        const context = await client.controllerApi.getAgentContext({});
+        
+        console.log('Agent Configuration:');
+        console.log('  Title:', context.title);
+        console.log('  Static Context:', context.static_context);
+        
+        // Explore available parameters
+        if (context.params && context.params.length > 0) {
+            console.log('\nAvailable Parameters:');
+            context.params.forEach(param => {
+                console.log(`  - ${param.title}: ${param.param}`);
+            });
+        }
+        
+        // Explore entities
+        if (context.entities && context.entities.length > 0) {
+            console.log('\nConfigured Entities:', context.entities.length);
+        }
+        
+        return context;
+    } catch (error) {
+        console.error('Error getting agent context:', error);
+        throw error;
+    }
+}
+
+exploreAgentCapabilities();
+```
+
+### Get Direct Followup Suggestions (NEW in v1.2.28)
+
+```typescript
+import { ApolloClient } from '@aui.io/aui-client';
+
+const client = new ApolloClient({
+    networkApiKey: 'API_KEY_YOUR_KEY_HERE'
+});
+
+async function getSuggestedQuestions(taskId: string) {
+    try {
+        // Get AI-generated followup suggestions based on conversation context
+        const suggestions = await client.controllerApi.getDirectFollowupSuggestions(taskId);
+        
+        console.log('Suggested followup questions:');
+        suggestions.forEach((suggestion, index) => {
+            console.log(`  ${index + 1}. ${suggestion}`);
+        });
+        
+        // Use these suggestions to guide the user's next interaction
+        return suggestions;
+    } catch (error) {
+        console.error('Error getting suggestions:', error);
+        throw error;
+    }
+}
+
+// Example usage
+getSuggestedQuestions('task-123');
+// Output:
+// Suggested followup questions:
+//   1. "What colors are available?"
+//   2. "Do you offer financing options?"
+//   3. "Can I schedule a test drive?"
+```
+
 ## 🔧 Advanced Configuration
 
 ### Custom Timeout and Retries
@@ -634,7 +828,7 @@ const client = new ApolloClient({
 });
 
 // The key should start with "API_KEY_"
-// Example: API_KEY_01K92N5BD5M7239VRK7YTK4Y6N
+// Example: API_KEY_01K------
 ```
 
 ### CORS Errors (Browser Only)
