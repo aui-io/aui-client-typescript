@@ -31,6 +31,11 @@ const azureClient = new ApolloClient({
     environment: ApolloEnvironment.Azure,
     networkApiKey: 'API_KEY_YOUR_KEY_HERE'
 });
+
+const awsClient = new ApolloClient({
+    environment: ApolloEnvironment.Aws,
+    networkApiKey: 'API_KEY_YOUR_KEY_HERE'
+});
 ```
 
 
@@ -174,6 +179,12 @@ ApolloEnvironment.Gcp = {
 ApolloEnvironment.Azure = {
     base: "https://azure-v2.aui.io/ia-controller", // REST API
     wsUrl: "wss://azure-v2.aui.io"                  // WebSocket
+}
+
+// AWS Environment
+ApolloEnvironment.Aws = {
+    base: "https://aws.aui.io/ia-controller",      // REST API
+    wsUrl: "wss://aws.aui.io"                       // WebSocket
 }
 
 // Default (same as Gcp)

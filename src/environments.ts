@@ -15,6 +15,10 @@ export const ApolloEnvironment = {
         base: "https://azure-v2.aui.io/ia-controller",
         wsUrl: "wss://azure-v2.aui.io",
     },
+    Aws: {
+        base: "https://aws.aui.io/ia-controller",
+        wsUrl: "wss://aws.aui.io",
+    },
     // Default points to Gcp for backwards compatibility
     Default: {
         base: "https://api.aui.io/ia-controller",
@@ -22,4 +26,4 @@ export const ApolloEnvironment = {
     },
 } as const;
 
-export type ApolloEnvironment = typeof ApolloEnvironment.Default | typeof ApolloEnvironment.Gcp | typeof ApolloEnvironment.Azure;
+export type ApolloEnvironment = typeof ApolloEnvironment.Default | typeof ApolloEnvironment.Gcp | typeof ApolloEnvironment.Azure | typeof ApolloEnvironment.Aws;
