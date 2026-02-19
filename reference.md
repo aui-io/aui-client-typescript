@@ -309,7 +309,7 @@ await client.controllerApi.getAgentContext({
 </dl>
 </details>
 
-<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getDirectFollowupSuggestions</a>(taskId) -> string[]</code></summary>
+<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getDirectFollowupSuggestions</a>(taskId) -> Apollo.DirectFollowupSuggestionsResponse</code></summary>
 <dl>
 <dd>
 

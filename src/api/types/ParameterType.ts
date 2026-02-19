@@ -9,5 +9,6 @@ export const ParameterType = {
     Time: "time",
     Object: "object",
     ListOfObjects: "list_of_objects",
+    Enum: "enum",
 } as const;
 export type ParameterType = (typeof ParameterType)[keyof typeof ParameterType];

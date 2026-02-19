@@ -556,14 +556,14 @@ export class ControllerApi {
     public getDirectFollowupSuggestions(
         taskId: string,
         requestOptions?: ControllerApi.RequestOptions,
-    ): core.HttpResponsePromise<string[]> {
+    ): core.HttpResponsePromise<Apollo.DirectFollowupSuggestionsResponse> {
         return core.HttpResponsePromise.fromPromise(this.__getDirectFollowupSuggestions(taskId, requestOptions));
     }
 
     private async __getDirectFollowupSuggestions(
         taskId: string,
         requestOptions?: ControllerApi.RequestOptions,
-    ): Promise<core.WithRawResponse<string[]>> {
+    ): Promise<core.WithRawResponse<Apollo.DirectFollowupSuggestionsResponse>> {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
             mergeOnlyDefinedHeaders({
@@ -587,7 +587,10 @@ export class ControllerApi {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as string[], rawResponse: _response.rawResponse };
+            return {
+                data: _response.body as Apollo.DirectFollowupSuggestionsResponse,
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {

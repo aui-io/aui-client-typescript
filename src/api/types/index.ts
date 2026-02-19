@@ -4,6 +4,7 @@ export * from "./CardParameter.js";
 export * from "./Context.js";
 export * from "./CreateTaskResponse.js";
 export * from "./CreateTopicRequestBody.js";
+export * from "./DirectFollowupSuggestionsResponse.js";
 export * from "./EntityItemParameter.js";
 export * from "./EntityItemSubEntity.js";
 export * from "./EntityItemSubEntityItem.js";
