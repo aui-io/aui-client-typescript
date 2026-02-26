@@ -139,6 +139,59 @@ describe("ControllerApi", () => {
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
+    test("get_task (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
+        });
+
+        const rawResponseBody = {
+            id: "id",
+            user_id: "user_id",
+            title: "title",
+            welcome_message: "welcome_message",
+            followup_suggestions: ["followup_suggestions"],
+        };
+        server
+            .mockEndpoint()
+            .get("/api/v1/external/tasks/task_id")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.controllerApi.getTask("task_id");
+        expect(response).toEqual({
+            id: "id",
+            user_id: "user_id",
+            title: "title",
+            welcome_message: "welcome_message",
+            followup_suggestions: ["followup_suggestions"],
+        });
+    });
+
+    test("get_task (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
+        });
+
+        const rawResponseBody = {};
+        server
+            .mockEndpoint()
+            .get("/api/v1/external/tasks/task_id")
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.controllerApi.getTask("task_id");
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
+
     test("get_task_messages (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
