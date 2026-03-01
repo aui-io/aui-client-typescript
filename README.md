@@ -235,6 +235,28 @@ const taskResponse = await client.controllerApi.createTask({
 
 **Note:** `task_origin_type` is required in v1.2.17+. Common values: `'web-widget'`, `'mobile-app'`, `'api'`, `'internal-tool'`
 
+#### `getTask(taskId)` - Get Task By ID
+Retrieve a specific task by its ID.
+
+```typescript
+const task = await client.controllerApi.getTask(taskId: string);
+
+// Returns: { id: string, user_id: string, title: string, welcome_message?: string }
+```
+
+**Example:**
+
+```typescript
+const task = await client.controllerApi.getTask('your-task-id');
+
+console.log('Task ID:', task.id);
+console.log('User ID:', task.user_id);
+console.log('Title:', task.title);
+if (task.welcome_message) {
+    console.log('Welcome:', task.welcome_message);
+}
+```
+
 #### `getTaskMessages(taskId)` - Get Task Messages
 Retrieve all messages for a specific task.
 
