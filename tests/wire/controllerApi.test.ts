@@ -673,4 +673,60 @@ describe("ControllerApi", () => {
             return await client.controllerApi.getWorkflowsMetadata();
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
+
+    test("start_text_conversation (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
+        });
+        const rawRequestBody = { phoneNumber: "phoneNumber", channel: "channel" };
+        const rawResponseBody = { status: true, data: { key: "value" }, message: "message", statusCode: 1 };
+        server
+            .mockEndpoint()
+            .post("/api/v1/external/text/conversation")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.controllerApi.startTextConversation({
+            phoneNumber: "phoneNumber",
+            channel: "channel",
+        });
+        expect(response).toEqual({
+            status: true,
+            data: {
+                key: "value",
+            },
+            message: "message",
+            statusCode: 1,
+        });
+    });
+
+    test("start_text_conversation (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
+        });
+        const rawRequestBody = { phoneNumber: "phoneNumber", channel: "channel" };
+        const rawResponseBody = {};
+        server
+            .mockEndpoint()
+            .post("/api/v1/external/text/conversation")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.controllerApi.startTextConversation({
+                phoneNumber: "phoneNumber",
+                channel: "channel",
+            });
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
 });

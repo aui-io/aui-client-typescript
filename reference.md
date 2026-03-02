@@ -462,3 +462,71 @@ await client.controllerApi.getWorkflowsMetadata();
 </dd>
 </dl>
 </details>
+
+<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">startTextConversation</a>({ ...params }) -> Apollo.TextConversationInitiateResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Start a text conversation (WhatsApp or SMS).
+
+Creates a task and then proxies to third-party-auth(BE) service to send the initial message.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.controllerApi.startTextConversation({
+    phoneNumber: "phoneNumber",
+    channel: "channel"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Apollo.TextConversationInitiateRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `ControllerApi.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>

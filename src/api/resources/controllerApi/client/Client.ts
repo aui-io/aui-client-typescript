@@ -789,4 +789,98 @@ export class ControllerApi {
                 });
         }
     }
+
+    /**
+     * Start a text conversation (WhatsApp or SMS).
+     *
+     * Creates a task and then proxies to third-party-auth(BE) service to send the initial message.
+     *
+     * @param {Apollo.TextConversationInitiateRequest} request
+     * @param {ControllerApi.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Apollo.UnprocessableEntityError}
+     *
+     * @example
+     *     await client.controllerApi.startTextConversation({
+     *         phoneNumber: "phoneNumber",
+     *         channel: "channel"
+     *     })
+     */
+    public startTextConversation(
+        request: Apollo.TextConversationInitiateRequest,
+        requestOptions?: ControllerApi.RequestOptions,
+    ): core.HttpResponsePromise<Apollo.TextConversationInitiateResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__startTextConversation(request, requestOptions));
+    }
+
+    private async __startTextConversation(
+        request: Apollo.TextConversationInitiateRequest,
+        requestOptions?: ControllerApi.RequestOptions,
+    ): Promise<core.WithRawResponse<Apollo.TextConversationInitiateResponse>> {
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                "x-network-api-key": requestOptions?.networkApiKey ?? this._options?.networkApiKey,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
+                "api/v1/external/text/conversation",
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryParameters: requestOptions?.queryParams,
+            requestType: "json",
+            body: request,
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return {
+                data: _response.body as Apollo.TextConversationInitiateResponse,
+                rawResponse: _response.rawResponse,
+            };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 422:
+                    throw new Apollo.UnprocessableEntityError(
+                        _response.error.body as Apollo.HttpValidationError,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApolloError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        switch (_response.error.reason) {
+            case "non-json":
+                throw new errors.ApolloError({
+                    statusCode: _response.error.statusCode,
+                    body: _response.error.rawBody,
+                    rawResponse: _response.rawResponse,
+                });
+            case "timeout":
+                throw new errors.ApolloTimeoutError(
+                    "Timeout exceeded when calling POST /api/v1/external/text/conversation.",
+                );
+            case "unknown":
+                throw new errors.ApolloError({
+                    message: _response.error.errorMessage,
+                    rawResponse: _response.rawResponse,
+                });
+        }
+    }
 }

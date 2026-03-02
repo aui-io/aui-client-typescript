@@ -40,6 +40,7 @@ export * from "./TaskParameterType.js";
 export * from "./TaskParameterValue.js";
 export * from "./TaskTopicEntity.js";
 export * from "./TaskTopicEntityItem.js";
+export * from "./TextConversationInitiateResponse.js";
 export * from "./UserMessagePayload.js";
 export * from "./ValidationError.js";
 export * from "./WorkflowMetadata.js";
