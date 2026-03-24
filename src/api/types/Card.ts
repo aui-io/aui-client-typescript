@@ -11,4 +11,5 @@ export interface Card {
     sub_entities?: Apollo.MessageCardSubEntity[];
     self_review?: Apollo.TaskInteractionOptionSelfReview;
     is_recommended: boolean;
+    rendered_jsx?: string;
 }

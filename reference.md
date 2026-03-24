@@ -217,9 +217,9 @@ await client.controllerApi.getTaskMessages("task_id");
 
 ```typescript
 await client.controllerApi.sendMessage({
+    include_trace_info: true,
     is_external_api: true,
-    task_id: "task_id",
-    text: "text"
+    task_id: "task_id"
 });
 
 ```
@@ -447,6 +447,63 @@ await client.controllerApi.getWorkflowsMetadata();
 
 <dl>
 <dd>
+
+<dl>
+<dd>
+
+**requestOptions:** `ControllerApi.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getTraceInfo</a>(taskId, messageId) -> Record<string, unknown></code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.controllerApi.getTraceInfo("task_id", "message_id");
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**taskId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**messageId:** `string` 
+    
+</dd>
+</dl>
 
 <dl>
 <dd>

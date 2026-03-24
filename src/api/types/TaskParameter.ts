@@ -14,6 +14,7 @@ export interface TaskParameter {
     is_value_filled?: boolean;
     is_visible?: boolean;
     param_type?: Apollo.ParameterType;
+    code?: string;
 }
 
 export namespace TaskParameter {

@@ -4,11 +4,12 @@ import type * as Apollo from "../index.js";
 
 export interface EntityItemParameter {
     param: string;
-    title: string;
+    title?: string;
     name?: string;
     value?: unknown;
     type?: Apollo.ParameterType;
     show?: boolean;
     populateToUserProfile?: boolean;
     excludeFromContext?: boolean;
+    code?: string;
 }
