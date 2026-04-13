@@ -6,6 +6,9 @@ export interface TraceDecisionParamsCheck {
     type?: Apollo.TraceDecisionType;
     tool: string;
     status: Apollo.TraceParamsCheckStatus;
-    missing_params?: string[];
+    /** Per mandatory (required) group; inner list = unfilled param codes for that group. */
+    required_missing_params_by_group?: string[][];
+    /** Per optional group; inner list = unfilled param codes for that group. */
+    optional_missing_params_by_group?: string[][];
     track_id?: string;
 }

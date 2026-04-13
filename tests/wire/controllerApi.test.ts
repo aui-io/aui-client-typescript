@@ -886,4 +886,75 @@ describe("ControllerApi", () => {
             });
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
+
+    test("render_widget (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
+        });
+        const rawRequestBody = {
+            task_id: "task_id",
+            integration_code: "integration_code",
+            card_template_code: "card_template_code",
+            variables: { key: "value" },
+        };
+        const rawResponseBody = { rendered_jsx: "rendered_jsx" };
+        server
+            .mockEndpoint()
+            .post("/api/v1/external/widgets")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.controllerApi.renderWidget({
+            task_id: "task_id",
+            integration_code: "integration_code",
+            card_template_code: "card_template_code",
+            variables: {
+                key: "value",
+            },
+        });
+        expect(response).toEqual({
+            rendered_jsx: "rendered_jsx",
+        });
+    });
+
+    test("render_widget (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            networkApiKey: "test",
+            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
+        });
+        const rawRequestBody = {
+            task_id: "task_id",
+            integration_code: "integration_code",
+            card_template_code: "card_template_code",
+            variables: { variables: { key: "value" } },
+        };
+        const rawResponseBody = {};
+        server
+            .mockEndpoint()
+            .post("/api/v1/external/widgets")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.controllerApi.renderWidget({
+                task_id: "task_id",
+                integration_code: "integration_code",
+                card_template_code: "card_template_code",
+                variables: {
+                    variables: {
+                        key: "value",
+                    },
+                },
+            });
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
 });

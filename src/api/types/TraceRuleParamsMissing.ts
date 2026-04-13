@@ -5,6 +5,11 @@ import type * as Apollo from "../index.js";
 export interface TraceRuleParamsMissing {
     type?: Apollo.TraceRuleType;
     action?: Apollo.TraceRuleAction;
-    missing_params?: string[];
+    status: Apollo.TraceParamsCheckStatus;
+    /** Per mandatory group (workflow order); inner list = unfilled param codes. */
+    required_missing_params_by_group?: string[][];
+    /** Per optional group (workflow order); inner list = unfilled param codes. */
+    optional_missing_params_by_group?: string[][];
     reason?: string;
+    code?: string;
 }

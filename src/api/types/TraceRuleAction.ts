@@ -5,7 +5,10 @@ export const TraceRuleAction = {
     AddRequiredParam: "ADD_REQUIRED_PARAM",
     AskAQuestion: "ASK_A_QUESTION",
     Block: "BLOCK",
+    PartialBlock: "PARTIAL_BLOCK",
     Text: "TEXT",
-    ActivateAnotherTool: "ACTIVATE_ANOTHER_TOOL",
+    BlockAndActivateAnotherTool: "BLOCK_AND_ACTIVATE_ANOTHER_TOOL",
+    ActivateSubTool: "ACTIVATE_SUB_TOOL",
+    Integration: "INTEGRATION",
 } as const;
 export type TraceRuleAction = (typeof TraceRuleAction)[keyof typeof TraceRuleAction];

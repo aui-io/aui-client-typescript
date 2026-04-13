@@ -587,3 +587,73 @@ await client.controllerApi.startTextConversation({
 </dd>
 </dl>
 </details>
+
+<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">renderWidget</a>({ ...params }) -> Apollo.WidgetRenderResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Render a widget card from integration data. Authenticates via network API key.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.controllerApi.renderWidget({
+    task_id: "task_id",
+    integration_code: "integration_code",
+    card_template_code: "card_template_code",
+    variables: {
+        "key": "value"
+    }
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Apollo.ExternalWidgetRenderRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `ControllerApi.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>

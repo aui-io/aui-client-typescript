@@ -10,5 +10,5 @@ export interface TraceDecisionRuleTriggered {
 }
 
 export namespace TraceDecisionRuleTriggered {
-    export type Rule = Apollo.TraceRuleBase | Apollo.TraceRuleParamsMissing;
+    export type Rule = Apollo.TraceRuleBase | Apollo.TraceRuleParamsMissing | Apollo.TraceRuleMissingInfo;
 }

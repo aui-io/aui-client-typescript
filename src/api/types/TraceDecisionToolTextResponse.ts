@@ -10,5 +10,4 @@ export interface TraceDecisionToolTextResponse {
     track_id?: string;
     tone_of_voice?: string;
     brevity?: string;
-    guideline?: string;
 }
