@@ -271,15 +271,16 @@ Submit a new message to an existing task (non-streaming).
 
 ```typescript
 const messageResponse = await client.controllerApi.sendMessage({
-    task_id: string,          // Task identifier
-    text: string,             // Message text
-    is_external_api?: boolean, // Optional: mark as external API call
-    context?: {               // Optional: additional context
+    task_id: string,              // Task identifier
+    text: string,                 // Message text
+    is_external_api?: boolean,    // Optional: mark as external API call
+    include_trace_info?: boolean, // Optional: include trace/debug info in response (NEW)
+    context?: {                   // Optional: additional context
         url?: string,
         lead_details?: Record<string, any>,
         welcome_message?: string
     },
-    agent_variables?: Record<string, unknown>  // Optional: custom agent variables (NEW in v1.2.28)
+    agent_variables?: Record<string, unknown>  // Optional: custom agent variables
 });
 
 // Returns: Message - Complete agent response with optional product cards
@@ -325,35 +326,29 @@ const metadata = await client.controllerApi.getProductMetadata({
 // Returns: Record<string, any> - Product metadata object
 ```
 
-#### `getAgentContext(request)` - Get Agent Context (NEW in v1.2.28)
-Retrieve the agent's context configuration including parameters, entities, and static context.
+#### `getTraceInfo(taskId, messageId)` - Get Trace Info (NEW)
+Retrieve trace/debug information for a specific message. Useful for debugging agent responses and understanding the processing pipeline.
 
 ```typescript
-const agentContext = await client.controllerApi.getAgentContext({
-    task_id: 'your-task-id',
-    query: 'test context'
-});
+const traceInfo = await client.controllerApi.getTraceInfo('your-task-id', 'your-message-id');
 
-// Returns: CreateTopicRequestBody - Agent context with:
-// - title: string
-// - params: TaskParameter[]
-// - entities: TaskTopicEntity[]
-// - static_context: string
+// Returns: Record<string, any> - Trace information object
 ```
 
 **Example:**
 
 ```typescript
-// Get agent context to understand available parameters
-const context = await client.controllerApi.getAgentContext({
+// First, send a message with trace info enabled
+const message = await client.controllerApi.sendMessage({
     task_id: 'your-task-id',
-    query: 'test context'
+    text: 'What products do you recommend?',
+    is_external_api: true,
+    include_trace_info: true
 });
 
-console.log('Agent Title:', context.title);
-console.log('Available Parameters:', context.params?.length);
-console.log('Entities:', context.entities?.length);
-console.log('Static Context:', context.static_context);
+// Then retrieve the full trace info for that message
+const traceInfo = await client.controllerApi.getTraceInfo('your-task-id', message.id);
+console.log('Trace Info:', traceInfo);
 ```
 
 #### `getDirectFollowupSuggestions(taskId)` - Get Direct Followup Suggestions (NEW in v1.2.28)
@@ -626,7 +621,7 @@ sendContextualMessage('task-123', 'What do you recommend?', {
 });
 ```
 
-### Get Agent Context (NEW in v1.2.28)
+### Get Trace Info (NEW)
 
 ```typescript
 import { ApolloClient } from '@aui.io/aui-client';
@@ -635,39 +630,30 @@ const client = new ApolloClient({
     networkApiKey: 'API_KEY_YOUR_KEY_HERE'
 });
 
-async function exploreAgentCapabilities() {
+async function debugAgentResponse(taskId: string) {
     try {
-        // Get the agent's context configuration
-        const context = await client.controllerApi.getAgentContext({
-            task_id: 'your-task-id',
-            query: 'test context'
+        // Send a message with trace info enabled
+        const message = await client.controllerApi.sendMessage({
+            task_id: taskId,
+            text: 'What products do you recommend?',
+            is_external_api: true,
+            include_trace_info: true
         });
-        
-        console.log('Agent Configuration:');
-        console.log('  Title:', context.title);
-        console.log('  Static Context:', context.static_context);
-        
-        // Explore available parameters
-        if (context.params && context.params.length > 0) {
-            console.log('\nAvailable Parameters:');
-            context.params.forEach(param => {
-                console.log(`  - ${param.title}: ${param.param}`);
-            });
-        }
-        
-        // Explore entities
-        if (context.entities && context.entities.length > 0) {
-            console.log('\nConfigured Entities:', context.entities.length);
-        }
-        
-        return context;
+
+        console.log('Agent Response:', message.text);
+
+        // Retrieve the full trace info for debugging
+        const traceInfo = await client.controllerApi.getTraceInfo(taskId, message.id);
+        console.log('Trace Info:', traceInfo);
+
+        return traceInfo;
     } catch (error) {
-        console.error('Error getting agent context:', error);
+        console.error('Error getting trace info:', error);
         throw error;
     }
 }
 
-exploreAgentCapabilities();
+debugAgentResponse('task-123');
 ```
 
 ### Get Direct Followup Suggestions (NEW in v1.2.28)
