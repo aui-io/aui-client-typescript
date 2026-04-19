@@ -272,15 +272,16 @@ Submit a new message to an existing task (non-streaming).
 ```typescript
 const messageResponse = await client.controllerApi.sendMessage({
     task_id: string,              // Task identifier
-    text: string,                 // Message text
+    text?: string,                // Message text (optional in v1.2.36+)
     is_external_api?: boolean,    // Optional: mark as external API call
-    include_trace_info?: boolean, // Optional: include trace/debug info in response (NEW)
+    include_trace_info?: boolean, // Optional: include trace/debug info in response (NEW in v1.2.35)
     context?: {                   // Optional: additional context
         url?: string,
         lead_details?: Record<string, any>,
         welcome_message?: string
     },
-    agent_variables?: Record<string, unknown>  // Optional: custom agent variables
+    agent_variables?: Record<string, unknown>,  // Optional: custom agent variables
+    static_context?: Record<string, unknown>    // Optional: static context data (NEW in v1.2.36)
 });
 
 // Returns: Message - Complete agent response with optional product cards
@@ -351,23 +352,27 @@ const traceInfo = await client.controllerApi.getTraceInfo('your-task-id', messag
 console.log('Trace Info:', traceInfo);
 ```
 
-#### `getDirectFollowupSuggestions(taskId)` - Get Direct Followup Suggestions (NEW in v1.2.28)
-Retrieve AI-generated followup suggestions for a specific task.
+#### `getDirectFollowupSuggestions(taskId)` - Get Direct Followup Suggestions
+Retrieve AI-generated followup suggestions for a specific task. Returns a response object containing the suggestions array and a metadata ID for tracking.
 
 ```typescript
-const suggestions: string[] = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
+const response = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
 
-// Returns: string[] - Array of suggested followup questions
+// Returns: DirectFollowupSuggestionsResponse
+// {
+//     suggestions?: string[],    // Array of suggested followup questions
+//     metadata_id?: string       // Metadata ID for tracking/analytics (NEW in v1.2.36)
+// }
 ```
 
 **Example:**
 
 ```typescript
-// Get followup suggestions for a task
-const suggestions: string[] = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
+const response = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
 
+console.log('Metadata ID:', response.metadata_id);
 console.log('Suggested followups:');
-suggestions.forEach((suggestion, index) => {
+response.suggestions?.forEach((suggestion, index) => {
     console.log(`${index + 1}. ${suggestion}`);
 });
 ```
@@ -656,7 +661,7 @@ async function debugAgentResponse(taskId: string) {
 debugAgentResponse('task-123');
 ```
 
-### Get Direct Followup Suggestions (NEW in v1.2.28)
+### Get Direct Followup Suggestions
 
 ```typescript
 import { ApolloClient } from '@aui.io/aui-client';
@@ -668,15 +673,17 @@ const client = new ApolloClient({
 async function getSuggestedQuestions(taskId: string) {
     try {
         // Get AI-generated followup suggestions based on conversation context
-        const suggestions = await client.controllerApi.getDirectFollowupSuggestions(taskId);
+        const response = await client.controllerApi.getDirectFollowupSuggestions(taskId);
+        
+        // metadata_id can be used for tracking/analytics
+        console.log('Metadata ID:', response.metadata_id);
         
         console.log('Suggested followup questions:');
-        suggestions.forEach((suggestion, index) => {
+        response.suggestions?.forEach((suggestion, index) => {
             console.log(`  ${index + 1}. ${suggestion}`);
         });
         
-        // Use these suggestions to guide the user's next interaction
-        return suggestions;
+        return response;
     } catch (error) {
         console.error('Error getting suggestions:', error);
         throw error;
@@ -686,6 +693,7 @@ async function getSuggestedQuestions(taskId: string) {
 // Example usage
 getSuggestedQuestions('task-123');
 // Output:
+// Metadata ID: 69e4b4d4359671434fdff849
 // Suggested followup questions:
 //   1. "What colors are available?"
 //   2. "Do you offer financing options?"
