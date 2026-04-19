@@ -407,62 +407,6 @@ await client.controllerApi.getDirectFollowupSuggestions("task_id");
 </dl>
 </details>
 
-<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getWorkflowsMetadata</a>() -> Apollo.WorkflowsMetadataResponse</code></summary>
-<dl>
-<dd>
-
-#### 📝 Description
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-Get metadata for all workflows available for the authenticated network.
-Returns a lean version with essential workflow information.
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```typescript
-await client.controllerApi.getWorkflowsMetadata();
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**requestOptions:** `ControllerApi.RequestOptions` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getTraceInfo</a>(taskId, messageId) -> Record<string, unknown></code></summary>
 <dl>
 <dd>

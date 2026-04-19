@@ -18,10 +18,10 @@ export interface TaskParameter {
 }
 
 export namespace TaskParameter {
-    export type Value = Apollo.TaskParameterValue | Apollo.TaskParameterRangeValue | Apollo.TaskParameterObjectValue;
+    export type Value = Apollo.TaskParameterValue | Apollo.TaskParameterRangeValue;
     export type ValueHistory = ValueHistory.Item[];
 
     export namespace ValueHistory {
-        export type Item = Apollo.TaskParameterValue | Apollo.TaskParameterRangeValue | Apollo.TaskParameterObjectValue;
+        export type Item = Apollo.TaskParameterValue | Apollo.TaskParameterRangeValue;
     }
 }
