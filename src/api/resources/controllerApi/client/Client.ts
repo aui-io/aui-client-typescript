@@ -630,23 +630,23 @@ export class ControllerApi {
     }
 
     /**
-     * @param {string} taskId
+     * @param {Apollo.DirectFollowupSuggestionsRequest} request
      * @param {ControllerApi.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link Apollo.UnprocessableEntityError}
      *
      * @example
-     *     await client.controllerApi.getDirectFollowupSuggestions("task_id")
+     *     await client.controllerApi.getDirectFollowupSuggestions()
      */
     public getDirectFollowupSuggestions(
-        taskId: string,
+        request: Apollo.DirectFollowupSuggestionsRequest = {},
         requestOptions?: ControllerApi.RequestOptions,
     ): core.HttpResponsePromise<Apollo.DirectFollowupSuggestionsResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__getDirectFollowupSuggestions(taskId, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__getDirectFollowupSuggestions(request, requestOptions));
     }
 
     private async __getDirectFollowupSuggestions(
-        taskId: string,
+        request: Apollo.DirectFollowupSuggestionsRequest = {},
         requestOptions?: ControllerApi.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.DirectFollowupSuggestionsResponse>> {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -660,11 +660,14 @@ export class ControllerApi {
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
-                `api/v1/external/tasks/${core.url.encodePathParam(taskId)}/direct-followup-suggestions`,
+                "api/v1/external/direct-followup-suggestions",
             ),
-            method: "GET",
+            method: "POST",
             headers: _headers,
+            contentType: "application/json",
             queryParameters: requestOptions?.queryParams,
+            requestType: "json",
+            body: request,
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -703,7 +706,7 @@ export class ControllerApi {
                 });
             case "timeout":
                 throw new errors.ApolloTimeoutError(
-                    "Timeout exceeded when calling GET /api/v1/external/tasks/{task_id}/direct-followup-suggestions.",
+                    "Timeout exceeded when calling POST /api/v1/external/direct-followup-suggestions.",
                 );
             case "unknown":
                 throw new errors.ApolloError({

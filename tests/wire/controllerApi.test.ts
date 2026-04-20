@@ -682,17 +682,18 @@ describe("ControllerApi", () => {
             networkApiKey: "test",
             environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
         });
-
+        const rawRequestBody = {};
         const rawResponseBody = { suggestions: ["suggestions"], metadata_id: "metadata_id" };
         server
             .mockEndpoint()
-            .get("/api/v1/external/tasks/task_id/direct-followup-suggestions")
+            .post("/api/v1/external/direct-followup-suggestions")
+            .jsonBody(rawRequestBody)
             .respondWith()
             .statusCode(200)
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.controllerApi.getDirectFollowupSuggestions("task_id");
+        const response = await client.controllerApi.getDirectFollowupSuggestions();
         expect(response).toEqual({
             suggestions: ["suggestions"],
             metadata_id: "metadata_id",
@@ -705,18 +706,19 @@ describe("ControllerApi", () => {
             networkApiKey: "test",
             environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
         });
-
+        const rawRequestBody = {};
         const rawResponseBody = {};
         server
             .mockEndpoint()
-            .get("/api/v1/external/tasks/task_id/direct-followup-suggestions")
+            .post("/api/v1/external/direct-followup-suggestions")
+            .jsonBody(rawRequestBody)
             .respondWith()
             .statusCode(422)
             .jsonBody(rawResponseBody)
             .build();
 
         await expect(async () => {
-            return await client.controllerApi.getDirectFollowupSuggestions("task_id");
+            return await client.controllerApi.getDirectFollowupSuggestions();
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
