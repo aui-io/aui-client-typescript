@@ -352,23 +352,29 @@ const traceInfo = await client.controllerApi.getTraceInfo('your-task-id', messag
 console.log('Trace Info:', traceInfo);
 ```
 
-#### `getDirectFollowupSuggestions(taskId)` - Get Direct Followup Suggestions
-Retrieve AI-generated followup suggestions for a specific task. Returns a response object containing the suggestions array and a metadata ID for tracking.
+#### `getDirectFollowupSuggestions(request?)` - Get Direct Followup Suggestions
+Retrieve AI-generated followup suggestions. Accepts optional `context` and `created_by` parameters.
 
 ```typescript
-const response = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
+const response = await client.controllerApi.getDirectFollowupSuggestions({
+    context?: Record<string, unknown>,  // Optional: context data (e.g., { task_id: 'xxx' })
+    created_by?: string                 // Optional: user identifier
+});
 
 // Returns: DirectFollowupSuggestionsResponse
 // {
 //     suggestions?: string[],    // Array of suggested followup questions
-//     metadata_id?: string       // Metadata ID for tracking/analytics (NEW in v1.2.36)
+//     metadata_id?: string       // Metadata ID for tracking/analytics
 // }
 ```
 
 **Example:**
 
 ```typescript
-const response = await client.controllerApi.getDirectFollowupSuggestions('your-task-id');
+const response = await client.controllerApi.getDirectFollowupSuggestions({
+    context: { task_id: 'your-task-id' },
+    created_by: 'user123'
+});
 
 console.log('Metadata ID:', response.metadata_id);
 console.log('Suggested followups:');
@@ -670,14 +676,15 @@ const client = new ApolloClient({
     networkApiKey: 'API_KEY_YOUR_KEY_HERE'
 });
 
-async function getSuggestedQuestions(taskId: string) {
+async function getSuggestedQuestions(taskId: string, userId: string) {
     try {
-        // Get AI-generated followup suggestions based on conversation context
-        const response = await client.controllerApi.getDirectFollowupSuggestions(taskId);
+        // Get AI-generated followup suggestions with context and user info
+        const response = await client.controllerApi.getDirectFollowupSuggestions({
+            context: { task_id: taskId },
+            created_by: userId
+        });
         
-        // metadata_id can be used for tracking/analytics
         console.log('Metadata ID:', response.metadata_id);
-        
         console.log('Suggested followup questions:');
         response.suggestions?.forEach((suggestion, index) => {
             console.log(`  ${index + 1}. ${suggestion}`);
@@ -691,7 +698,7 @@ async function getSuggestedQuestions(taskId: string) {
 }
 
 // Example usage
-getSuggestedQuestions('task-123');
+getSuggestedQuestions('task-123', 'user-456');
 // Output:
 // Metadata ID: 69e4b4d4359671434fdff849
 // Suggested followup questions:
