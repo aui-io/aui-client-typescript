@@ -369,7 +369,8 @@ export class ControllerApi {
      *
      * @example
      *     await client.controllerApi.sendMessage({
-     *         include_trace_info: true,
+     *         include_business_trace: true,
+     *         include_context_trace: true,
      *         is_external_api: true,
      *         task_id: "task_id"
      *     })
@@ -385,10 +386,19 @@ export class ControllerApi {
         request: Apollo.SubmitMessageRequest,
         requestOptions?: ControllerApi.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.Message>> {
-        const { include_trace_info: includeTraceInfo, is_external_api: isExternalApi, ..._body } = request;
+        const {
+            include_business_trace: includeBusinessTrace,
+            include_context_trace: includeContextTrace,
+            is_external_api: isExternalApi,
+            ..._body
+        } = request;
         const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
-        if (includeTraceInfo != null) {
-            _queryParams.include_trace_info = includeTraceInfo.toString();
+        if (includeBusinessTrace != null) {
+            _queryParams.include_business_trace = includeBusinessTrace.toString();
+        }
+
+        if (includeContextTrace != null) {
+            _queryParams.include_context_trace = includeContextTrace.toString();
         }
 
         if (isExternalApi != null) {
@@ -719,26 +729,42 @@ export class ControllerApi {
     /**
      * @param {string} taskId
      * @param {string} messageId
+     * @param {Apollo.GetTraceInfoRequest} request
      * @param {ControllerApi.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link Apollo.UnprocessableEntityError}
      *
      * @example
-     *     await client.controllerApi.getTraceInfo("task_id", "message_id")
+     *     await client.controllerApi.getTraceInfo("task_id", "message_id", {
+     *         include_business_logic: true,
+     *         include_context_logic: true
+     *     })
      */
     public getTraceInfo(
         taskId: string,
         messageId: string,
+        request: Apollo.GetTraceInfoRequest = {},
         requestOptions?: ControllerApi.RequestOptions,
     ): core.HttpResponsePromise<Record<string, unknown>> {
-        return core.HttpResponsePromise.fromPromise(this.__getTraceInfo(taskId, messageId, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__getTraceInfo(taskId, messageId, request, requestOptions));
     }
 
     private async __getTraceInfo(
         taskId: string,
         messageId: string,
+        request: Apollo.GetTraceInfoRequest = {},
         requestOptions?: ControllerApi.RequestOptions,
     ): Promise<core.WithRawResponse<Record<string, unknown>>> {
+        const { include_business_logic: includeBusinessLogic, include_context_logic: includeContextLogic } = request;
+        const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
+        if (includeBusinessLogic != null) {
+            _queryParams.include_business_logic = includeBusinessLogic.toString();
+        }
+
+        if (includeContextLogic != null) {
+            _queryParams.include_context_logic = includeContextLogic.toString();
+        }
+
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
             mergeOnlyDefinedHeaders({
@@ -754,7 +780,7 @@ export class ControllerApi {
             ),
             method: "GET",
             headers: _headers,
-            queryParameters: requestOptions?.queryParams,
+            queryParameters: { ..._queryParams, ...requestOptions?.queryParams },
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,

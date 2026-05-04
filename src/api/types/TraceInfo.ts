@@ -3,12 +3,12 @@
 import type * as Apollo from "../index.js";
 
 /**
- * Root trace. Schema: input, understanding, decisions, response (required); context (optional).
+ * Root trace. input and response are always set; context and understanding may be omitted (None) when filtered.
  */
 export interface TraceInfo {
     input: Apollo.TraceInput;
     context?: Apollo.TraceContext;
-    understanding: Apollo.TraceUnderstanding;
+    understanding?: Apollo.TraceUnderstanding;
     decisions?: TraceInfo.Decisions.Item[];
     response: Apollo.TraceResponse;
 }

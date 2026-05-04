@@ -10,5 +10,6 @@ export const TraceRuleAction = {
     BlockAndActivateAnotherTool: "BLOCK_AND_ACTIVATE_ANOTHER_TOOL",
     ActivateSubTool: "ACTIVATE_SUB_TOOL",
     Integration: "INTEGRATION",
+    ActivateAnotherTool: "ACTIVATE_ANOTHER_TOOL",
 } as const;
 export type TraceRuleAction = (typeof TraceRuleAction)[keyof typeof TraceRuleAction];

@@ -10,5 +10,5 @@ export interface TraceDecisionCallIntegration {
 }
 
 export namespace TraceDecisionCallIntegration {
-    export type Integration = Apollo.TraceRestIntegration | Apollo.TraceRagIntegration;
+    export type Integration = Apollo.TraceRestIntegration | Apollo.TraceRagIntegration | Apollo.TraceMcpIntegration;
 }

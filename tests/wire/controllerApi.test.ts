@@ -371,7 +371,8 @@ describe("ControllerApi", () => {
             .build();
 
         const response = await client.controllerApi.sendMessage({
-            include_trace_info: true,
+            include_business_trace: true,
+            include_context_trace: true,
             is_external_api: true,
             task_id: "task_id",
         });
@@ -738,7 +739,10 @@ describe("ControllerApi", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.controllerApi.getTraceInfo("task_id", "message_id");
+        const response = await client.controllerApi.getTraceInfo("task_id", "message_id", {
+            include_business_logic: true,
+            include_context_logic: true,
+        });
         expect(response).toEqual({
             key: "value",
         });

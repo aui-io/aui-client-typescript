@@ -217,7 +217,8 @@ await client.controllerApi.getTaskMessages("task_id");
 
 ```typescript
 await client.controllerApi.sendMessage({
-    include_trace_info: true,
+    include_business_trace: true,
+    include_context_trace: true,
     is_external_api: true,
     task_id: "task_id"
 });
@@ -407,7 +408,7 @@ await client.controllerApi.getDirectFollowupSuggestions();
 </dl>
 </details>
 
-<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getTraceInfo</a>(taskId, messageId) -> Record<string, unknown></code></summary>
+<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getTraceInfo</a>(taskId, messageId, { ...params }) -> Record<string, unknown></code></summary>
 <dl>
 <dd>
 
@@ -420,7 +421,10 @@ await client.controllerApi.getDirectFollowupSuggestions();
 <dd>
 
 ```typescript
-await client.controllerApi.getTraceInfo("task_id", "message_id");
+await client.controllerApi.getTraceInfo("task_id", "message_id", {
+    include_business_logic: true,
+    include_context_logic: true
+});
 
 ```
 </dd>
@@ -445,6 +449,14 @@ await client.controllerApi.getTraceInfo("task_id", "message_id");
 <dd>
 
 **messageId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `Apollo.GetTraceInfoRequest` 
     
 </dd>
 </dl>

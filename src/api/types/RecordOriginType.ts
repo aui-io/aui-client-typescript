@@ -7,5 +7,6 @@ export const RecordOriginType = {
     FeedbackPlayground: "feedback-playground",
     LlmManagement: "llm-management",
     ThirdParty: "third-party",
+    AgentBuilder: "agent-builder",
 } as const;
 export type RecordOriginType = (typeof RecordOriginType)[keyof typeof RecordOriginType];

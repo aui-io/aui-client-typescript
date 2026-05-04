@@ -5,13 +5,17 @@ import type * as Apollo from "../../../../index.js";
 /**
  * @example
  *     {
- *         include_trace_info: true,
+ *         include_business_trace: true,
+ *         include_context_trace: true,
  *         is_external_api: true,
  *         task_id: "task_id"
  *     }
  */
 export interface SubmitMessageRequest {
-    include_trace_info?: boolean;
+    /** When true, includes NLU/understanding and business decisions (rules, tools, params, etc.) in trace_info. */
+    include_business_trace?: boolean;
+    /** When true, includes the context section and call_integration (REST/RAG/MCP) decisions in trace_info. */
+    include_context_trace?: boolean;
     is_external_api?: boolean;
     task_id: string;
     text?: string;
