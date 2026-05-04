@@ -274,7 +274,8 @@ const messageResponse = await client.controllerApi.sendMessage({
     task_id: string,              // Task identifier
     text?: string,                // Message text (optional in v1.2.36+)
     is_external_api?: boolean,    // Optional: mark as external API call
-    include_trace_info?: boolean, // Optional: include trace/debug info in response (NEW in v1.2.35)
+    include_business_trace?: boolean, // Optional: include NLU/understanding + business decisions in trace_info (NEW in v1.2.37; replaces include_trace_info)
+    include_context_trace?: boolean,  // Optional: include context section + call_integration decisions in trace_info (NEW in v1.2.37; replaces include_trace_info)
     context?: {                   // Optional: additional context
         url?: string,
         lead_details?: Record<string, any>,
@@ -339,12 +340,14 @@ const traceInfo = await client.controllerApi.getTraceInfo('your-task-id', 'your-
 **Example:**
 
 ```typescript
-// First, send a message with trace info enabled
+// First, send a message with trace info enabled.
+// Note: `include_trace_info` was replaced in v1.2.39 by two granular flags.
 const message = await client.controllerApi.sendMessage({
     task_id: 'your-task-id',
     text: 'What products do you recommend?',
     is_external_api: true,
-    include_trace_info: true
+    include_business_trace: true,
+    include_context_trace: true
 });
 
 // Then retrieve the full trace info for that message
@@ -643,12 +646,14 @@ const client = new ApolloClient({
 
 async function debugAgentResponse(taskId: string) {
     try {
-        // Send a message with trace info enabled
+        // Send a message with trace info enabled.
+        // `include_trace_info` was replaced with the two flags below in v1.2.37.
         const message = await client.controllerApi.sendMessage({
             task_id: taskId,
             text: 'What products do you recommend?',
             is_external_api: true,
-            include_trace_info: true
+            include_business_trace: true,
+            include_context_trace: true
         });
 
         console.log('Agent Response:', message.text);
