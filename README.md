@@ -386,6 +386,53 @@ response.suggestions?.forEach((suggestion, index) => {
 });
 ```
 
+#### `startTextConversation(request)` - Start Text Conversation (NEW)
+Start a phone-channel conversation (SMS or WhatsApp) with an initial outbound message.
+
+The SDK creates a task on the AUI backend and then proxies to the `third-party-auth` service so the first message is delivered to the recipient over the chosen channel. Subsequent inbound replies from the user feed back into the same task and can be observed via the standard message / WebSocket APIs.
+
+```typescript
+const response = await client.controllerApi.startTextConversation({
+    phoneNumber: string,        // Recipient phone number in E.164 format (e.g., '+19999999999')
+    channel: 'sms' | 'whatsapp',// Outbound channel
+    message?: string            // Optional initial message to send (e.g., 'Hello!')
+});
+
+// Returns: TextConversationInitiateResponse
+// {
+//     status: boolean,                  // true on success
+//     data: Record<string, string>,     // backend payload (e.g., task / message identifiers)
+//     message: string,                  // human-readable status message
+//     statusCode: number                // HTTP-style status code
+// }
+```
+
+**Parameters:**
+
+- `phoneNumber` *(required)* — Must include the country code in E.164 format. Example: `+15551234567`. Numbers without a country code are rejected by the upstream third-party-auth service.
+- `channel` *(required)* — Either `'sms'` or `'whatsapp'`. Determines which provider sends the initial message.
+- `message` *(optional)* — The first outbound message body. If omitted, the conversation is created but no initial message is sent.
+
+**Example:**
+
+```typescript
+const response = await client.controllerApi.startTextConversation({
+    phoneNumber: '+19999999999',
+    channel: 'sms',
+    message: 'Hello!'
+});
+
+console.log('Status:     ', response.status);      // true
+console.log('Status Code:', response.statusCode);  // e.g. 200
+console.log('Message:    ', response.message);     // e.g. 'Conversation initiated'
+console.log('Data:       ', response.data);        // e.g. { task_id: '...', ... }
+```
+
+> ℹ️ **Tip:** During development you can default to a sandbox number with an env var, e.g.
+> `phoneNumber: process.env.TEST_PHONE_NUMBER ?? '+15551234567'`. The placeholder
+> `+15551234567` is rejected by the upstream provider — use a real, reachable E.164
+> number to validate end-to-end delivery.
+
 ---
 
 ### WebSocket API
@@ -712,6 +759,63 @@ getSuggestedQuestions('task-123', 'user-456');
 //   3. "Can I schedule a test drive?"
 ```
 
+### Start a Text Conversation - SMS / WhatsApp (NEW)
+
+Reach a user over their phone channel (SMS or WhatsApp) with an initial outbound message. Internally, the SDK creates a task and dispatches the first message through Apollo's `third-party-auth` service — replies from the user thread back into the same task so you can keep using the existing message APIs and WebSocket events.
+
+```typescript
+import { ApolloClient, Apollo } from '@aui.io/aui-client';
+
+const client = new ApolloClient({
+    networkApiKey: 'API_KEY_YOUR_KEY_HERE'
+});
+
+async function startTextConversation(
+    phoneNumber: string,
+    channel: 'sms' | 'whatsapp',
+    message: string
+) {
+    try {
+        const response: Apollo.TextConversationInitiateResponse =
+            await client.controllerApi.startTextConversation({
+                phoneNumber,   // E.164 format, e.g. '+19999999999'
+                channel,       // 'sms' or 'whatsapp'
+                message        // initial message body, e.g. 'Hello!'
+            });
+
+        console.log('✅ Conversation initiated');
+        console.log('   Status:     ', response.status);
+        console.log('   Status Code:', response.statusCode);
+        console.log('   Message:    ', response.message);
+        console.log('   Data:       ', response.data);
+
+        return response;
+    } catch (error: any) {
+        console.error('❌ Error starting text conversation:', error.message);
+        if (error.body) {
+            console.error('   Body:', error.body);
+        }
+        throw error;
+    }
+}
+
+// SMS
+startTextConversation('+19999999999', 'sms', 'Hello!');
+
+// WhatsApp
+startTextConversation('+971501234567', 'whatsapp', 'Hi from AUI!');
+```
+
+**UI mapping:** This is the API behind the "Start Text Conversation" panel — phone number + channel selector (SMS / WhatsApp) + initial message — wired directly to `client.controllerApi.startTextConversation({ phoneNumber, channel, message })`.
+
+**Common errors:**
+
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| `500` from upstream `third-party-auth` | Invalid or unreachable phone number (e.g., placeholder `+15551234567`) | Use a real E.164 number, including the country code |
+| `422 Unprocessable Entity` | `phoneNumber` or `channel` missing / wrong shape | Ensure `channel` is exactly `'sms'` or `'whatsapp'` and `phoneNumber` starts with `+` |
+| `401 / 403` | Missing or invalid `networkApiKey` | Pass `networkApiKey` to `ApolloClient` (or the `x-network-api-key` header) |
+
 ## 🔧 Advanced Configuration
 
 ### Custom Timeout and Retries
@@ -793,6 +897,7 @@ import {
     CreateExternalTaskRequest,
     SubmitExternalMessageRequest,
     UserMessagePayload,
+    TextConversationInitiateRequest,
     // Response types
     CreateExternalTaskResponse,
     ExternalTaskMessage,
@@ -800,6 +905,7 @@ import {
     StreamingUpdatePayload,
     FinalMessagePayload,
     ErrorMessagePayload,
+    TextConversationInitiateResponse,
     // Error types
     ApolloError,
     UnprocessableEntityError
