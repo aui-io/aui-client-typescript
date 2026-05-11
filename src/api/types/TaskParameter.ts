@@ -13,6 +13,7 @@ export interface TaskParameter {
     is_anchor?: boolean;
     is_value_filled?: boolean;
     is_visible?: boolean;
+    is_exist_param?: boolean;
     param_type?: Apollo.ParameterType;
     code?: string;
 }

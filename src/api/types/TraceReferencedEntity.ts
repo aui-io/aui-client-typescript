@@ -2,7 +2,11 @@
 
 export interface TraceReferencedEntity {
     entity: string;
-    identifier?: string;
+    identifier?: TraceReferencedEntity.Identifier;
     reference?: string;
     is_visible: boolean;
+}
+
+export namespace TraceReferencedEntity {
+    export type Identifier = string | number;
 }

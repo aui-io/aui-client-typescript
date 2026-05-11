@@ -4,9 +4,13 @@ import type * as Apollo from "../index.js";
 
 export interface TraceEntity {
     entity: string;
-    identifier?: string;
+    identifier?: TraceEntity.Identifier;
     reference?: string;
     source: Apollo.TraceEntitySource;
     params?: Record<string, unknown>;
     sub_entities?: Apollo.TraceSubEntity[];
+}
+
+export namespace TraceEntity {
+    export type Identifier = string | number;
 }

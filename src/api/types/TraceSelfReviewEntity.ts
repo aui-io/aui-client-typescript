@@ -4,9 +4,13 @@ import type * as Apollo from "../index.js";
 
 export interface TraceSelfReviewEntity {
     entity: string;
-    identifier?: string;
+    identifier?: TraceSelfReviewEntity.Identifier;
     reference?: string;
     sub_entities?: Apollo.TracSelfReviewSubEntity[];
     self_review?: Apollo.TraceSelfReviewSection;
     is_visible: boolean;
+}
+
+export namespace TraceSelfReviewEntity {
+    export type Identifier = string | number;
 }
