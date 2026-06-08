@@ -100,7 +100,7 @@ socket.on('open', () => {
 // Handle streaming responses
 socket.on('message', (message) => {
     // Streaming updates (partial responses)
-    if (message.channel?.even_name === 'thread-message-text-content-updated') {
+    if (message.channel?.event_name === 'thread-message-text-content-updated') {
         console.log('Agent is typing:', message.data?.text);
     }
     
@@ -538,7 +538,7 @@ async function searchProducts(userId: string, query: string) {
     });
     
     socket.on('message', (message) => {
-        if (message.channel?.even_name === 'thread-message-text-content-updated') {
+        if (message.channel?.event_name === 'thread-message-text-content-updated') {
             // Show real-time updates
             console.log('Agent:', message.data?.text);
         }
