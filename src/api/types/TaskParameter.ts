@@ -19,7 +19,10 @@ export interface TaskParameter {
 }
 
 export namespace TaskParameter {
-    export type Value = Apollo.TaskParameterValue | Apollo.TaskParameterRangeValue;
+    /**
+     * Value to compare against. Can be a literal (string, number, boolean).
+     */
+    export type Value = string | number | number | boolean | unknown[] | Record<string, unknown>;
     export type ValueHistory = ValueHistory.Item[];
 
     export namespace ValueHistory {

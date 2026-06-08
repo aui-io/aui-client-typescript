@@ -11,4 +11,6 @@ export interface TraceMcpIntegration {
     name: string;
     completion: string;
     tool_calls?: Apollo.TraceMcpToolCall[];
+    status?: string;
+    latency?: Apollo.LatencyMetadata;
 }

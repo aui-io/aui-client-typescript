@@ -257,57 +257,6 @@ await client.controllerApi.sendMessage({
 </dl>
 </details>
 
-<details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getProductMetadata</a>({ ...params }) -> Record<string, unknown></code></summary>
-<dl>
-<dd>
-
-#### 🔌 Usage
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-```typescript
-await client.controllerApi.getProductMetadata({
-    link: "link"
-});
-
-```
-</dd>
-</dl>
-</dd>
-</dl>
-
-#### ⚙️ Parameters
-
-<dl>
-<dd>
-
-<dl>
-<dd>
-
-**request:** `Apollo.GetProductMetadataRequest` 
-    
-</dd>
-</dl>
-
-<dl>
-<dd>
-
-**requestOptions:** `ControllerApi.RequestOptions` 
-    
-</dd>
-</dl>
-</dd>
-</dl>
-
-
-</dd>
-</dl>
-</details>
-
 <details><summary><code>client.controllerApi.<a href="/src/api/resources/controllerApi/client/Client.ts">getAgentContext</a>({ ...params }) -> Apollo.CreateTopicRequestBody</code></summary>
 <dl>
 <dd>

@@ -7,7 +7,9 @@ export interface TraceDecisionToolTextResponse {
     tool: string;
     status: string;
     text?: string;
+    fail_reason?: string;
     track_id?: string;
     tone_of_voice?: string;
     brevity?: string;
+    questions?: string[];
 }

@@ -4,6 +4,7 @@
 export const TraceRuleAction = {
     AddRequiredParam: "ADD_REQUIRED_PARAM",
     AskAQuestion: "ASK_A_QUESTION",
+    AskForConfirmation: "ASK_FOR_CONFIRMATION",
     Block: "BLOCK",
     PartialBlock: "PARTIAL_BLOCK",
     Text: "TEXT",

@@ -7,8 +7,13 @@ export interface TraceDecisionRuleTriggered {
     tool: string;
     rule: TraceDecisionRuleTriggered.Rule;
     track_id?: string;
+    trigger_type?: Apollo.ConstraintTriggerType;
 }
 
 export namespace TraceDecisionRuleTriggered {
-    export type Rule = Apollo.TraceRuleBase | Apollo.TraceRuleParamsMissing | Apollo.TraceRuleMissingInfo;
+    export type Rule =
+        | Apollo.TraceRuleAskForConfirmation
+        | Apollo.TraceRuleParamsMissing
+        | Apollo.TraceRuleMissingInfo
+        | Apollo.TraceRuleBase;
 }

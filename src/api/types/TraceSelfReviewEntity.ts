@@ -6,7 +6,6 @@ export interface TraceSelfReviewEntity {
     entity: string;
     identifier?: TraceSelfReviewEntity.Identifier;
     reference?: string;
-    sub_entities?: Apollo.TracSelfReviewSubEntity[];
     self_review?: Apollo.TraceSelfReviewSection;
     is_visible: boolean;
 }

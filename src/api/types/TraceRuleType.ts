@@ -8,5 +8,6 @@ export const TraceRuleType = {
     Success: "success",
     Fail: "fail",
     Block: "block",
+    Confirmation: "confirmation",
 } as const;
 export type TraceRuleType = (typeof TraceRuleType)[keyof typeof TraceRuleType];

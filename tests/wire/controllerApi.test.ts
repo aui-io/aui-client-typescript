@@ -217,6 +217,8 @@ describe("ControllerApi", () => {
                     understanding: { guardrails: { passed: true } },
                     decisions: [{ tool: "tool", trigger: { type: "structured" } }],
                     response: { type: "answer", message: "message" },
+                    rules_evaluations: [{ code: "code", triggered: true }],
+                    latency: { elapsed: 1.1 },
                 },
             },
         ];
@@ -278,6 +280,15 @@ describe("ControllerApi", () => {
                     response: {
                         type: "answer",
                         message: "message",
+                    },
+                    rules_evaluations: [
+                        {
+                            code: "code",
+                            triggered: true,
+                        },
+                    ],
+                    latency: {
+                        elapsed: 1.1,
                     },
                 },
             },
@@ -359,6 +370,8 @@ describe("ControllerApi", () => {
                     block_message: "block_message",
                     error: "error",
                 },
+                rules_evaluations: [{ code: "code", triggered: true }],
+                latency: { elapsed: 1.1, unit: "microsecond", time_to_first_token: 1.1 },
             },
         };
         server
@@ -484,6 +497,17 @@ describe("ControllerApi", () => {
                     block_message: "block_message",
                     error: "error",
                 },
+                rules_evaluations: [
+                    {
+                        code: "code",
+                        triggered: true,
+                    },
+                ],
+                latency: {
+                    elapsed: 1.1,
+                    unit: "microsecond",
+                    time_to_first_token: 1.1,
+                },
             },
         });
     });
@@ -508,53 +532,6 @@ describe("ControllerApi", () => {
         await expect(async () => {
             return await client.controllerApi.sendMessage({
                 task_id: "task_id",
-            });
-        }).rejects.toThrow(Apollo.UnprocessableEntityError);
-    });
-
-    test("get_product_metadata (1)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            networkApiKey: "test",
-            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
-        });
-
-        const rawResponseBody = { key: "value" };
-        server
-            .mockEndpoint()
-            .get("/api/v1/external/product-metadata")
-            .respondWith()
-            .statusCode(200)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        const response = await client.controllerApi.getProductMetadata({
-            link: "link",
-        });
-        expect(response).toEqual({
-            key: "value",
-        });
-    });
-
-    test("get_product_metadata (2)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            networkApiKey: "test",
-            environment: { base: server.baseUrl, gcp: server.baseUrl, azure: server.baseUrl, aws: server.baseUrl },
-        });
-
-        const rawResponseBody = {};
-        server
-            .mockEndpoint()
-            .get("/api/v1/external/product-metadata")
-            .respondWith()
-            .statusCode(422)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        await expect(async () => {
-            return await client.controllerApi.getProductMetadata({
-                link: "link",
             });
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });

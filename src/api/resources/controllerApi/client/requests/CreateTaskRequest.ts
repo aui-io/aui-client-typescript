@@ -12,4 +12,5 @@ import type * as Apollo from "../../../../index.js";
 export interface CreateTaskRequest {
     user_id: string;
     task_origin_type: Apollo.RecordOriginType;
+    agent?: Apollo.AgentMetadata;
 }
