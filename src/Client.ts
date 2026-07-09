@@ -39,8 +39,8 @@ export class ApolloClient {
                 {
                     "X-Fern-Language": "JavaScript",
                     "X-Fern-SDK-Name": "@aui.io/aui-client",
-                    "X-Fern-SDK-Version": "3.1.1",
-                    "User-Agent": "@aui.io/aui-client/3.1.1",
+                    "X-Fern-SDK-Version": "3.1.2",
+                    "User-Agent": "@aui.io/aui-client/3.1.2",
                     "X-Fern-Runtime": core.RUNTIME.type,
                     "X-Fern-Runtime-Version": core.RUNTIME.version,
                 },
