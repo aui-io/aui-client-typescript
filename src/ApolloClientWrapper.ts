@@ -175,18 +175,21 @@ export class ApolloClient extends _GeneratedClient {
     }
 
     /**
-     * Open a messaging WebSocket session. The bearer token is resolved and sent as
-     * Authorization on the upgrade, and the required `aui-websocket` subprotocol is
-     * negotiated. Built here (rather than via the generated session resource) so the
-     * generated code stays vanilla — Fern emits protocols: [] and forwards only
-     * per-call headers, neither of which the v2 server accepts.
+     * Open a messaging WebSocket session. The bearer token is passed as the first
+     * subprotocol (with `aui-websocket` second) — the gateway reads auth from
+     * Sec-WebSocket-Protocol, the only upgrade header a browser can set. The token is
+     * also sent as an Authorization header for Node. Built here (rather than via the
+     * generated session resource) so the generated code stays vanilla — Fern emits
+     * protocols: [] and forwards only per-call headers, neither of which the server accepts.
      */
     async connect(args: ApolloClient.ConnectArgs = {}): Promise<SessionSocket> {
         const token = await this._tokenAuth.getToken();
         const headers = { ...(token ? { Authorization: `Bearer ${token}` } : {}), ...args.headers };
         const socket = new core.ReconnectingWebSocket({
             url: core.url.join(this._env.production, SESSION_WS_PATH),
-            protocols: [WS_SUBPROTOCOL],
+            // Order matters: the gateway treats the FIRST subprotocol as the token and
+            // requires `aui-websocket` to follow. This is what makes browser WS auth work.
+            protocols: token ? [token, WS_SUBPROTOCOL] : [WS_SUBPROTOCOL],
             queryParameters: {},
             headers,
             options: {
