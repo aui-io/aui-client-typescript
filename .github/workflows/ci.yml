@@ -64,8 +64,9 @@ jobs:
       - name: Publish to npm
         run: |
           npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-          publish() {  # use latest npm to ensure OIDC support
-            npx -y npm@latest publish "$@"
+          npm install -g npm@latest  # global install ships a complete bundle (npx variant drops sigstore)
+          publish() {
+            npm publish "$@"
           }
           if [[ ${GITHUB_REF} == *alpha* ]]; then
             publish --access public --tag alpha

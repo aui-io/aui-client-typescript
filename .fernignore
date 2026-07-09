@@ -1,20 +1,26 @@
-# TypeScript WebSocket fix (empty protocols array bug for Node.js v21+)
-src/core/websocket/ws.ts
+# .fernignore
+# Files listed here will NOT be overwritten by Fern during SDK generation.
 
-# Custom comprehensive README
+# Custom exports — additional type exports, imported by index.ts via export * from "./exports.js"
+src/exports.ts
+
+# ApolloClient wrapper: extends the generated client to add authentication. Accepts
+# publishableKey (pk_network_ / pk_org_) or organizationApiKey. Publishable keys are
+# exchanged at POST /management/v1/auth/token for a short-lived bearer (auto-refreshed,
+# sent as Authorization on every request and on the WS upgrade via client.connect()).
+# Caches agent_id / organization_id from the token response. Also owns the WebSocket
+# session: the `aui-websocket` subprotocol + forcing the Node `ws` library (Node 22+
+# undici drops upgrade headers), so the generated WS/core code stays vanilla.
+src/ApolloClientWrapper.ts
+
+# index.ts re-exports ApolloClientWrapper as ApolloClient instead of the raw generated Client.
+# Must be protected so the wrapper swap survives every Fern regen. When Fern adds new
+# top-level resources, manually add their export line here too.
+src/index.ts
+
+# Custom README with comprehensive API documentation
 README.md
 
-# Environment switching fix (Gcp/Azure support)
-# Fern generates incorrect environment structure, these are manually fixed:
-# - environments.ts: Added wsUrl property for WebSocket URL resolution
-# - apolloWsSession/Client.ts: Changed .gcp to .wsUrl for WebSocket URL resolution
-src/environments.ts
-src/api/resources/apolloWsSession/client/Client.ts
-
-# Export fix for ApolloWsSessionSocket type
-src/api/resources/apolloWsSession/client/index.ts
-
-# Custom exports - add any additional type exports here
-# This file is imported by index.ts via: export * from "./exports.js"
-# SAFE: index.ts is NOT in fernignore, so new endpoints will still be added automatically
-src/exports.ts
+# Publish workflow: uses `npm install -g npm@latest` instead of `npx npm@latest`
+# to avoid the broken bundle (missing sigstore). Protected so the fix survives Fern regen.
+.github/workflows/ci.yml
