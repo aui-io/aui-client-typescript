@@ -14,7 +14,6 @@ export * from "./projects/client/requests/index.js";
 export * as projects from "./projects/index.js";
 export * from "./projects/types/index.js";
 export * as session from "./session/index.js";
-export * as simulatorSession from "./simulatorSession/index.js";
 export * from "./threads/client/requests/index.js";
 export * as threads from "./threads/index.js";
 export * from "./threads/types/index.js";

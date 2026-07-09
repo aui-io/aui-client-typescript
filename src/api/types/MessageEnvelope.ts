@@ -3,7 +3,7 @@
 import type * as Apollo from "../index.js";
 
 /**
- * type=message — the terminal agent reply (external Message + optional trace_info).
+ * type=message — the completed agent reply (Message + optional trace_info).
  */
 export interface MessageEnvelope {
     type?: "message";

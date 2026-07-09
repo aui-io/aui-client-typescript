@@ -7,9 +7,7 @@ import { mockServerPool } from "../mock-server/MockServerPool";
 describe("Threads", () => {
     test("list_threads (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = {
             results: [
@@ -57,9 +55,7 @@ describe("Threads", () => {
 
     test("list_threads (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -79,9 +75,7 @@ describe("Threads", () => {
 
     test("list_threads (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -101,9 +95,7 @@ describe("Threads", () => {
 
     test("list_threads (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -123,9 +115,7 @@ describe("Threads", () => {
 
     test("list_threads (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -145,9 +135,7 @@ describe("Threads", () => {
 
     test("list_threads (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -167,9 +155,7 @@ describe("Threads", () => {
 
     test("list_threads (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -189,9 +175,7 @@ describe("Threads", () => {
 
     test("list_threads (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -211,9 +195,7 @@ describe("Threads", () => {
 
     test("get_thread (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = {
             id: "id",
@@ -242,9 +224,7 @@ describe("Threads", () => {
 
     test("get_thread (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -262,9 +242,7 @@ describe("Threads", () => {
 
     test("get_thread (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -282,9 +260,7 @@ describe("Threads", () => {
 
     test("get_thread (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -302,9 +278,7 @@ describe("Threads", () => {
 
     test("get_thread (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -322,9 +296,7 @@ describe("Threads", () => {
 
     test("get_thread (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -342,9 +314,7 @@ describe("Threads", () => {
 
     test("get_thread (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -362,9 +332,7 @@ describe("Threads", () => {
 
     test("get_thread (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -382,9 +350,7 @@ describe("Threads", () => {
 
     test("get_thread_trace (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = [
             {
@@ -505,9 +471,7 @@ describe("Threads", () => {
 
     test("get_thread_trace (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -525,9 +489,7 @@ describe("Threads", () => {
 
     test("get_thread_trace (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -545,9 +507,7 @@ describe("Threads", () => {
 
     test("get_thread_trace (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -565,9 +525,7 @@ describe("Threads", () => {
 
     test("get_thread_trace (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -585,9 +543,7 @@ describe("Threads", () => {
 
     test("get_thread_trace (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -605,9 +561,7 @@ describe("Threads", () => {
 
     test("get_thread_trace (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -625,9 +579,7 @@ describe("Threads", () => {
 
     test("get_thread_trace (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -645,9 +597,7 @@ describe("Threads", () => {
 
     test("get_interaction_trace (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = {
             input: { message: "message" },
@@ -779,9 +729,7 @@ describe("Threads", () => {
 
     test("get_interaction_trace (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -799,9 +747,7 @@ describe("Threads", () => {
 
     test("get_interaction_trace (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -819,9 +765,7 @@ describe("Threads", () => {
 
     test("get_interaction_trace (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -839,9 +783,7 @@ describe("Threads", () => {
 
     test("get_interaction_trace (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -859,9 +801,7 @@ describe("Threads", () => {
 
     test("get_interaction_trace (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -879,9 +819,7 @@ describe("Threads", () => {
 
     test("get_interaction_trace (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -899,9 +837,7 @@ describe("Threads", () => {
 
     test("get_interaction_trace (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -919,9 +855,7 @@ describe("Threads", () => {
 
     test("get_thread_messages (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = [
             {
@@ -972,9 +906,7 @@ describe("Threads", () => {
 
     test("get_thread_messages (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -992,9 +924,7 @@ describe("Threads", () => {
 
     test("get_thread_messages (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -1012,9 +942,7 @@ describe("Threads", () => {
 
     test("get_thread_messages (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -1032,9 +960,7 @@ describe("Threads", () => {
 
     test("get_thread_messages (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -1052,9 +978,7 @@ describe("Threads", () => {
 
     test("get_thread_messages (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -1072,9 +996,7 @@ describe("Threads", () => {
 
     test("get_thread_messages (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { key: "value" };
         server
@@ -1092,9 +1014,7 @@ describe("Threads", () => {
 
     test("get_thread_messages (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({
-            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
-        });
+        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server

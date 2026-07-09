@@ -7,7 +7,6 @@ import { Channels } from "./api/resources/channels/client/Client.js";
 import { Messaging } from "./api/resources/messaging/client/Client.js";
 import { Projects } from "./api/resources/projects/client/Client.js";
 import { Session } from "./api/resources/session/client/Client.js";
-import { SimulatorSession } from "./api/resources/simulatorSession/client/Client.js";
 import { Threads } from "./api/resources/threads/client/Client.js";
 import type { BaseClientOptions, BaseRequestOptions } from "./BaseClient.js";
 import { mergeHeaders } from "./core/headers.js";
@@ -31,7 +30,6 @@ export class ApolloClient {
     protected _channels: Channels | undefined;
     protected _auth: Auth | undefined;
     protected _session: Session | undefined;
-    protected _simulatorSession: SimulatorSession | undefined;
 
     constructor(_options: ApolloClient.Options = {}) {
         this._options = {
@@ -41,8 +39,8 @@ export class ApolloClient {
                 {
                     "X-Fern-Language": "JavaScript",
                     "X-Fern-SDK-Name": "@aui.io/aui-client",
-                    "X-Fern-SDK-Version": "3.0.0",
-                    "User-Agent": "@aui.io/aui-client/3.0.0",
+                    "X-Fern-SDK-Version": "3.1.0",
+                    "User-Agent": "@aui.io/aui-client/3.1.0",
                     "X-Fern-Runtime": core.RUNTIME.type,
                     "X-Fern-Runtime-Version": core.RUNTIME.version,
                 },
@@ -81,10 +79,6 @@ export class ApolloClient {
 
     public get session(): Session {
         return (this._session ??= new Session(this._options));
-    }
-
-    public get simulatorSession(): SimulatorSession {
-        return (this._simulatorSession ??= new SimulatorSession(this._options));
     }
 
     /**

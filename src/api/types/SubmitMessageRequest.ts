@@ -12,12 +12,8 @@ export interface SubmitMessageRequest {
     /** Signed image URL for vision input. */
     image_url?: string;
     context?: SubmitMessageRequest.Context;
-    /** Arbitrary variables forwarded to IA. */
+    /** Arbitrary runtime variables for the turn. */
     agent_variables?: Record<string, unknown>;
-    /** Per-turn agent override (version pin / inline settings). See the REST agent override model. */
-    agent?: Record<string, unknown>;
-    /** Optional agent-settings bundle forwarded to IA under external_context.agent_settings_bundle. */
-    agent_settings_bundle?: Record<string, unknown>;
 }
 
 export namespace SubmitMessageRequest {

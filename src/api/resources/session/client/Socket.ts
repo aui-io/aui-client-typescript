@@ -9,7 +9,7 @@ export declare namespace SessionSocket {
         socket: core.ReconnectingWebSocket;
     }
 
-    export type Response = Apollo.ThreadEnvelope | Apollo.MessageEnvelope | Apollo.EventEnvelope | Apollo.ErrorEnvelope;
+    export type Response = Apollo.SubmitMessageRequest | Apollo.ResumeRequest;
     type EventHandlers = {
         open?: () => void;
         message?: (message: Response) => void;
@@ -64,12 +64,22 @@ export class SessionSocket {
         this.eventHandlers[event] = callback;
     }
 
-    public sendSubmitMessage(message: Apollo.SubmitMessageRequest): void {
+    public sendThreadAnnouncement(message: Apollo.ThreadEnvelope): void {
         this.assertSocketIsOpen();
         this.sendJson(message);
     }
 
-    public sendResume(message: Apollo.ResumeRequest): void {
+    public sendAgentMessage(message: Apollo.MessageEnvelope): void {
+        this.assertSocketIsOpen();
+        this.sendJson(message);
+    }
+
+    public sendForwardedEvent(message: Apollo.EventEnvelope): void {
+        this.assertSocketIsOpen();
+        this.sendJson(message);
+    }
+
+    public sendErrorFrame(message: Apollo.ErrorEnvelope): void {
         this.assertSocketIsOpen();
         this.sendJson(message);
     }
@@ -132,7 +142,9 @@ export class SessionSocket {
     }
 
     /** Send a JSON payload to the websocket. */
-    protected sendJson(payload: Apollo.SubmitMessageRequest | Apollo.ResumeRequest): void {
+    protected sendJson(
+        payload: Apollo.ThreadEnvelope | Apollo.MessageEnvelope | Apollo.EventEnvelope | Apollo.ErrorEnvelope,
+    ): void {
         const jsonPayload = toJson(payload);
         this.socket.send(jsonPayload);
     }

@@ -3,14 +3,12 @@
 export interface ApolloEnvironmentUrls {
     base: string;
     production: string;
-    local: string;
 }
 
 export const ApolloEnvironment = {
     Gcp: {
         base: "https://api-v3.aui.io/apollo-api-v2",
         production: "wss://api-v3.aui.io/apollo-api-v2",
-        local: "ws://localhost:8000",
     },
 } as const;
 

@@ -3,7 +3,7 @@
 import type * as Apollo from "../index.js";
 
 /**
- * Scrubbed reasoning trace for the interaction, embedded only when include_trace=true. Same shape as the REST `Trace` model (GET /messaging/v1/threads/{threadId}/trace); summarized here.
+ * Reasoning trace for the interaction, embedded only when include_trace=true. Same shape as the REST `Trace` model (GET /messaging/v1/threads/{threadId}/trace); summarized here.
  */
 export interface Trace {
     input?: Apollo.TraceInput;

@@ -3,7 +3,7 @@
 import type * as Apollo from "../index.js";
 
 /**
- * One message in a thread transcript (the published, scrubbed shape).
+ * One message in a thread transcript.
  */
 export interface Message {
     /** Interaction id (or message id for interaction-less messages). */

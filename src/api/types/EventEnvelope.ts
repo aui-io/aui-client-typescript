@@ -3,11 +3,11 @@
 import type * as Apollo from "../index.js";
 
 /**
- * type=event — a raw IA event forwarded per the allow-list.
+ * type=event — a streaming event emitted while the agent works.
  */
 export interface EventEnvelope {
     type?: "event";
-    data?: Apollo.IaEvent;
+    data?: Apollo.StreamEvent;
     /** Monotonic sequence for gap detection / replay. Locally-generated errors use -1. */
     seq: number;
 }
