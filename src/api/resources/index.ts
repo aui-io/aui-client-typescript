@@ -9,6 +9,7 @@ export * from "./channels/client/requests/index.js";
 export * as channels from "./channels/index.js";
 export * from "./messaging/client/requests/index.js";
 export * as messaging from "./messaging/index.js";
+export * from "./messaging/types/index.js";
 export * from "./projects/client/requests/index.js";
 export * as projects from "./projects/index.js";
 export * from "./projects/types/index.js";

@@ -134,46 +134,25 @@ export class Messaging {
      * ``thread`` event (an SSE client can't read response headers). Resume a dropped
      * stream with the standard ``Last-Event-ID`` header: buffered frames replay, no
      * fresh turn. FastAPI owns the wire format, keep-alive pings, and OpenAPI docs.
-     *
-     * @param {Apollo.StreamMessageRequest} request
-     * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
-     *
-     * @throws {@link Apollo.BadRequestError}
-     * @throws {@link Apollo.UnauthorizedError}
-     * @throws {@link Apollo.ForbiddenError}
-     * @throws {@link Apollo.NotFoundError}
-     * @throws {@link Apollo.ConflictError}
-     * @throws {@link Apollo.UnprocessableEntityError}
-     * @throws {@link Apollo.InternalServerError}
-     *
-     * @example
-     *     await client.messaging.streamMessage({
-     *         "Last-Event-ID": "Last-Event-ID",
-     *         body: {
-     *             agent_id: "agent_id",
-     *             text: "text",
-     *             user_id: "user_id"
-     *         }
-     *     })
      */
     public streamMessage(
         request: Apollo.StreamMessageRequest,
         requestOptions?: Messaging.RequestOptions,
-    ): core.HttpResponsePromise<void> {
+    ): core.HttpResponsePromise<core.Stream<Apollo.StreamMessageResponse>> {
         return core.HttpResponsePromise.fromPromise(this.__streamMessage(request, requestOptions));
     }
 
     private async __streamMessage(
         request: Apollo.StreamMessageRequest,
         requestOptions?: Messaging.RequestOptions,
-    ): Promise<core.WithRawResponse<void>> {
+    ): Promise<core.WithRawResponse<core.Stream<Apollo.StreamMessageResponse>>> {
         const { "Last-Event-ID": lastEventId, body: _body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
             mergeOnlyDefinedHeaders({ "Last-Event-ID": lastEventId != null ? lastEventId : undefined }),
             requestOptions?.headers,
         );
-        const _response = await core.fetcher({
+        const _response = await core.fetcher<ReadableStream>({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
@@ -185,6 +164,7 @@ export class Messaging {
             queryParameters: requestOptions?.queryParams,
             requestType: "json",
             body: _body,
+            responseType: "sse",
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -192,7 +172,18 @@ export class Messaging {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: undefined, rawResponse: _response.rawResponse };
+            return {
+                data: new core.Stream({
+                    stream: _response.body,
+                    parse: (data) => data as any,
+                    signal: requestOptions?.abortSignal,
+                    eventShape: {
+                        type: "sse",
+                        streamTerminator: "[DONE]",
+                    },
+                }),
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {

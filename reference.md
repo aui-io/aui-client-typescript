@@ -1393,7 +1393,7 @@ await client.messaging.sendMessage({
 </dl>
 </details>
 
-<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">streamMessage</a>({ ...params }) -> void</code></summary>
+<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">streamMessage</a>({ ...params }) -> core.Stream<Apollo.StreamMessageResponse></code></summary>
 <dl>
 <dd>
 
@@ -1424,7 +1424,7 @@ fresh turn. FastAPI owns the wire format, keep-alive pings, and OpenAPI docs.
 <dd>
 
 ```typescript
-await client.messaging.streamMessage({
+const response = await client.messaging.streamMessage({
     "Last-Event-ID": "Last-Event-ID",
     body: {
         agent_id: "agent_id",
@@ -1432,6 +1432,9 @@ await client.messaging.streamMessage({
         user_id: "user_id"
     }
 });
+for await (const item of response) {
+    console.log(item);
+}
 
 ```
 </dd>
