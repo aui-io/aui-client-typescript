@@ -7,3 +7,7 @@
  */
 
 export * from "./core/exports.js";
+
+// The generated session resource doesn't re-export its socket class, so consumers
+// couldn't name the type returned by `client.connect()`. Surface it at the package root.
+export { SessionSocket } from "./api/resources/session/client/Socket.js";

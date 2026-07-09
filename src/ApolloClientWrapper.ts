@@ -17,6 +17,17 @@ const SESSION_WS_PATH = "/messaging/v1/session";
 // connection is rejected without it. Fern emits protocols: [], so we set it here.
 const WS_SUBPROTOCOL = "aui-websocket";
 
+// Fern injects SDK-telemetry headers (X-Fern-*) on every request. The API doesn't need
+// them, and in the browser each custom header triggers a CORS preflight that fails unless
+// the gateway allow-lists it. Passing null strips them (mergeHeaders deletes null values).
+const STRIPPED_SDK_HEADERS: Record<string, null> = {
+    "X-Fern-Language": null,
+    "X-Fern-SDK-Name": null,
+    "X-Fern-SDK-Version": null,
+    "X-Fern-Runtime": null,
+    "X-Fern-Runtime-Version": null,
+};
+
 /** Publishable-key family, inferred from the key prefix. */
 export type PublishableKeyType = "agent" | "org" | "unknown";
 
@@ -135,6 +146,7 @@ export class ApolloClient extends _GeneratedClient {
         super({
             environment: env,
             headers: {
+                ...STRIPPED_SDK_HEADERS,
                 ...(auth.hasCredential ? { Authorization: async () => `Bearer ${await auth.getToken()}` } : {}),
             },
         });

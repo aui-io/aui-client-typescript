@@ -80,7 +80,6 @@ import { ApolloEnvironment } from '@aui.io/aui-client';
 ApolloEnvironment.Gcp = {
     base: 'https://api-v3.aui.io/apollo-api-v2',        // REST
     production: 'wss://api-v3.aui.io/apollo-api-v2',    // WebSocket
-    local: 'ws://localhost:8000',                       // WebSocket (local)
 };
 ```
 
@@ -145,8 +144,9 @@ socket.on('message', (msg) => {
 socket.on('error', (err) => console.error('WS error:', err));
 socket.on('close', (event) => console.log('Closed:', event.code));
 
-// Send a turn
+// Send a turn (type is required on the WS submit frame)
 socket.sendSubmitMessage({
+    type: 'message',
     agent_id: agentId,
     user_id: 'end-user-123',
     text: 'Hello over WebSocket',
@@ -155,6 +155,14 @@ socket.sendSubmitMessage({
 // When done
 socket.close();
 ```
+
+> **Notes**
+> - `socket.on(event, handler)` registers a **single** handler per event — calling it
+>   again for the same event replaces the previous handler rather than adding one.
+> - The socket type is exported as `SessionSocket` (`import { SessionSocket } from '@aui.io/aui-client'`).
+> - Request timeouts are **per call** via `timeoutInSeconds` on a request's options; there
+>   is no client-wide default timeout. Pass it on slow calls, e.g.
+>   `client.threads.listThreads({ filters: {} }, { timeoutInSeconds: 120 })`.
 
 ## Key Context Helpers
 
@@ -172,13 +180,17 @@ client.organizationId;
 
 ## Error Handling
 
+`ApolloError` (the base API error) and `ApolloTimeoutError` are exported at the top
+level. The per-status errors (e.g. `UnprocessableEntityError`) live under the `Apollo`
+namespace.
+
 ```typescript
-import { ApolloError, UnprocessableEntityError } from '@aui.io/aui-client';
+import { ApolloError, Apollo } from '@aui.io/aui-client';
 
 try {
     await client.agents.getAgent('missing-id');
 } catch (error) {
-    if (error instanceof UnprocessableEntityError) {
+    if (error instanceof Apollo.UnprocessableEntityError) {
         console.error('Validation failed:', error.body);
     } else if (error instanceof ApolloError) {
         console.error('API error:', error.statusCode, error.body);
@@ -196,6 +208,7 @@ The SDK ships full type definitions. Models are namespaced under `Apollo`:
 import { ApolloClient, Apollo } from '@aui.io/aui-client';
 
 const req: Apollo.SubmitMessageRequest = {
+    type: 'message',
     agent_id: 'agent-123',
     user_id: 'end-user-123',
     text: 'Typed request',
