@@ -12,6 +12,8 @@ jobs:
 
       - name: Set up node
         uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -31,7 +33,9 @@ jobs:
 
       - name: Set up node
         uses: actions/setup-node@v4
-                
+        with:
+          node-version: 22
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
 
@@ -51,6 +55,8 @@ jobs:
 
       - name: Set up node
         uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -64,7 +70,10 @@ jobs:
       - name: Publish to npm
         run: |
           npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-          npm install -g npm@latest  # global install ships a complete bundle (npx variant drops sigstore)
+          # Use the runner's bundled npm (from setup-node's pinned Node 22). Do NOT
+          # self-update npm here: `npm install -g npm@latest` can leave a broken
+          # install missing the bundled `sigstore` module, failing publish with
+          # "Cannot find module 'sigstore'".
           publish() {
             npm publish "$@"
           }

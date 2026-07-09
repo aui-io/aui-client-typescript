@@ -21,6 +21,7 @@ src/index.ts
 # Custom README with comprehensive API documentation
 README.md
 
-# Publish workflow: uses `npm install -g npm@latest` instead of `npx npm@latest`
-# to avoid the broken bundle (missing sigstore). Protected so the fix survives Fern regen.
+# Publish workflow: pins Node 22 and uses the runner's bundled npm (no self-update).
+# `npm install -g npm@latest` / `npx npm@latest` can leave a broken install missing the
+# bundled `sigstore` module, failing publish. Protected so the fix survives Fern regen.
 .github/workflows/ci.yml
