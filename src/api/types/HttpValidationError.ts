@@ -3,5 +3,5 @@
 import type * as Apollo from "../index.js";
 
 export interface HttpValidationError {
-    errors?: Apollo.ValidationError[];
+    detail?: Apollo.ValidationError[];
 }

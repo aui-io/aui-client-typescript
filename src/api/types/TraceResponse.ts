@@ -2,15 +2,13 @@
 
 import type * as Apollo from "../index.js";
 
-/**
- * Schema: type, message (required); tool, tool_status, suggestions, rules, question_reason, asking_for, block_message, error (optional).
- */
 export interface TraceResponse {
-    type: Apollo.TraceResponseType;
-    message: string;
+    type?: string;
+    message?: string;
     suggestions?: string[];
-    question_reason?: Apollo.TraceQuestionReason;
+    question_reason?: string;
     asking_for?: string[];
     block_message?: string;
     error?: string;
+    jsx_widgets?: Apollo.TraceJsxWidget[];
 }

@@ -386,35 +386,7 @@ export class ReconnectingWebSocket {
                         url = `${url}?${queryString}`;
                     }
                 }
-                // FIX: Browser WebSocket doesn't support options parameter (causes "[object Object]" error)
-                // Detect if we're in a browser environment
-                const isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined";
-
-                if (isBrowser) {
-                    // Browser: Can only pass URL and optionally protocols (string/array)
-                    // Add API key to URL as query parameter for browser authentication
-                    // Backend accepts 'network_api_key' query param (without x- prefix)
-                    if (this._headers && (this._headers as Record<string, string>)["x-network-api-key"]) {
-                        const separator = url.includes("?") ? "&" : "?";
-                        url = `${url}${separator}network_api_key=${encodeURIComponent(
-                            (this._headers as Record<string, string>)["x-network-api-key"]
-                        )}`;
-                    }
-                    // FIX: Don't pass empty protocols array
-                    if (this._protocols && this._protocols.length > 0) {
-                        this._ws = new WebSocket(url, this._protocols);
-                    } else {
-                        this._ws = new WebSocket(url);
-                    }
-                } else {
-                    // Node.js: Can pass options with headers
-                    // FIX: Don't pass empty protocols array - it breaks header authentication in Node.js v21+
-                    if (this._protocols && this._protocols.length > 0) {
-                        this._ws = new WebSocket(url, this._protocols, options);
-                    } else {
-                        this._ws = new WebSocket(url, options);
-                    }
-                }
+                this._ws = new WebSocket(url, this._protocols, options);
                 this._ws!.binaryType = this._binaryType;
                 this._connectLock = false;
                 this._addListeners();

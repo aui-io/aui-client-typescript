@@ -3,7 +3,6 @@
 import type * as Apollo from "../index.js";
 
 export interface TraceUnderstanding {
-    guardrails: Apollo.TraceGuardrails;
     intents?: string[];
-    extracted_params?: Record<string, unknown>;
+    guardrails?: Apollo.TraceGuardrails;
 }
