@@ -30,8 +30,6 @@ describe("Messaging", () => {
         server
             .mockEndpoint()
             .post("/messaging/v1/messages")
-            .header("accept", "accept")
-            .header("Last-Event-ID", "Last-Event-ID")
             .jsonBody(rawRequestBody)
             .respondWith()
             .statusCode(200)
@@ -39,8 +37,6 @@ describe("Messaging", () => {
             .build();
 
         const response = await client.messaging.sendMessage({
-            accept: "accept",
-            "Last-Event-ID": "Last-Event-ID",
             agent_id: "agent_id",
             text: "text",
             user_id: "user_id",
@@ -240,6 +236,222 @@ describe("Messaging", () => {
                 agent_id: "agent_id",
                 text: "text",
                 user_id: "user_id",
+            });
+        }).rejects.toThrow(Apollo.InternalServerError);
+    });
+
+    test("stream_message (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
+        });
+        const rawRequestBody = { agent_id: "agent_id", text: "text", user_id: "user_id" };
+
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages/stream")
+            .header("Last-Event-ID", "Last-Event-ID")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(200)
+            .build();
+
+        const response = await client.messaging.streamMessage({
+            "Last-Event-ID": "Last-Event-ID",
+            body: {
+                agent_id: "agent_id",
+                text: "text",
+                user_id: "user_id",
+            },
+        });
+        expect(response).toEqual(undefined);
+    });
+
+    test("stream_message (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
+        });
+        const rawRequestBody = { agent_id: "agent_id", text: "text", user_id: "user_id" };
+        const rawResponseBody = { key: "value" };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages/stream")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(400)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.streamMessage({
+                body: {
+                    agent_id: "agent_id",
+                    text: "text",
+                    user_id: "user_id",
+                },
+            });
+        }).rejects.toThrow(Apollo.BadRequestError);
+    });
+
+    test("stream_message (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
+        });
+        const rawRequestBody = { agent_id: "agent_id", text: "text", user_id: "user_id" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages/stream")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(401)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.streamMessage({
+                body: {
+                    agent_id: "agent_id",
+                    text: "text",
+                    user_id: "user_id",
+                },
+            });
+        }).rejects.toThrow(Apollo.UnauthorizedError);
+    });
+
+    test("stream_message (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
+        });
+        const rawRequestBody = { agent_id: "agent_id", text: "text", user_id: "user_id" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages/stream")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.streamMessage({
+                body: {
+                    agent_id: "agent_id",
+                    text: "text",
+                    user_id: "user_id",
+                },
+            });
+        }).rejects.toThrow(Apollo.ForbiddenError);
+    });
+
+    test("stream_message (5)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
+        });
+        const rawRequestBody = { agent_id: "agent_id", text: "text", user_id: "user_id" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages/stream")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.streamMessage({
+                body: {
+                    agent_id: "agent_id",
+                    text: "text",
+                    user_id: "user_id",
+                },
+            });
+        }).rejects.toThrow(Apollo.NotFoundError);
+    });
+
+    test("stream_message (6)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
+        });
+        const rawRequestBody = { agent_id: "agent_id", text: "text", user_id: "user_id" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages/stream")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(409)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.streamMessage({
+                body: {
+                    agent_id: "agent_id",
+                    text: "text",
+                    user_id: "user_id",
+                },
+            });
+        }).rejects.toThrow(Apollo.ConflictError);
+    });
+
+    test("stream_message (7)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
+        });
+        const rawRequestBody = { agent_id: "agent_id", text: "text", user_id: "user_id" };
+        const rawResponseBody = { key: "value" };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages/stream")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.streamMessage({
+                body: {
+                    agent_id: "agent_id",
+                    text: "text",
+                    user_id: "user_id",
+                },
+            });
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
+
+    test("stream_message (8)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            environment: { base: server.baseUrl, production: server.baseUrl, local: server.baseUrl },
+        });
+        const rawRequestBody = { agent_id: "agent_id", text: "text", user_id: "user_id" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages/stream")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.streamMessage({
+                body: {
+                    agent_id: "agent_id",
+                    text: "text",
+                    user_id: "user_id",
+                },
             });
         }).rejects.toThrow(Apollo.InternalServerError);
     });

@@ -21,9 +21,9 @@ export class Messaging {
     }
 
     /**
-     * Send a message; auto-create the thread when ``thread_id`` is omitted. Streams
-     * tokens over SSE when the client sends ``Accept: text/event-stream``. The resolved
-     * thread id is returned in the body (and the ``x-aui-thread-id`` header on SSE).
+     * Send a message; auto-create the thread when ``thread_id`` is omitted. For a live
+     * token stream use ``POST /messages/stream`` (SSE). The resolved thread id is
+     * returned in the body.
      *
      * @param {Apollo.SendMessageRequest} request
      * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
@@ -38,8 +38,6 @@ export class Messaging {
      *
      * @example
      *     await client.messaging.sendMessage({
-     *         accept: "accept",
-     *         "Last-Event-ID": "Last-Event-ID",
      *         agent_id: "agent_id",
      *         text: "text",
      *         user_id: "user_id"
@@ -56,15 +54,7 @@ export class Messaging {
         request: Apollo.SendMessageRequest,
         requestOptions?: Messaging.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.SendMessageResponse>> {
-        const { accept, "Last-Event-ID": lastEventId, ..._body } = request;
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
-            this._options?.headers,
-            mergeOnlyDefinedHeaders({
-                accept: accept != null ? accept : undefined,
-                "Last-Event-ID": lastEventId != null ? lastEventId : undefined,
-            }),
-            requestOptions?.headers,
-        );
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -76,7 +66,7 @@ export class Messaging {
             contentType: "application/json",
             queryParameters: requestOptions?.queryParams,
             requestType: "json",
-            body: _body,
+            body: request,
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -130,6 +120,126 @@ export class Messaging {
                 });
             case "timeout":
                 throw new errors.ApolloTimeoutError("Timeout exceeded when calling POST /messaging/v1/messages.");
+            case "unknown":
+                throw new errors.ApolloError({
+                    message: _response.error.errorMessage,
+                    rawResponse: _response.rawResponse,
+                });
+        }
+    }
+
+    /**
+     * Send a message and stream tokens over Server-Sent Events. Auto-creates the
+     * thread when ``thread_id`` is omitted — the resolved id arrives as the first
+     * ``thread`` event (an SSE client can't read response headers). Resume a dropped
+     * stream with the standard ``Last-Event-ID`` header: buffered frames replay, no
+     * fresh turn. FastAPI owns the wire format, keep-alive pings, and OpenAPI docs.
+     *
+     * @param {Apollo.StreamMessageRequest} request
+     * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Apollo.BadRequestError}
+     * @throws {@link Apollo.UnauthorizedError}
+     * @throws {@link Apollo.ForbiddenError}
+     * @throws {@link Apollo.NotFoundError}
+     * @throws {@link Apollo.ConflictError}
+     * @throws {@link Apollo.UnprocessableEntityError}
+     * @throws {@link Apollo.InternalServerError}
+     *
+     * @example
+     *     await client.messaging.streamMessage({
+     *         "Last-Event-ID": "Last-Event-ID",
+     *         body: {
+     *             agent_id: "agent_id",
+     *             text: "text",
+     *             user_id: "user_id"
+     *         }
+     *     })
+     */
+    public streamMessage(
+        request: Apollo.StreamMessageRequest,
+        requestOptions?: Messaging.RequestOptions,
+    ): core.HttpResponsePromise<void> {
+        return core.HttpResponsePromise.fromPromise(this.__streamMessage(request, requestOptions));
+    }
+
+    private async __streamMessage(
+        request: Apollo.StreamMessageRequest,
+        requestOptions?: Messaging.RequestOptions,
+    ): Promise<core.WithRawResponse<void>> {
+        const { "Last-Event-ID": lastEventId, body: _body } = request;
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({ "Last-Event-ID": lastEventId != null ? lastEventId : undefined }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
+                "messaging/v1/messages/stream",
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryParameters: requestOptions?.queryParams,
+            requestType: "json",
+            body: _body,
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: undefined, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new Apollo.BadRequestError(_response.error.body as unknown, _response.rawResponse);
+                case 401:
+                    throw new Apollo.UnauthorizedError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new Apollo.ForbiddenError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new Apollo.NotFoundError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new Apollo.ConflictError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 422:
+                    throw new Apollo.UnprocessableEntityError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new Apollo.InternalServerError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApolloError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        switch (_response.error.reason) {
+            case "non-json":
+                throw new errors.ApolloError({
+                    statusCode: _response.error.statusCode,
+                    body: _response.error.rawBody,
+                    rawResponse: _response.rawResponse,
+                });
+            case "timeout":
+                throw new errors.ApolloTimeoutError(
+                    "Timeout exceeded when calling POST /messaging/v1/messages/stream.",
+                );
             case "unknown":
                 throw new errors.ApolloError({
                     message: _response.error.errorMessage,

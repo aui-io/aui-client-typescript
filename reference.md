@@ -1336,9 +1336,9 @@ await client.threads.getThreadMessages("threadId");
 <dl>
 <dd>
 
-Send a message; auto-create the thread when ``thread_id`` is omitted. Streams
-tokens over SSE when the client sends ``Accept: text/event-stream``. The resolved
-thread id is returned in the body (and the ``x-aui-thread-id`` header on SSE).
+Send a message; auto-create the thread when ``thread_id`` is omitted. For a live
+token stream use ``POST /messages/stream`` (SSE). The resolved thread id is
+returned in the body.
 </dd>
 </dl>
 </dd>
@@ -1354,8 +1354,6 @@ thread id is returned in the body (and the ``x-aui-thread-id`` header on SSE).
 
 ```typescript
 await client.messaging.sendMessage({
-    accept: "accept",
-    "Last-Event-ID": "Last-Event-ID",
     agent_id: "agent_id",
     text: "text",
     user_id: "user_id"
@@ -1376,6 +1374,80 @@ await client.messaging.sendMessage({
 <dd>
 
 **request:** `Apollo.SendMessageRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `Messaging.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">streamMessage</a>({ ...params }) -> void</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Send a message and stream tokens over Server-Sent Events. Auto-creates the
+thread when ``thread_id`` is omitted — the resolved id arrives as the first
+``thread`` event (an SSE client can't read response headers). Resume a dropped
+stream with the standard ``Last-Event-ID`` header: buffered frames replay, no
+fresh turn. FastAPI owns the wire format, keep-alive pings, and OpenAPI docs.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.messaging.streamMessage({
+    "Last-Event-ID": "Last-Event-ID",
+    body: {
+        agent_id: "agent_id",
+        text: "text",
+        user_id: "user_id"
+    }
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Apollo.StreamMessageRequest` 
     
 </dd>
 </dl>

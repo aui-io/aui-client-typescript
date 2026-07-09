@@ -1,2 +1,2 @@
 export type { RerunMessageRequest } from "./RerunMessageRequest.js";
-export type { SendMessageRequest } from "./SendMessageRequest.js";
+export type { StreamMessageRequest } from "./StreamMessageRequest.js";

@@ -32,6 +32,7 @@ export * from "./MessageEnvelope.js";
 export * from "./MessageParty.js";
 export * from "./Project.js";
 export * from "./ResumeRequest.js";
+export * from "./SendMessageRequest.js";
 export * from "./SendMessageResponse.js";
 export * from "./SimulatorCommand.js";
 export * from "./SubmitMessageRequest.js";
