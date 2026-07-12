@@ -5,21 +5,20 @@ import type { ApolloEnvironmentUrls } from "./environments.js";
 import * as core from "./core/index.js";
 import { SessionSocket } from "./api/resources/session/client/Socket.js";
 import type { Session } from "./api/resources/session/client/Client.js";
+import type { Messaging } from "./api/resources/messaging/client/Client.js";
+import type { Channels } from "./api/resources/channels/client/Client.js";
+import type { Projects } from "./api/resources/projects/client/Client.js";
+import type { Agents } from "./api/resources/agents/client/Client.js";
+import type { AgentVersions } from "./api/resources/agentVersions/client/Client.js";
+import type { Threads } from "./api/resources/threads/client/Client.js";
 
-// A publishable key is exchanged (POST /management/v1/auth/token) for a short-lived
-// bearer token; every request then sends Authorization: Bearer <token>.
 const TOKEN_EXCHANGE_PATH = "/management/v1/auth/token";
-// Re-exchange this many ms before the token expires.
 const REFRESH_SKEW_MS = 60_000;
-// Messaging WebSocket channel path (relative to the environment's WS base).
 const SESSION_WS_PATH = "/messaging/v1/session";
-// The v2 messaging server negotiates this subprotocol on the WS upgrade; the
-// connection is rejected without it. Fern emits protocols: [], so we set it here.
 const WS_SUBPROTOCOL = "aui-websocket";
+const ORG_API_KEY_HEADER = "x-organization-api-key";
 
-// Fern injects SDK-telemetry headers (X-Fern-*) on every request. The API doesn't need
-// them, and in the browser each custom header triggers a CORS preflight that fails unless
-// the gateway allow-lists it. Passing null strips them (mergeHeaders deletes null values).
+// Strip Fern's telemetry headers (null deletes them); they trip browser CORS preflight.
 const STRIPPED_SDK_HEADERS: Record<string, null> = {
     "X-Fern-Language": null,
     "X-Fern-SDK-Name": null,
@@ -31,6 +30,9 @@ const STRIPPED_SDK_HEADERS: Record<string, null> = {
 /** Publishable-key family, inferred from the key prefix. */
 export type PublishableKeyType = "agent" | "org" | "unknown";
 
+// Header value: literal, async supplier (bearer token), or null to strip.
+type AuthHeaders = Record<string, string | (() => Promise<string>) | null>;
+
 interface TokenCache {
     token: string;
     expiresAt: number;
@@ -38,25 +40,18 @@ interface TokenCache {
     organizationId?: string;
 }
 
-// Publishable-key exchange + token caching. Kept as a standalone object so the header
-// suppliers can close over it — a subclass may not touch `this` before super() runs.
-class Auth {
-    readonly pk?: string;
+// Publishable-key exchange + token cache.
+class PkAuth {
+    readonly pk: string;
     readonly keyType: PublishableKeyType;
-    private readonly _staticToken?: string;
     private readonly _baseUrl: string;
     private _cache?: TokenCache;
     private _inflight?: Promise<string>;
 
-    constructor(baseUrl: string, publishableKey?: string, organizationApiKey?: string) {
+    constructor(baseUrl: string, publishableKey: string) {
         this.pk = publishableKey;
         this.keyType = detectKeyType(publishableKey);
-        this._staticToken = organizationApiKey;
         this._baseUrl = baseUrl;
-    }
-
-    get hasCredential(): boolean {
-        return Boolean(this.pk || this._staticToken);
     }
 
     get agentId(): string | undefined {
@@ -68,13 +63,11 @@ class Auth {
     }
 
     async getContext(): Promise<{ agentId?: string; organizationId?: string; keyType: PublishableKeyType }> {
-        if (this.pk) await this.getToken();
+        await this.getToken();
         return { agentId: this._cache?.agentId, organizationId: this._cache?.organizationId, keyType: this.keyType };
     }
 
     async getToken(): Promise<string> {
-        if (this._staticToken) return this._staticToken;
-        if (!this.pk) return "";
         if (this._cache?.token && Date.now() < this._cache.expiresAt - REFRESH_SKEW_MS) {
             return this._cache.token;
         }
@@ -117,92 +110,151 @@ class Auth {
     }
 }
 
-export declare namespace ApolloClient {
+// Shared base: wraps the generated client, strips telemetry headers, defaults the
+// environment, and lets each client expose only its own audience's resources. Not exported.
+class BaseApolloClient {
+    protected readonly _client: _GeneratedClient;
+    protected readonly _env: ApolloEnvironmentUrls;
+
+    constructor(env: ApolloEnvironmentUrls, authHeaders: AuthHeaders) {
+        // `organizationApiKey` is typed as required by Fern but we authenticate via
+        // headers, so cast to the generated options shape.
+        this._client = new _GeneratedClient({
+            environment: env,
+            headers: { ...STRIPPED_SDK_HEADERS, ...authHeaders },
+        } as ConstructorParameters<typeof _GeneratedClient>[0]);
+        this._env = env;
+    }
+}
+
+export declare namespace ApolloMessagingClient {
     export interface Options {
-        /** Deployment environment. Defaults to ApolloEnvironment.Gcp. */
-        environment?: ApolloEnvironmentUrls;
-        /** Publishable key (pk_network_ or pk_org_); exchanged for a bearer token. */
-        publishableKey?: string;
-        /** Organization API key; used directly as the bearer token. */
-        organizationApiKey?: string;
+        /** Publishable key (pk_network_ / pk_org_). */
+        publishableKey: string;
+        /** Internal: override the API host. Defaults to production. */
+        baseUrl?: string;
     }
 
     export interface ConnectArgs extends Session.ConnectArgs {}
 }
 
 /**
- * ApolloClient adds authentication on top of the generated client: it takes a
- * publishable key (or organization API key) and handles the token exchange/refresh
- * transparently. Every generated resource (agents, threads, messaging, …) is
- * inherited unchanged.
+ * Publishable-key client for end-user / widget messaging (browser-safe).
+ * Exposes the `messaging` audience only.
  */
-export class ApolloClient extends _GeneratedClient {
-    private readonly _tokenAuth: Auth;
-    private readonly _env: ApolloEnvironmentUrls;
+export class ApolloMessagingClient extends BaseApolloClient {
+    private readonly _pkAuth: PkAuth;
 
-    constructor(options: ApolloClient.Options = {}) {
-        const env = options.environment ?? ApolloEnvironment.Gcp;
-        const auth = new Auth(env.base, options.publishableKey, options.organizationApiKey);
-        super({
-            environment: env,
-            headers: {
-                ...STRIPPED_SDK_HEADERS,
-                ...(auth.hasCredential ? { Authorization: async () => `Bearer ${await auth.getToken()}` } : {}),
-            },
-        });
-        this._tokenAuth = auth;
-        this._env = env;
+    constructor(options: ApolloMessagingClient.Options) {
+        if (!options?.publishableKey) {
+            throw new Error("ApolloMessagingClient requires a publishableKey.");
+        }
+        const env = resolveEnv(options.baseUrl);
+        const auth = new PkAuth(env.base, options.publishableKey);
+        super(env, { Authorization: async () => `Bearer ${await auth.getToken()}` });
+        this._pkAuth = auth;
+    }
+
+    /** Send / stream messages and read thread & interaction traces. */
+    get messaging(): Messaging {
+        return this._client.messaging;
+    }
+
+    /** Initiate channel-scoped threads (e.g. SMS). */
+    get channels(): Channels {
+        return this._client.channels;
     }
 
     /** Publishable-key family (agent / org / unknown). */
     get keyType(): PublishableKeyType {
-        return this._tokenAuth.keyType;
+        return this._pkAuth.keyType;
     }
 
     /** Agent resolved from an agent-scoped key. Populated after the first exchange. */
     get agentId(): string | undefined {
-        return this._tokenAuth.agentId;
+        return this._pkAuth.agentId;
     }
 
     /** Organization the key belongs to. Populated after the first exchange. */
     get organizationId(): string | undefined {
-        return this._tokenAuth.organizationId;
+        return this._pkAuth.organizationId;
     }
 
     /** Force a token exchange (if needed) and return the resolved scope. */
     getContext(): Promise<{ agentId?: string; organizationId?: string; keyType: PublishableKeyType }> {
-        return this._tokenAuth.getContext();
+        return this._pkAuth.getContext();
     }
 
-    /**
-     * Open a messaging WebSocket session. The bearer token is passed as the first
-     * subprotocol (with `aui-websocket` second) — the gateway reads auth from
-     * Sec-WebSocket-Protocol, the only upgrade header a browser can set. The token is
-     * also sent as an Authorization header for Node. Built here (rather than via the
-     * generated session resource) so the generated code stays vanilla — Fern emits
-     * protocols: [] and forwards only per-call headers, neither of which the server accepts.
-     */
-    async connect(args: ApolloClient.ConnectArgs = {}): Promise<SessionSocket> {
-        const token = await this._tokenAuth.getToken();
+    /** Open a messaging WebSocket session. */
+    async connect(args: ApolloMessagingClient.ConnectArgs = {}): Promise<SessionSocket> {
+        const token = await this._pkAuth.getToken();
         const headers = { ...(token ? { Authorization: `Bearer ${token}` } : {}), ...args.headers };
         const socket = new core.ReconnectingWebSocket({
             url: core.url.join(this._env.production, SESSION_WS_PATH),
-            // Order matters: the gateway treats the FIRST subprotocol as the token and
-            // requires `aui-websocket` to follow. This is what makes browser WS auth work.
+            // Token as the first subprotocol is how the gateway reads auth (browsers can't
+            // set upgrade headers); `aui-websocket` must follow.
             protocols: token ? [token, WS_SUBPROTOCOL] : [WS_SUBPROTOCOL],
             queryParameters: {},
             headers,
             options: {
                 debug: args.debug ?? false,
                 maxRetries: args.reconnectAttempts ?? 30,
-                // On Node 22+ the global (undici) WebSocket drops custom headers on the
-                // upgrade, so the bearer token never arrives. Force the `ws` library on
-                // Node; browsers fall back to the native global WebSocket.
+                // Node's global WebSocket drops upgrade headers; force the `ws` library there.
                 WebSocket: core.RUNTIME.type === "node" ? NodeWebSocket : undefined,
             },
         });
         return new SessionSocket({ socket });
     }
+}
+
+export declare namespace ApolloManagementClient {
+    export interface Options {
+        /** Organization API key. Server-side only. */
+        organizationApiKey: string;
+        /** Internal: override the API host. Defaults to production. */
+        baseUrl?: string;
+    }
+}
+
+/**
+ * Organization-API-key client for backend services and CI (server-side only).
+ * Exposes the `management` audience only.
+ */
+export class ApolloManagementClient extends BaseApolloClient {
+    constructor(options: ApolloManagementClient.Options) {
+        if (!options?.organizationApiKey) {
+            throw new Error("ApolloManagementClient requires an organizationApiKey.");
+        }
+        const env = resolveEnv(options.baseUrl);
+        super(env, { [ORG_API_KEY_HEADER]: options.organizationApiKey });
+    }
+
+    /** Projects: listing, retrieval, and usage. */
+    get projects(): Projects {
+        return this._client.projects;
+    }
+
+    /** Agents: listing, retrieval, and usage. */
+    get agents(): Agents {
+        return this._client.agents;
+    }
+
+    /** Agent versions. */
+    get agentVersions(): AgentVersions {
+        return this._client.agentVersions;
+    }
+
+    /** Threads: listing, retrieval, updates, and traces. */
+    get threads(): Threads {
+        return this._client.threads;
+    }
+}
+
+// Build the REST + WS URLs from an optional host override, deriving ws(s):// from http(s)://.
+function resolveEnv(baseUrl?: string): ApolloEnvironmentUrls {
+    if (!baseUrl) return ApolloEnvironment.Gcp;
+    const base = baseUrl.replace(/\/+$/, "");
+    return { base, production: base.replace(/^http/i, "ws") };
 }
 
 function detectKeyType(publishableKey?: string): PublishableKeyType {

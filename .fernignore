@@ -1,27 +1,17 @@
 # .fernignore
 # Files listed here will NOT be overwritten by Fern during SDK generation.
 
-# Custom exports — additional type exports, imported by index.ts via export * from "./exports.js"
+# Custom package-root exports.
 src/exports.ts
 
-# ApolloClient wrapper: extends the generated client to add authentication. Accepts
-# publishableKey (pk_network_ / pk_org_) or organizationApiKey. Publishable keys are
-# exchanged at POST /management/v1/auth/token for a short-lived bearer (auto-refreshed,
-# sent as Authorization on every request and on the WS upgrade via client.connect()).
-# Caches agent_id / organization_id from the token response. Also owns the WebSocket
-# session: the `aui-websocket` subprotocol + forcing the Node `ws` library (Node 22+
-# undici drops upgrade headers), so the generated WS/core code stays vanilla.
+# Auth clients (ApolloMessagingClient / ApolloManagementClient).
 src/ApolloClientWrapper.ts
 
-# index.ts re-exports ApolloClientWrapper as ApolloClient instead of the raw generated Client.
-# Must be protected so the wrapper swap survives every Fern regen. When Fern adds new
-# top-level resources, manually add their export line here too.
+# Re-exports the auth clients at the package root.
 src/index.ts
 
-# Custom README with comprehensive API documentation
+# Custom README.
 README.md
 
-# Publish workflow: pins Node 22 and uses the runner's bundled npm (no self-update).
-# `npm install -g npm@latest` / `npx npm@latest` can leave a broken install missing the
-# bundled `sigstore` module, failing publish. Protected so the fix survives Fern regen.
+# Publish workflow.
 .github/workflows/ci.yml
