@@ -6,7 +6,7 @@
  *         name: "name"
  *     }
  */
-export interface ExternalAgentCreateRequest {
+export interface AgentCreateRequest {
     /** Agent name */
     name: string;
 }

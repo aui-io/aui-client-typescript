@@ -7,7 +7,11 @@ import { mockServerPool } from "../mock-server/MockServerPool";
 describe("Agents", () => {
     test("list_agents (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = {
             results: [
@@ -75,7 +79,11 @@ describe("Agents", () => {
 
     test("list_agents (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { key: "value" };
         server
@@ -95,7 +103,11 @@ describe("Agents", () => {
 
     test("list_agents (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -115,7 +127,11 @@ describe("Agents", () => {
 
     test("list_agents (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -135,7 +151,11 @@ describe("Agents", () => {
 
     test("list_agents (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -155,7 +175,11 @@ describe("Agents", () => {
 
     test("list_agents (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -175,7 +199,11 @@ describe("Agents", () => {
 
     test("list_agents (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { key: "value" };
         server
@@ -195,7 +223,11 @@ describe("Agents", () => {
 
     test("list_agents (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -215,7 +247,11 @@ describe("Agents", () => {
 
     test("create_agent (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = { name: "name" };
         const rawResponseBody = {
             id: "id",
@@ -249,7 +285,11 @@ describe("Agents", () => {
 
     test("create_agent (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = { name: "name" };
         const rawResponseBody = { key: "value" };
         server
@@ -270,7 +310,11 @@ describe("Agents", () => {
 
     test("create_agent (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = { name: "name" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -291,7 +335,11 @@ describe("Agents", () => {
 
     test("create_agent (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = { name: "name" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -312,7 +360,11 @@ describe("Agents", () => {
 
     test("create_agent (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = { name: "name" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -333,7 +385,11 @@ describe("Agents", () => {
 
     test("create_agent (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = { name: "name" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -354,7 +410,11 @@ describe("Agents", () => {
 
     test("create_agent (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = { name: "name" };
         const rawResponseBody = { key: "value" };
         server
@@ -375,7 +435,11 @@ describe("Agents", () => {
 
     test("create_agent (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = { name: "name" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -396,7 +460,11 @@ describe("Agents", () => {
 
     test("get_agent (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = {
             id: "id",
@@ -427,7 +495,11 @@ describe("Agents", () => {
 
     test("get_agent (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { key: "value" };
         server
@@ -445,7 +517,11 @@ describe("Agents", () => {
 
     test("get_agent (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -463,7 +539,11 @@ describe("Agents", () => {
 
     test("get_agent (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -481,7 +561,11 @@ describe("Agents", () => {
 
     test("get_agent (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -499,7 +583,11 @@ describe("Agents", () => {
 
     test("get_agent (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -517,7 +605,11 @@ describe("Agents", () => {
 
     test("get_agent (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { key: "value" };
         server
@@ -535,7 +627,11 @@ describe("Agents", () => {
 
     test("get_agent (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -553,7 +649,11 @@ describe("Agents", () => {
 
     test("delete_agent (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         server.mockEndpoint().delete("/management/v1/agents/agentId").respondWith().statusCode(200).build();
 
@@ -563,7 +663,11 @@ describe("Agents", () => {
 
     test("delete_agent (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { key: "value" };
         server
@@ -581,7 +685,11 @@ describe("Agents", () => {
 
     test("delete_agent (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -599,7 +707,11 @@ describe("Agents", () => {
 
     test("delete_agent (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -617,7 +729,11 @@ describe("Agents", () => {
 
     test("delete_agent (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -635,7 +751,11 @@ describe("Agents", () => {
 
     test("delete_agent (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -653,7 +773,11 @@ describe("Agents", () => {
 
     test("delete_agent (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { key: "value" };
         server
@@ -671,7 +795,11 @@ describe("Agents", () => {
 
     test("delete_agent (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -689,7 +817,11 @@ describe("Agents", () => {
 
     test("update_agent (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = {};
         const rawResponseBody = {
             id: "id",
@@ -721,7 +853,11 @@ describe("Agents", () => {
 
     test("update_agent (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
         server
@@ -740,7 +876,11 @@ describe("Agents", () => {
 
     test("update_agent (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = {};
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -759,7 +899,11 @@ describe("Agents", () => {
 
     test("update_agent (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = {};
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -778,7 +922,11 @@ describe("Agents", () => {
 
     test("update_agent (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = {};
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -797,7 +945,11 @@ describe("Agents", () => {
 
     test("update_agent (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = {};
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -816,7 +968,11 @@ describe("Agents", () => {
 
     test("update_agent (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
         server
@@ -835,7 +991,11 @@ describe("Agents", () => {
 
     test("update_agent (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
         const rawRequestBody = {};
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -854,7 +1014,11 @@ describe("Agents", () => {
 
     test("get_agent_usage (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = {
             interaction_count: 1,
@@ -888,7 +1052,11 @@ describe("Agents", () => {
 
     test("get_agent_usage (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { key: "value" };
         server
@@ -906,7 +1074,11 @@ describe("Agents", () => {
 
     test("get_agent_usage (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -924,7 +1096,11 @@ describe("Agents", () => {
 
     test("get_agent_usage (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -942,7 +1118,11 @@ describe("Agents", () => {
 
     test("get_agent_usage (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -960,7 +1140,11 @@ describe("Agents", () => {
 
     test("get_agent_usage (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
@@ -978,7 +1162,11 @@ describe("Agents", () => {
 
     test("get_agent_usage (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { key: "value" };
         server
@@ -996,7 +1184,11 @@ describe("Agents", () => {
 
     test("get_agent_usage (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server

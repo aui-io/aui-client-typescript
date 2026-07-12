@@ -3,8 +3,7 @@
 import type * as Apollo from "../index.js";
 
 /**
- * Shared structural fields across decision variants. ``call_integration``
- * decisions are filtered out by the scrub before this model is built.
+ * One decision the agent took while handling the message.
  */
 export interface TraceDecision {
     type?: string;

@@ -3,7 +3,7 @@
 /**
  * The published Agent shape.
  */
-export interface ExternalAgent {
+export interface Agent {
     /** Agent id */
     id: string;
     /** Owning project id */

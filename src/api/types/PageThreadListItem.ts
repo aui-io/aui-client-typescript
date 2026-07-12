@@ -2,8 +2,8 @@
 
 import type * as Apollo from "../index.js";
 
-export interface ExternalPageThreadListItem {
+export interface PageThreadListItem {
     results: Apollo.ThreadListItem[];
-    meta: Apollo.ExternalPageMeta;
-    links: Apollo.ExternalPageLinks;
+    meta: Apollo.PageMeta;
+    links: Apollo.PageLinks;
 }

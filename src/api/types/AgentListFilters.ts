@@ -3,7 +3,7 @@
 /**
  * Query filters for listing agents in a project.
  */
-export interface ExternalAgentListFilters {
+export interface AgentListFilters {
     /** Case-insensitive substring match on name */
     name?: string;
 }

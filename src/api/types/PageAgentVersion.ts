@@ -2,8 +2,8 @@
 
 import type * as Apollo from "../index.js";
 
-export interface ExternalPageAgentVersion {
+export interface PageAgentVersion {
     results: Apollo.AgentVersion[];
-    meta: Apollo.ExternalPageMeta;
-    links: Apollo.ExternalPageLinks;
+    meta: Apollo.PageMeta;
+    links: Apollo.PageLinks;
 }

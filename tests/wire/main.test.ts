@@ -6,7 +6,11 @@ import { mockServerPool } from "../mock-server/MockServerPool";
 describe("ApolloClient", () => {
     test("Health", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
 
         const rawResponseBody = { key: "value" };
         server.mockEndpoint().get("/health").respondWith().statusCode(200).jsonBody(rawResponseBody).build();

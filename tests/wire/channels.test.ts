@@ -7,8 +7,12 @@ import { mockServerPool } from "../mock-server/MockServerPool";
 describe("Channels", () => {
     test("initiate_thread (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
-        const rawRequestBody = { phone_number: "phone_number", agent_id: "agent_id" };
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { phone_number: "phone_number" };
         const rawResponseBody = { thread_id: "thread_id", message_sid: "message_sid" };
         server
             .mockEndpoint()
@@ -21,7 +25,6 @@ describe("Channels", () => {
 
         const response = await client.channels.initiateThread("channel", {
             phone_number: "phone_number",
-            agent_id: "agent_id",
         });
         expect(response).toEqual({
             thread_id: "thread_id",
@@ -31,8 +34,12 @@ describe("Channels", () => {
 
     test("initiate_thread (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
-        const rawRequestBody = { phone_number: "phone_number", agent_id: "agent_id" };
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { phone_number: "phone_number" };
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
@@ -46,15 +53,18 @@ describe("Channels", () => {
         await expect(async () => {
             return await client.channels.initiateThread("channel", {
                 phone_number: "phone_number",
-                agent_id: "agent_id",
             });
         }).rejects.toThrow(Apollo.BadRequestError);
     });
 
     test("initiate_thread (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
-        const rawRequestBody = { phone_number: "phone_number", agent_id: "agent_id" };
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { phone_number: "phone_number" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -68,15 +78,18 @@ describe("Channels", () => {
         await expect(async () => {
             return await client.channels.initiateThread("channel", {
                 phone_number: "phone_number",
-                agent_id: "agent_id",
             });
         }).rejects.toThrow(Apollo.UnauthorizedError);
     });
 
     test("initiate_thread (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
-        const rawRequestBody = { phone_number: "phone_number", agent_id: "agent_id" };
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { phone_number: "phone_number" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -90,15 +103,18 @@ describe("Channels", () => {
         await expect(async () => {
             return await client.channels.initiateThread("channel", {
                 phone_number: "phone_number",
-                agent_id: "agent_id",
             });
         }).rejects.toThrow(Apollo.ForbiddenError);
     });
 
     test("initiate_thread (5)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
-        const rawRequestBody = { phone_number: "phone_number", agent_id: "agent_id" };
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { phone_number: "phone_number" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -112,15 +128,18 @@ describe("Channels", () => {
         await expect(async () => {
             return await client.channels.initiateThread("channel", {
                 phone_number: "phone_number",
-                agent_id: "agent_id",
             });
         }).rejects.toThrow(Apollo.NotFoundError);
     });
 
     test("initiate_thread (6)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
-        const rawRequestBody = { phone_number: "phone_number", agent_id: "agent_id" };
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { phone_number: "phone_number" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -134,15 +153,18 @@ describe("Channels", () => {
         await expect(async () => {
             return await client.channels.initiateThread("channel", {
                 phone_number: "phone_number",
-                agent_id: "agent_id",
             });
         }).rejects.toThrow(Apollo.ConflictError);
     });
 
     test("initiate_thread (7)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
-        const rawRequestBody = { phone_number: "phone_number", agent_id: "agent_id" };
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { phone_number: "phone_number" };
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
@@ -156,15 +178,18 @@ describe("Channels", () => {
         await expect(async () => {
             return await client.channels.initiateThread("channel", {
                 phone_number: "phone_number",
-                agent_id: "agent_id",
             });
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
     test("initiate_thread (8)", async () => {
         const server = mockServerPool.createServer();
-        const client = new ApolloClient({ environment: { base: server.baseUrl, production: server.baseUrl } });
-        const rawRequestBody = { phone_number: "phone_number", agent_id: "agent_id" };
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { phone_number: "phone_number" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -178,7 +203,6 @@ describe("Channels", () => {
         await expect(async () => {
             return await client.channels.initiateThread("channel", {
                 phone_number: "phone_number",
-                agent_id: "agent_id",
             });
         }).rejects.toThrow(Apollo.InternalServerError);
     });

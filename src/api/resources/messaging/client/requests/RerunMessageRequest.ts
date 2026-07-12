@@ -3,15 +3,15 @@
 /**
  * @example
  *     {
- *         agent_id: "agent_id",
  *         interaction_id: "interaction_id",
  *         text: "text"
  *     }
  */
 export interface RerunMessageRequest {
-    agent_id: string;
     interaction_id: string;
     text: string;
+    /** End user to attribute the rerun to; omitted, the thread's original user is kept. */
+    user_id?: string;
     /** Signed image URL on the replayed message. */
     image_url?: string;
     version_id?: string;

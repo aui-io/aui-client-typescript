@@ -16,7 +16,7 @@ export declare namespace Messaging {
 export class Messaging {
     protected readonly _options: Messaging.Options;
 
-    constructor(_options: Messaging.Options = {}) {
+    constructor(_options: Messaging.Options) {
         this._options = _options;
     }
 
@@ -38,7 +38,6 @@ export class Messaging {
      *
      * @example
      *     await client.messaging.sendMessage({
-     *         agent_id: "agent_id",
      *         text: "text",
      *         user_id: "user_id"
      *     })
@@ -54,7 +53,14 @@ export class Messaging {
         request: Apollo.SendMessageRequest,
         requestOptions?: Messaging.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.SendMessageResponse>> {
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+            }),
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -129,11 +135,11 @@ export class Messaging {
     }
 
     /**
-     * Send a message and stream tokens over Server-Sent Events. Auto-creates the
-     * thread when ``thread_id`` is omitted — the resolved id arrives as the first
-     * ``thread`` event (an SSE client can't read response headers). Resume a dropped
-     * stream with the standard ``Last-Event-ID`` header: buffered frames replay, no
-     * fresh turn. FastAPI owns the wire format, keep-alive pings, and OpenAPI docs.
+     * Send a message and stream the reply token-by-token over Server-Sent
+     * Events. The thread is created automatically when ``thread_id`` is omitted —
+     * the resolved id arrives as the first ``thread`` event. Resume a dropped
+     * stream with the standard ``Last-Event-ID`` header: missed events replay
+     * without running the turn again.
      */
     public streamMessage(
         request: Apollo.StreamMessageRequest,
@@ -149,7 +155,11 @@ export class Messaging {
         const { "Last-Event-ID": lastEventId, body: _body } = request;
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
-            mergeOnlyDefinedHeaders({ "Last-Event-ID": lastEventId != null ? lastEventId : undefined }),
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "Last-Event-ID": lastEventId != null ? lastEventId : undefined,
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+            }),
             requestOptions?.headers,
         );
         const _response = await core.fetcher<ReadableStream>({
@@ -240,10 +250,9 @@ export class Messaging {
     }
 
     /**
-     * Regenerate ``interaction_id`` on the thread against the live version, then
-     * replay ``text`` onto the clone. The acting user is optional — absent for the
-     * agent-scoped publishable-key flow, where IA attributes the thread's own user.
-     * ``thread_id`` in the response is the clone's id, not the original.
+     * Regenerate ``interaction_id`` on the thread against the agent's live
+     * version, then replay ``text`` onto the resulting new thread. The response's
+     * ``thread_id`` is the new thread's id, not the original.
      *
      * @param {string} threadId
      * @param {Apollo.RerunMessageRequest} request
@@ -259,7 +268,6 @@ export class Messaging {
      *
      * @example
      *     await client.messaging.rerun("threadId", {
-     *         agent_id: "agent_id",
      *         interaction_id: "interaction_id",
      *         text: "text"
      *     })
@@ -277,7 +285,14 @@ export class Messaging {
         request: Apollo.RerunMessageRequest,
         requestOptions?: Messaging.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.SendMessageResponse>> {
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+            }),
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -354,7 +369,7 @@ export class Messaging {
     }
 
     /**
-     * The thread transcript, scoped to the key's agent.
+     * The thread's full transcript, in chronological order.
      *
      * @param {string} threadId
      * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
@@ -381,7 +396,14 @@ export class Messaging {
         threadId: string,
         requestOptions?: Messaging.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.Message[]>> {
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+            }),
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -482,7 +504,14 @@ export class Messaging {
         threadId: string,
         requestOptions?: Messaging.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.Trace[]>> {
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+            }),
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -556,7 +585,7 @@ export class Messaging {
     }
 
     /**
-     * One interaction's trace, resolved directly by interaction id.
+     * The reasoning trace of a single interaction, resolved by its id.
      *
      * @param {string} interactionId
      * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
@@ -583,7 +612,14 @@ export class Messaging {
         interactionId: string,
         requestOptions?: Messaging.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.Trace>> {
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+            }),
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -654,5 +690,236 @@ export class Messaging {
                     rawResponse: _response.rawResponse,
                 });
         }
+    }
+
+    /**
+     * Generate suggested follow-up prompts from a context you provide —
+     * useful for offering the end user quick next questions.
+     *
+     * @param {Apollo.GenerateFollowupSuggestionsRequest} request
+     * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Apollo.BadRequestError}
+     * @throws {@link Apollo.UnauthorizedError}
+     * @throws {@link Apollo.ForbiddenError}
+     * @throws {@link Apollo.NotFoundError}
+     * @throws {@link Apollo.ConflictError}
+     * @throws {@link Apollo.UnprocessableEntityError}
+     * @throws {@link Apollo.InternalServerError}
+     *
+     * @example
+     *     await client.messaging.generateFollowupSuggestions()
+     */
+    public generateFollowupSuggestions(
+        request: Apollo.GenerateFollowupSuggestionsRequest = {},
+        requestOptions?: Messaging.RequestOptions,
+    ): core.HttpResponsePromise<Apollo.GenerateFollowupSuggestionsResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__generateFollowupSuggestions(request, requestOptions));
+    }
+
+    private async __generateFollowupSuggestions(
+        request: Apollo.GenerateFollowupSuggestionsRequest = {},
+        requestOptions?: Messaging.RequestOptions,
+    ): Promise<core.WithRawResponse<Apollo.GenerateFollowupSuggestionsResponse>> {
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
+                "messaging/v1/followup-suggestions",
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryParameters: requestOptions?.queryParams,
+            requestType: "json",
+            body: request,
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return {
+                data: _response.body as Apollo.GenerateFollowupSuggestionsResponse,
+                rawResponse: _response.rawResponse,
+            };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new Apollo.BadRequestError(_response.error.body as unknown, _response.rawResponse);
+                case 401:
+                    throw new Apollo.UnauthorizedError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new Apollo.ForbiddenError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new Apollo.NotFoundError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new Apollo.ConflictError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 422:
+                    throw new Apollo.UnprocessableEntityError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new Apollo.InternalServerError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApolloError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        switch (_response.error.reason) {
+            case "non-json":
+                throw new errors.ApolloError({
+                    statusCode: _response.error.statusCode,
+                    body: _response.error.rawBody,
+                    rawResponse: _response.rawResponse,
+                });
+            case "timeout":
+                throw new errors.ApolloTimeoutError(
+                    "Timeout exceeded when calling POST /messaging/v1/followup-suggestions.",
+                );
+            case "unknown":
+                throw new errors.ApolloError({
+                    message: _response.error.errorMessage,
+                    rawResponse: _response.rawResponse,
+                });
+        }
+    }
+
+    /**
+     * The welcome message of the agent's live version — what to show before
+     * the first user message.
+     *
+     * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Apollo.BadRequestError}
+     * @throws {@link Apollo.UnauthorizedError}
+     * @throws {@link Apollo.ForbiddenError}
+     * @throws {@link Apollo.NotFoundError}
+     * @throws {@link Apollo.ConflictError}
+     * @throws {@link Apollo.UnprocessableEntityError}
+     * @throws {@link Apollo.InternalServerError}
+     *
+     * @example
+     *     await client.messaging.getWelcomeMessage()
+     */
+    public getWelcomeMessage(
+        requestOptions?: Messaging.RequestOptions,
+    ): core.HttpResponsePromise<Apollo.AgentVersionWelcomeMessageResponse> {
+        return core.HttpResponsePromise.fromPromise(this.__getWelcomeMessage(requestOptions));
+    }
+
+    private async __getWelcomeMessage(
+        requestOptions?: Messaging.RequestOptions,
+    ): Promise<core.WithRawResponse<Apollo.AgentVersionWelcomeMessageResponse>> {
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
+                "messaging/v1/welcome-message",
+            ),
+            method: "GET",
+            headers: _headers,
+            queryParameters: requestOptions?.queryParams,
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return {
+                data: _response.body as Apollo.AgentVersionWelcomeMessageResponse,
+                rawResponse: _response.rawResponse,
+            };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new Apollo.BadRequestError(_response.error.body as unknown, _response.rawResponse);
+                case 401:
+                    throw new Apollo.UnauthorizedError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new Apollo.ForbiddenError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new Apollo.NotFoundError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new Apollo.ConflictError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 422:
+                    throw new Apollo.UnprocessableEntityError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new Apollo.InternalServerError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApolloError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        switch (_response.error.reason) {
+            case "non-json":
+                throw new errors.ApolloError({
+                    statusCode: _response.error.statusCode,
+                    body: _response.error.rawBody,
+                    rawResponse: _response.rawResponse,
+                });
+            case "timeout":
+                throw new errors.ApolloTimeoutError("Timeout exceeded when calling GET /messaging/v1/welcome-message.");
+            case "unknown":
+                throw new errors.ApolloError({
+                    message: _response.error.errorMessage,
+                    rawResponse: _response.rawResponse,
+                });
+        }
+    }
+
+    protected async _getAuthorizationHeader(): Promise<string | undefined> {
+        const bearer = await core.Supplier.get(this._options.token);
+        if (bearer != null) {
+            return `Bearer ${bearer}`;
+        }
+
+        return undefined;
     }
 }

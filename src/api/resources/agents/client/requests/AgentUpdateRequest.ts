@@ -4,7 +4,7 @@
  * @example
  *     {}
  */
-export interface ExternalAgentUpdateRequest {
+export interface AgentUpdateRequest {
     /** New agent name */
     name?: string;
 }

@@ -9,7 +9,7 @@ import { Projects } from "./api/resources/projects/client/Client.js";
 import { Session } from "./api/resources/session/client/Client.js";
 import { Threads } from "./api/resources/threads/client/Client.js";
 import type { BaseClientOptions, BaseRequestOptions } from "./BaseClient.js";
-import { mergeHeaders } from "./core/headers.js";
+import { mergeHeaders, mergeOnlyDefinedHeaders } from "./core/headers.js";
 import * as core from "./core/index.js";
 import * as environments from "./environments.js";
 import * as errors from "./errors/index.js";
@@ -31,16 +31,17 @@ export class ApolloClient {
     protected _auth: Auth | undefined;
     protected _session: Session | undefined;
 
-    constructor(_options: ApolloClient.Options = {}) {
+    constructor(_options: ApolloClient.Options) {
         this._options = {
             ..._options,
             logging: core.logging.createLogger(_options?.logging),
             headers: mergeHeaders(
                 {
+                    "x-organization-api-key": _options?.organizationApiKey,
                     "X-Fern-Language": "JavaScript",
                     "X-Fern-SDK-Name": "@aui.io/aui-client",
-                    "X-Fern-SDK-Version": "3.1.2",
-                    "User-Agent": "@aui.io/aui-client/3.1.2",
+                    "X-Fern-SDK-Version": "3.2.0",
+                    "User-Agent": "@aui.io/aui-client/3.2.0",
                     "X-Fern-Runtime": core.RUNTIME.type,
                     "X-Fern-Runtime-Version": core.RUNTIME.version,
                 },
@@ -82,6 +83,8 @@ export class ApolloClient {
     }
 
     /**
+     * Liveness probe. Returns ``{"status": "ok"}`` when the service is up.
+     *
      * @param {ApolloClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @example
@@ -94,7 +97,14 @@ export class ApolloClient {
     private async __health(
         requestOptions?: ApolloClient.RequestOptions,
     ): Promise<core.WithRawResponse<Record<string, unknown>>> {
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+            }),
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -137,5 +147,14 @@ export class ApolloClient {
                     rawResponse: _response.rawResponse,
                 });
         }
+    }
+
+    protected async _getAuthorizationHeader(): Promise<string | undefined> {
+        const bearer = await core.Supplier.get(this._options.token);
+        if (bearer != null) {
+            return `Bearer ${bearer}`;
+        }
+
+        return undefined;
     }
 }

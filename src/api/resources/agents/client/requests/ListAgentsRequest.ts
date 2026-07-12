@@ -9,7 +9,7 @@ import type * as Apollo from "../../../../index.js";
  *     }
  */
 export interface ListAgentsRequest {
-    filters: Apollo.ExternalAgentListFilters;
+    filters: Apollo.AgentListFilters;
     "page[size]"?: number;
     "page[after]"?: string;
     "page[before]"?: string;

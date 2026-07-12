@@ -12,7 +12,7 @@
 export interface AgentVersionPushRequest {
     caller: AgentVersionPushRequest.Caller;
     commit_message?: string;
-    /** Versioned agent-settings bundle. Must include 'schema_version' and 'general_settings'. */
+    /** Versioned agent configuration bundle. Must include 'schema_version' and 'general_settings'. */
     bundle: Record<string, unknown>;
 }
 

@@ -2,8 +2,8 @@
 
 import type * as Apollo from "../index.js";
 
-export interface ExternalPageProject {
+export interface PageProject {
     results: Apollo.Project[];
-    meta: Apollo.ExternalPageMeta;
-    links: Apollo.ExternalPageLinks;
+    meta: Apollo.PageMeta;
+    links: Apollo.PageLinks;
 }

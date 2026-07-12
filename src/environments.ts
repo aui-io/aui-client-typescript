@@ -7,8 +7,8 @@ export interface ApolloEnvironmentUrls {
 
 export const ApolloEnvironment = {
     Gcp: {
-        base: "https://api-v3.aui.io/apollo-api-v2",
-        production: "wss://api-v3.aui.io/apollo-api-v2",
+        base: "https://api-v3.aui.io/apollo-api",
+        production: "wss://api-v3.aui.io/apollo-api",
     },
 } as const;
 
