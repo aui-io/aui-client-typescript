@@ -251,7 +251,7 @@ describe("Projects", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
@@ -264,7 +264,7 @@ describe("Projects", () => {
 
         await expect(async () => {
             return await client.projects.createProject({
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.BadRequestError);
     });
@@ -276,7 +276,7 @@ describe("Projects", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -289,7 +289,7 @@ describe("Projects", () => {
 
         await expect(async () => {
             return await client.projects.createProject({
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.UnauthorizedError);
     });
@@ -301,7 +301,7 @@ describe("Projects", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -314,7 +314,7 @@ describe("Projects", () => {
 
         await expect(async () => {
             return await client.projects.createProject({
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.ForbiddenError);
     });
@@ -326,7 +326,7 @@ describe("Projects", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -339,7 +339,7 @@ describe("Projects", () => {
 
         await expect(async () => {
             return await client.projects.createProject({
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.NotFoundError);
     });
@@ -351,7 +351,7 @@ describe("Projects", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -364,7 +364,7 @@ describe("Projects", () => {
 
         await expect(async () => {
             return await client.projects.createProject({
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.ConflictError);
     });
@@ -376,7 +376,7 @@ describe("Projects", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
@@ -389,7 +389,7 @@ describe("Projects", () => {
 
         await expect(async () => {
             return await client.projects.createProject({
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
@@ -401,7 +401,7 @@ describe("Projects", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -414,7 +414,7 @@ describe("Projects", () => {
 
         await expect(async () => {
             return await client.projects.createProject({
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.InternalServerError);
     });

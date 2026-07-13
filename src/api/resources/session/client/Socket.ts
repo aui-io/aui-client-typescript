@@ -64,7 +64,7 @@ export class SessionSocket {
         this.eventHandlers[event] = callback;
     }
 
-    public sendSubmitMessage(message: Apollo.SubmitMessageRequest): void {
+    public sendMessage(message: Apollo.SubmitMessageRequest): void {
         this.assertSocketIsOpen();
         this.sendJson(message);
     }
