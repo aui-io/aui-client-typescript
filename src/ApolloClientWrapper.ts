@@ -28,7 +28,7 @@ const STRIPPED_SDK_HEADERS: Record<string, null> = {
 };
 
 /** Publishable-key family, inferred from the key prefix. */
-export type PublishableKeyType = "agent" | "org" | "unknown";
+export type PublishableKeyType = "agent" | "unknown";
 
 // Header value: literal, async supplier (bearer token), or null to strip.
 type AuthHeaders = Record<string, string | (() => Promise<string>) | null>;
@@ -129,7 +129,7 @@ class BaseApolloClient {
 
 export declare namespace ApolloMessagingClient {
     export interface Options {
-        /** Publishable key (pk_network_ / pk_org_). */
+        /** Publishable key (pk_network_...). */
         publishableKey: string;
         /** Internal: override the API host. Defaults to production. */
         baseUrl?: string;
@@ -165,7 +165,7 @@ export class ApolloMessagingClient extends BaseApolloClient {
         return this._client.channels;
     }
 
-    /** Publishable-key family (agent / org / unknown). */
+    /** Publishable-key family (agent / unknown). */
     get keyType(): PublishableKeyType {
         return this._pkAuth.keyType;
     }
@@ -258,8 +258,6 @@ function resolveEnv(baseUrl?: string): ApolloEnvironmentUrls {
 }
 
 function detectKeyType(publishableKey?: string): PublishableKeyType {
-    if (!publishableKey) return "unknown";
-    if (publishableKey.startsWith("pk_network_")) return "agent";
-    if (publishableKey.startsWith("pk_org_")) return "org";
+    if (publishableKey?.startsWith("pk_network_")) return "agent";
     return "unknown";
 }
