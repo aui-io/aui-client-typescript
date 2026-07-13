@@ -132,7 +132,7 @@ socket.on('message', (message) => console.log(message));
 socket.on('error', (error) => console.error(error));
 socket.on('close', (event) => console.log('closed', event.code));
 
-socket.sendSubmitMessage({
+socket.sendMessage({
   type: 'message',
   agent_id: agentId,
   user_id: 'end-user-123',
@@ -143,7 +143,7 @@ socket.close();
 ```
 
 The socket exposes `waitForOpen()`, `on(event, handler)` (events: `open`, `message`,
-`error`, `close`), `sendSubmitMessage(request)`, `sendResume(request)`, and `close()`.
+`error`, `close`), `sendMessage(request)`, `sendResume(request)`, and `close()`.
 Note that `on()` registers a single handler per event; calling it again for the same
 event replaces the previous handler. The socket type is exported as `SessionSocket`.
 
