@@ -290,7 +290,7 @@ describe("Agents", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
@@ -303,7 +303,7 @@ describe("Agents", () => {
 
         await expect(async () => {
             return await client.agents.createAgent("projectId", {
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.BadRequestError);
     });
@@ -315,7 +315,7 @@ describe("Agents", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -328,7 +328,7 @@ describe("Agents", () => {
 
         await expect(async () => {
             return await client.agents.createAgent("projectId", {
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.UnauthorizedError);
     });
@@ -340,7 +340,7 @@ describe("Agents", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -353,7 +353,7 @@ describe("Agents", () => {
 
         await expect(async () => {
             return await client.agents.createAgent("projectId", {
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.ForbiddenError);
     });
@@ -365,7 +365,7 @@ describe("Agents", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -378,7 +378,7 @@ describe("Agents", () => {
 
         await expect(async () => {
             return await client.agents.createAgent("projectId", {
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.NotFoundError);
     });
@@ -390,7 +390,7 @@ describe("Agents", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -403,7 +403,7 @@ describe("Agents", () => {
 
         await expect(async () => {
             return await client.agents.createAgent("projectId", {
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.ConflictError);
     });
@@ -415,7 +415,7 @@ describe("Agents", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
@@ -428,7 +428,7 @@ describe("Agents", () => {
 
         await expect(async () => {
             return await client.agents.createAgent("projectId", {
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
@@ -440,7 +440,7 @@ describe("Agents", () => {
             organizationApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
-        const rawRequestBody = { name: "name" };
+        const rawRequestBody = { name: "xy" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
@@ -453,7 +453,7 @@ describe("Agents", () => {
 
         await expect(async () => {
             return await client.agents.createAgent("projectId", {
-                name: "name",
+                name: "xy",
             });
         }).rejects.toThrow(Apollo.InternalServerError);
     });

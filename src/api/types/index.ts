@@ -2,7 +2,6 @@ export * from "./Agent.js";
 export * from "./AgentCreateResponse.js";
 export * from "./AgentListFilters.js";
 export * from "./AgentUpdateResponse.js";
-export * from "./AgentVariables.js";
 export * from "./AgentVersion.js";
 export * from "./AgentVersionArchiveResponse.js";
 export * from "./AgentVersionCreateResponse.js";
