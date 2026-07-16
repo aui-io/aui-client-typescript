@@ -3,9 +3,7 @@
 import type * as Apollo from "../index.js";
 
 /**
- * Structured, self-contained form of the card — the JSON counterpart to
- * ``rendered_jsx``. ``entity`` is the card's own flat {code: value} map;
- * ``sub_entities`` holds its variant groups.
+ * Structured form of the card. `entity` is a flat {code: value} map of the card's fields; `sub_entities` holds nested groups such as product variants. Keys are defined by the agent's card templates.
  */
 export interface MessageCardJsonData {
     entity?: Record<string, unknown>;
