@@ -59,8 +59,8 @@ await client.messaging.sendMessage({
   user_id: 'end-user-123',
   text: 'Where is my order?',
   agent_variables: {
-    static: { customer_name: 'Ada' },
-    dynamic: { order_id: 'ORD-1042' },
+    customer_name: 'Ada',
+    order_id: 'ORD-1042',
   },
 });
 ```
@@ -103,6 +103,10 @@ const { suggestions } = await client.messaging.generateFollowupSuggestions({
 | `getWelcomeMessage()` | Return the agent's welcome message. |
 | `generateFollowupSuggestions(request)` | Generate follow-up prompts from a context. |
 
+Message cards carry both a rendered `rendered_jsx` string and a structured
+`json_data` representation (`entity` plus `sub_entities`), so you can either render
+the JSX directly or read the card's fields programmatically.
+
 ### Channels (SMS and WhatsApp)
 
 Start an outbound thread on a channel with `channels.initiateThread`. Pass `'sms'`
@@ -128,13 +132,16 @@ and it works in both Node and the browser.
 const socket = await client.connect();
 await socket.waitForOpen();
 
+// The agent is resolved from your publishable key.
+const { agentId } = await client.getContext();
+
 socket.on('message', (message) => console.log(message));
 socket.on('error', (error) => console.error(error));
 socket.on('close', (event) => console.log('closed', event.code));
 
 socket.sendMessage({
   type: 'message',
-  agent_id: agentId,
+  agent_id: agentId!,
   user_id: 'end-user-123',
   text: 'Hello over WebSocket',
 });
@@ -199,7 +206,7 @@ const usage = await client.projects.getProjectUsage(project.id);
 | `listAgents(projectId, { filters })` | List a project's agents. |
 | `createAgent(projectId, request)` | Create an agent. |
 | `getAgent(agentId)` | Fetch one agent. |
-| `updateAgent(agentId, request)` | Rename an agent. |
+| `updateAgent(agentId, request)` | Rename an agent (re-publishes the live version with the new name). |
 | `deleteAgent(agentId)` | Delete an agent and its versions. |
 | `getAgentUsage(agentId)` | Usage metrics for one agent. |
 
@@ -241,6 +248,8 @@ await client.agentVersions.publishVersion(agentId, draft.id);
 `filters` supports `project_id`, `agent_id`, `user_id`, `external_id`, `created`
 (range), `tool`, `rule`, and `param`. Prefer a filter such as `project_id` over an
 empty object; the unfiltered list sorts every thread in the organization and can be slow.
+
+Listed threads include a `version_tag` indicating the agent version the thread runs on.
 
 ```ts
 const page = await client.threads.listThreads(
