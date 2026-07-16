@@ -7,4 +7,6 @@ export interface ThreadListItem {
     title?: string;
     /** Creation timestamp (ISO-8601) */
     created_at?: string;
+    /** Agent version tag the thread runs on */
+    version_tag?: string;
 }

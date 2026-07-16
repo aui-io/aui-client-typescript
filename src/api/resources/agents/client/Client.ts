@@ -491,8 +491,8 @@ export class Agents {
     }
 
     /**
-     * Rename an agent. To change which version is live, publish a version
-     * instead.
+     * Rename an agent. re-publishes the published version with the updated name.
+     * To change which version is live, publish a version instead.
      *
      * @param {string} agentId
      * @param {Apollo.AgentUpdateRequest} request

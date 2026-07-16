@@ -15,8 +15,8 @@ describe("Threads", () => {
 
         const rawResponseBody = {
             results: [
-                { id: "id", title: "title", created_at: "created_at" },
-                { id: "id", title: "title", created_at: "created_at" },
+                { id: "id", title: "title", created_at: "created_at", version_tag: "version_tag" },
+                { id: "id", title: "title", created_at: "created_at", version_tag: "version_tag" },
             ],
             meta: { has_more: true, after_cursor: "after_cursor", before_cursor: "before_cursor" },
             links: { next: "next", prev: "prev" },
@@ -38,11 +38,13 @@ describe("Threads", () => {
                     id: "id",
                     title: "title",
                     created_at: "created_at",
+                    version_tag: "version_tag",
                 },
                 {
                     id: "id",
                     title: "title",
                     created_at: "created_at",
+                    version_tag: "version_tag",
                 },
             ],
             meta: {

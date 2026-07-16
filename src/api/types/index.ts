@@ -23,6 +23,8 @@ export * from "./HttpValidationError.js";
 export * from "./InitiateThreadResponse.js";
 export * from "./Message.js";
 export * from "./MessageCard.js";
+export * from "./MessageCardJsonData.js";
+export * from "./MessageCardSubEntity.js";
 export * from "./MessageEnvelope.js";
 export * from "./MessageParty.js";
 export * from "./MessageStreamEvent.js";
