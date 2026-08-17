@@ -34,6 +34,7 @@ export * from "./PageLinks.js";
 export * from "./PageMeta.js";
 export * from "./PageProject.js";
 export * from "./PageThreadListItem.js";
+export * from "./PageTrace.js";
 export * from "./Project.js";
 export * from "./ResumeRequest.js";
 export * from "./SendMessageRequest.js";

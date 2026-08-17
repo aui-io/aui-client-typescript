@@ -5,4 +5,6 @@ export interface InitiateThreadResponse {
     thread_id: string;
     /** Provider message id for the sent opener. */
     message_sid: string;
+    /** Sender number the opener was sent from (when a specific sender was used). */
+    from?: string;
 }

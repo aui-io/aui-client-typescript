@@ -1556,7 +1556,7 @@ await client.threads.updateThread("threadId");
 </dl>
 </details>
 
-<details><summary><code>client.threads.<a href="/src/api/resources/threads/client/Client.ts">getThreadTrace</a>(threadId) -> Apollo.Trace[]</code></summary>
+<details><summary><code>client.threads.<a href="/src/api/resources/threads/client/Client.ts">getThreadTrace</a>(threadId, { ...params }) -> Apollo.PageTrace</code></summary>
 <dl>
 <dd>
 
@@ -1584,7 +1584,13 @@ understood, which rules fired, and the decisions it took.
 <dd>
 
 ```typescript
-await client.threads.getThreadTrace("threadId");
+await client.threads.getThreadTrace("threadId", {
+    "page[size]": 1,
+    "page[after]": "page[after]",
+    "page[before]": "page[before]",
+    sort_by: "sort_by",
+    sort_order: "asc"
+});
 
 ```
 </dd>
@@ -1601,6 +1607,14 @@ await client.threads.getThreadTrace("threadId");
 <dd>
 
 **threadId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `Apollo.GetThreadTraceRequest` 
     
 </dd>
 </dl>
@@ -2030,7 +2044,7 @@ await client.messaging.listMessages("threadId");
 </dl>
 </details>
 
-<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">threadTrace</a>(threadId) -> Apollo.Trace[]</code></summary>
+<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">threadTrace</a>(threadId, { ...params }) -> Apollo.PageTrace</code></summary>
 <dl>
 <dd>
 
@@ -2057,7 +2071,13 @@ Every interaction trace in the thread.
 <dd>
 
 ```typescript
-await client.messaging.threadTrace("threadId");
+await client.messaging.threadTrace("threadId", {
+    "page[size]": 1,
+    "page[after]": "page[after]",
+    "page[before]": "page[before]",
+    sort_by: "sort_by",
+    sort_order: "asc"
+});
 
 ```
 </dd>
@@ -2074,6 +2094,14 @@ await client.messaging.threadTrace("threadId");
 <dd>
 
 **threadId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `Apollo.ThreadTraceRequest` 
     
 </dd>
 </dl>
@@ -2169,7 +2197,8 @@ await client.messaging.interactionTrace("interactionId");
 <dd>
 
 Generate suggested follow-up prompts from a context you provide —
-useful for offering the end user quick next questions.
+useful for offering the end user quick next questions. With no context,
+returns the agent's static suggestions instead of calling the LLM.
 </dd>
 </dl>
 </dd>

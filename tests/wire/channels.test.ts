@@ -13,7 +13,7 @@ describe("Channels", () => {
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { phone_number: "phone_number" };
-        const rawResponseBody = { thread_id: "thread_id", message_sid: "message_sid" };
+        const rawResponseBody = { thread_id: "thread_id", message_sid: "message_sid", from: "from" };
         server
             .mockEndpoint()
             .post("/messaging/v1/channels/channel/threads")
@@ -29,6 +29,7 @@ describe("Channels", () => {
         expect(response).toEqual({
             thread_id: "thread_id",
             message_sid: "message_sid",
+            from: "from",
         });
     });
 

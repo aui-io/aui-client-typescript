@@ -617,46 +617,48 @@ describe("Threads", () => {
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
-        const rawResponseBody = [
-            {
-                input: { message: "message" },
-                understanding: { intents: ["intents"], guardrails: { passed: null, reason: null } },
-                decisions: [
-                    {
-                        type: null,
-                        tool: null,
-                        parent_tool: null,
-                        track_id: null,
-                        status: null,
-                        check_status: null,
-                        trigger: null,
-                        trigger_type: null,
-                        rule: null,
-                        text: null,
-                        fail_reason: null,
-                        computation: null,
-                        output_param: null,
-                        output_title: null,
-                        qualified: null,
-                        matched_branch: null,
-                    },
-                ],
-                computed_parameters: [{ code: null, title: null, scope: null }],
-                response: {
-                    type: "type",
-                    message: "message",
-                    suggestions: ["suggestions"],
-                    question_reason: "question_reason",
-                    asking_for: ["asking_for"],
-                    block_message: "block_message",
-                    error: "error",
-                    jsx_widgets: [
-                        { name: null, category: null, rendered_jsx: null, is_recommended: null, index: null },
+        const rawResponseBody = {
+            results: [
+                {
+                    input: {},
+                    understanding: { intents: null, guardrails: null },
+                    decisions: [
+                        {
+                            type: null,
+                            tool: null,
+                            parent_tool: null,
+                            track_id: null,
+                            status: null,
+                            check_status: null,
+                            trigger: null,
+                            trigger_type: null,
+                            rule: null,
+                            text: null,
+                            fail_reason: null,
+                            computation: null,
+                            output_param: null,
+                            output_title: null,
+                            qualified: null,
+                            matched_branch: null,
+                        },
                     ],
+                    computed_parameters: [{ code: null, title: null, scope: null }],
+                    response: {
+                        type: null,
+                        message: null,
+                        suggestions: null,
+                        question_reason: null,
+                        asking_for: null,
+                        block_message: null,
+                        error: null,
+                        jsx_widgets: null,
+                    },
+                    rules_evaluations: [{ code: null, triggered: null, reason: null }],
                 },
-                rules_evaluations: [{ code: null, triggered: null, reason: null }],
-            },
-        ];
+            ],
+            meta: { has_more: true, after_cursor: "after_cursor", before_cursor: "before_cursor" },
+            links: { next: "next", prev: "prev" },
+        };
         server
             .mockEndpoint()
             .get("/management/v1/threads/threadId/trace")
@@ -665,73 +667,77 @@ describe("Threads", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.threads.getThreadTrace("threadId");
-        expect(response).toEqual([
-            {
-                input: {
-                    message: "message",
-                },
-                understanding: {
-                    intents: ["intents"],
-                    guardrails: {
-                        passed: null,
-                        reason: null,
+        const response = await client.threads.getThreadTrace("threadId", {
+            "page[size]": 1,
+            "page[after]": "page[after]",
+            "page[before]": "page[before]",
+            sort_by: "sort_by",
+            sort_order: "asc",
+        });
+        expect(response).toEqual({
+            results: [
+                {
+                    input: {},
+                    understanding: {
+                        intents: null,
+                        guardrails: null,
                     },
-                },
-                decisions: [
-                    {
-                        type: null,
-                        tool: null,
-                        parent_tool: null,
-                        track_id: null,
-                        status: null,
-                        check_status: null,
-                        trigger: null,
-                        trigger_type: null,
-                        rule: null,
-                        text: null,
-                        fail_reason: null,
-                        computation: null,
-                        output_param: null,
-                        output_title: null,
-                        qualified: null,
-                        matched_branch: null,
-                    },
-                ],
-                computed_parameters: [
-                    {
-                        code: null,
-                        title: null,
-                        scope: null,
-                    },
-                ],
-                response: {
-                    type: "type",
-                    message: "message",
-                    suggestions: ["suggestions"],
-                    question_reason: "question_reason",
-                    asking_for: ["asking_for"],
-                    block_message: "block_message",
-                    error: "error",
-                    jsx_widgets: [
+                    decisions: [
                         {
-                            name: null,
-                            category: null,
-                            rendered_jsx: null,
-                            is_recommended: null,
-                            index: null,
+                            type: null,
+                            tool: null,
+                            parent_tool: null,
+                            track_id: null,
+                            status: null,
+                            check_status: null,
+                            trigger: null,
+                            trigger_type: null,
+                            rule: null,
+                            text: null,
+                            fail_reason: null,
+                            computation: null,
+                            output_param: null,
+                            output_title: null,
+                            qualified: null,
+                            matched_branch: null,
+                        },
+                    ],
+                    computed_parameters: [
+                        {
+                            code: null,
+                            title: null,
+                            scope: null,
+                        },
+                    ],
+                    response: {
+                        type: null,
+                        message: null,
+                        suggestions: null,
+                        question_reason: null,
+                        asking_for: null,
+                        block_message: null,
+                        error: null,
+                        jsx_widgets: null,
+                    },
+                    rules_evaluations: [
+                        {
+                            code: null,
+                            triggered: null,
+                            reason: null,
                         },
                     ],
                 },
-                rules_evaluations: [
-                    {
-                        code: null,
-                        triggered: null,
-                        reason: null,
-                    },
-                ],
+            ],
+            meta: {
+                has_more: true,
+                after_cursor: "after_cursor",
+                before_cursor: "before_cursor",
             },
-        ]);
+            links: {
+                next: "next",
+                prev: "prev",
+            },
+        });
     });
 
     test("get_thread_trace (2)", async () => {

@@ -17,4 +17,6 @@ export interface InitiateThreadRequest {
     text?: string;
     /** WhatsApp only: bound to template variable {{1}}. */
     agent_display_name?: string;
+    /** Optional sender to send from (your connected number). Omit to use the platform default sender. */
+    sender_id?: string;
 }

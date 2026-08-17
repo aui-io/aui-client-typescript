@@ -480,6 +480,7 @@ export class Messaging {
      * Every interaction trace in the thread.
      *
      * @param {string} threadId
+     * @param {Apollo.ThreadTraceRequest} request
      * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link Apollo.BadRequestError}
@@ -491,19 +492,55 @@ export class Messaging {
      * @throws {@link Apollo.InternalServerError}
      *
      * @example
-     *     await client.messaging.threadTrace("threadId")
+     *     await client.messaging.threadTrace("threadId", {
+     *         "page[size]": 1,
+     *         "page[after]": "page[after]",
+     *         "page[before]": "page[before]",
+     *         sort_by: "sort_by",
+     *         sort_order: "asc"
+     *     })
      */
     public threadTrace(
         threadId: string,
+        request: Apollo.ThreadTraceRequest = {},
         requestOptions?: Messaging.RequestOptions,
-    ): core.HttpResponsePromise<Apollo.Trace[]> {
-        return core.HttpResponsePromise.fromPromise(this.__threadTrace(threadId, requestOptions));
+    ): core.HttpResponsePromise<Apollo.PageTrace> {
+        return core.HttpResponsePromise.fromPromise(this.__threadTrace(threadId, request, requestOptions));
     }
 
     private async __threadTrace(
         threadId: string,
+        request: Apollo.ThreadTraceRequest = {},
         requestOptions?: Messaging.RequestOptions,
-    ): Promise<core.WithRawResponse<Apollo.Trace[]>> {
+    ): Promise<core.WithRawResponse<Apollo.PageTrace>> {
+        const {
+            "page[size]": pageSize,
+            "page[after]": pageAfter,
+            "page[before]": pageBefore,
+            sort_by: sortBy,
+            sort_order: sortOrder,
+        } = request;
+        const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
+        if (pageSize != null) {
+            _queryParams["page[size]"] = pageSize.toString();
+        }
+
+        if (pageAfter != null) {
+            _queryParams["page[after]"] = pageAfter;
+        }
+
+        if (pageBefore != null) {
+            _queryParams["page[before]"] = pageBefore;
+        }
+
+        if (sortBy != null) {
+            _queryParams.sort_by = sortBy;
+        }
+
+        if (sortOrder != null) {
+            _queryParams.sort_order = sortOrder;
+        }
+
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
             mergeOnlyDefinedHeaders({
@@ -520,7 +557,7 @@ export class Messaging {
             ),
             method: "GET",
             headers: _headers,
-            queryParameters: requestOptions?.queryParams,
+            queryParameters: { ..._queryParams, ...requestOptions?.queryParams },
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -528,7 +565,7 @@ export class Messaging {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as Apollo.Trace[], rawResponse: _response.rawResponse };
+            return { data: _response.body as Apollo.PageTrace, rawResponse: _response.rawResponse };
         }
 
         if (_response.error.reason === "status-code") {
@@ -694,7 +731,8 @@ export class Messaging {
 
     /**
      * Generate suggested follow-up prompts from a context you provide —
-     * useful for offering the end user quick next questions.
+     * useful for offering the end user quick next questions. With no context,
+     * returns the agent's static suggestions instead of calling the LLM.
      *
      * @param {Apollo.GenerateFollowupSuggestionsRequest} request
      * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
