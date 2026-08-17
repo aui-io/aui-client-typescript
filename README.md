@@ -112,15 +112,43 @@ the JSX directly or read the card's fields programmatically.
 Start an outbound thread on a channel with `channels.initiateThread`. Pass `'sms'`
 or `'whatsapp'` as the channel.
 
+`phone_number` is the **recipient** (who receives the opener). `sender_id` is
+**not** that phone number. It is the MongoDB ObjectId of a sender record you
+already connected in the AUI playground.
+
+If you connected a specific phone number through the AUI playground (SMS or
+WhatsApp), copy that sender's ObjectId and pass it as `sender_id`. The SDK
+then starts the conversation **from that connected number**. Without
+`sender_id`, the platform default sender is used instead.
+
+The response includes `from` when a specific sender was used, so you can
+confirm which connected number the opener was sent from.
+
 ```ts
 const thread = await client.channels.initiateThread('sms', {
-  phone_number: '+14155551234',
+  phone_number: '+14155551234', // recipient
   user_id: 'end-user-123',
   text: 'Hi! Your order has shipped.',
   // thread_id: existingThreadId,
+  // MongoDB ObjectId of the specific number you connected in the AUI playground.
+  // Pass it here to start the conversation from that number.
+  sender_id: '67c1a2b3d4e5f67890123456',
 });
 
-console.log(thread.thread_id);
+console.log(thread.thread_id, thread.from);
+```
+
+WhatsApp is the same call. Template fields apply to WhatsApp only; `text` is
+used for SMS and ignored by WhatsApp.
+
+```ts
+const thread = await client.channels.initiateThread('whatsapp', {
+  phone_number: '+14155551234', // recipient
+  user_id: 'end-user-123',
+  // Same playground-connected sender ObjectId — starts WhatsApp from that number
+  sender_id: '67c1a2b3d4e5f67890123456',
+  agent_display_name: 'Support', // bound to template variable {{1}}
+});
 ```
 
 ### WebSocket sessions
