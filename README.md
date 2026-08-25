@@ -39,7 +39,7 @@ places:
 | Capability | v1 agents | v2 agents |
 | --- | --- | --- |
 | Send / stream / rerun / channels | ✅ | ✅ |
-| Reading threads back (`listMessages`, `threads.*`) | Works with no extra field | Pass `runtime_version: '2'` |
+| Reading threads back (`listMessages`, `threads.*`) | Works with no extra field | Pass `runtime_version` (e.g. `'0.8.0'`) |
 | WebSocket session (`connect()`) | ✅ | ❌ — use `streamMessage` (SSE) instead |
 | Traces (`threadTrace`, `interactionTrace`) | ✅ | Not yet available |
 | Thread id format | 24-character hex (`68f1…`) | UUID (`01a0…-…`) |
@@ -57,11 +57,11 @@ jobs depending on where you pass it:
 | Thread **reads**: `listMessages`, `threads.getThread`, `threads.updateThread`, `threads.getThreadMessages`, `threads.listThreads` | Tells the API which runtime the thread lives on. Defaults to v1. | **Required for v2 threads.** Omit for v1 threads. |
 | Message **sends**: `sendMessage`, `streamMessage`, `rerun`, `channels.initiateThread` | Pins the turn to a specific runtime build (e.g. `'0.8.0'`). | Almost never — omit it and the platform uses the agent's own build. Advanced use only. Ignored by v1 agents. |
 
-**Accepted values on reads:** any runtime version that isn't the `1.x` family selects
-v2 — `'2'` is the simplest and what the examples below use, but a concrete version
-such as `'0.8.0'` behaves identically. Omitting the field (or passing `'1'` /
-`'1.0.0'`) selects v1. The value only picks the runtime generation to ask; it does
-not have to match the thread's exact build.
+**Accepted values on reads:** pass the runtime version your agent runs on — e.g.
+`'0.8.0'`, the form all examples below use. The value selects the runtime
+*generation*: anything outside the `1.x` family selects v2, and it does not have
+to match the thread's exact build. Omitting the field (or passing a `1.x` value)
+selects v1.
 
 The one rule to remember: **a thread lives on the runtime that created it.** Reading a
 v2 thread without a `runtime_version` (or a v1 thread *with* one) asks the wrong
@@ -71,9 +71,9 @@ runtime and returns 404 — the SDK is fine, the thread is just on the other sid
 // v1 thread — nothing extra:
 const v1Messages = await client.messaging.listMessages(v1ThreadId);
 
-// v2 thread — say so ('2' and a concrete version like '0.8.0' behave the same):
+// v2 thread — say so (any non-1.x version selects the v2 runtime):
 const v2Messages = await client.messaging.listMessages(v2ThreadId, {
-  runtime_version: '2',
+  runtime_version: '0.8.0',
 });
 ```
 
@@ -194,7 +194,7 @@ console.log(rerun.thread_id); // new thread containing the regenerated reply
 ```ts
 const messages = await client.messaging.listMessages(threadId); // v1 thread
 const messagesV2 = await client.messaging.listMessages(threadId, {
-  runtime_version: '2',
+  runtime_version: '0.8.0',
 }); // v2 thread
 ```
 
@@ -218,7 +218,7 @@ const { suggestions } = await client.messaging.generateFollowupSuggestions({
 | `sendMessage(request)` | Send a message and return the reply. | Optional build pin — normally omit |
 | `streamMessage({ body })` | Send a message and stream the reply (SSE). | Optional build pin — normally omit |
 | `rerun(threadId, request)` | Regenerate one reply onto a new thread. Requires `interaction_id` and `text`. | Optional build pin — normally omit |
-| `listMessages(threadId, request?)` | Return the messages in a thread. | **Required for v2 threads** (e.g. `'2'`) |
+| `listMessages(threadId, request?)` | Return the messages in a thread. | **Required for v2 threads** (e.g. `'0.8.0'`) |
 | `threadTrace(threadId, request?)` | Reasoning trace per interaction (paginated). | v1 agents only |
 | `interactionTrace(interactionId)` | Reasoning trace for one interaction. | v1 agents only |
 | `getWelcomeMessage()` | Return the agent's welcome message. | — |
@@ -419,10 +419,10 @@ await client.agentVersions.publishVersion(agentId, draft.id);
 
 | Method | Description | `runtime_version`? |
 | --- | --- | --- |
-| `listThreads(request?)` | List threads, newest first. | Set `runtime_version` (e.g. `'2'`) to list v2 threads |
-| `getThread(threadId, request?)` | Fetch one thread. | **Required for v2 threads** (e.g. `'2'`) |
-| `updateThread(threadId, request)` | Update a thread (currently `title`). | **Required for v2 threads** (e.g. `'2'`) |
-| `getThreadMessages(threadId, request?)` | Return the thread's transcript. | **Required for v2 threads** (e.g. `'2'`) |
+| `listThreads(request?)` | List threads, newest first. | Set `runtime_version` (e.g. `'0.8.0'`) to list v2 threads |
+| `getThread(threadId, request?)` | Fetch one thread. | **Required for v2 threads** (e.g. `'0.8.0'`) |
+| `updateThread(threadId, request)` | Update a thread (currently `title`). | **Required for v2 threads** (e.g. `'0.8.0'`) |
+| `getThreadMessages(threadId, request?)` | Return the thread's transcript. | **Required for v2 threads** (e.g. `'0.8.0'`) |
 | `getThreadTrace(threadId, request?)` | Reasoning trace per interaction (paginated). | v1 threads only |
 | `getInteractionTrace(interactionId)` | Reasoning trace for one interaction. | v1 threads only |
 
@@ -435,12 +435,12 @@ const thread = await client.threads.getThread(threadId);
 await client.threads.updateThread(threadId, { title: 'Renamed conversation' });
 
 // v2 thread — add runtime_version:
-const v2Thread = await client.threads.getThread(threadId, { runtime_version: '2' });
+const v2Thread = await client.threads.getThread(threadId, { runtime_version: '0.8.0' });
 const v2Transcript = await client.threads.getThreadMessages(threadId, {
-  runtime_version: '2',
+  runtime_version: '0.8.0',
 });
 await client.threads.updateThread(threadId, {
-  runtime_version: '2',
+  runtime_version: '0.8.0',
   title: 'Renamed conversation',
 });
 ```
@@ -461,16 +461,16 @@ const page = await client.threads.listThreads(
 
 **Listing v2 threads** has two extra rules:
 
-- Set `runtime_version: '2'` **and** include an `agent_id` or a `user_id` filter
-  (v2 listings are always scoped to an agent or an end user; an unscoped v2 list
-  returns 400).
+- Set `runtime_version` (e.g. `'0.8.0'`) **and** include an `agent_id` or a
+  `user_id` filter (v2 listings are always scoped to an agent or an end user; an
+  unscoped v2 list returns 400).
 - Only `agent_id`, `user_id`, and `created` (together with `agent_id`) apply to v2
   listings. The v1-specific filters (`project_id`, `external_id`, `tool`, `rule`,
   `param`) and custom sorts return a clear 400 on the v2 path.
 
 ```ts
 const v2Page = await client.threads.listThreads({
-  runtime_version: '2',
+  runtime_version: '0.8.0',
   agent_id: [agentId],
 });
 ```
