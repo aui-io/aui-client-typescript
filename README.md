@@ -54,18 +54,24 @@ jobs depending on where you pass it:
 
 | Where | What it does | When to pass it |
 | --- | --- | --- |
-| Thread **reads**: `listMessages`, `threads.getThread`, `threads.updateThread`, `threads.getThreadMessages`, `threads.listThreads` filters | Tells the API which runtime the thread lives on. Defaults to v1. | **Required for v2 threads** — pass `'2'`. Omit for v1 threads. |
+| Thread **reads**: `listMessages`, `threads.getThread`, `threads.updateThread`, `threads.getThreadMessages`, `threads.listThreads` filters | Tells the API which runtime the thread lives on. Defaults to v1. | **Required for v2 threads.** Omit for v1 threads. |
 | Message **sends**: `sendMessage`, `streamMessage`, `rerun`, `channels.initiateThread` | Pins the turn to a specific runtime build (e.g. `'0.8.0'`). | Almost never — omit it and the platform uses the agent's own build. Advanced use only. Ignored by v1 agents. |
 
+**Accepted values on reads:** any runtime version that isn't the `1.x` family selects
+v2 — `'2'` is the simplest and what the examples below use, but a concrete version
+such as `'0.8.0'` behaves identically. Omitting the field (or passing `'1'` /
+`'1.0.0'`) selects v1. The value only picks the runtime generation to ask; it does
+not have to match the thread's exact build.
+
 The one rule to remember: **a thread lives on the runtime that created it.** Reading a
-v2 thread without `runtime_version: '2'` (or a v1 thread *with* it) asks the wrong
+v2 thread without a `runtime_version` (or a v1 thread *with* one) asks the wrong
 runtime and returns 404 — the SDK is fine, the thread is just on the other side.
 
 ```ts
 // v1 thread — nothing extra:
 const v1Messages = await client.messaging.listMessages(v1ThreadId);
 
-// v2 thread — say so:
+// v2 thread — say so ('2' and a concrete version like '0.8.0' behave the same):
 const v2Messages = await client.messaging.listMessages(v2ThreadId, {
   runtime_version: '2',
 });
@@ -212,7 +218,7 @@ const { suggestions } = await client.messaging.generateFollowupSuggestions({
 | `sendMessage(request)` | Send a message and return the reply. | Optional build pin — normally omit |
 | `streamMessage({ body })` | Send a message and stream the reply (SSE). | Optional build pin — normally omit |
 | `rerun(threadId, request)` | Regenerate one reply onto a new thread. Requires `interaction_id` and `text`. | Optional build pin — normally omit |
-| `listMessages(threadId, request?)` | Return the messages in a thread. | **`'2'` required for v2 threads** |
+| `listMessages(threadId, request?)` | Return the messages in a thread. | **Required for v2 threads** (e.g. `'2'`) |
 | `threadTrace(threadId, request?)` | Reasoning trace per interaction (paginated). | v1 agents only |
 | `interactionTrace(interactionId)` | Reasoning trace for one interaction. | v1 agents only |
 | `getWelcomeMessage()` | Return the agent's welcome message. | — |
@@ -403,10 +409,10 @@ await client.agentVersions.publishVersion(agentId, draft.id);
 
 | Method | Description | `runtime_version`? |
 | --- | --- | --- |
-| `listThreads({ filters })` | List threads, newest first. | Set `filters.runtime_version: '2'` to list v2 threads |
-| `getThread(threadId, request?)` | Fetch one thread. | **`'2'` required for v2 threads** |
-| `updateThread(threadId, request)` | Update a thread (currently `title`). | **`'2'` required for v2 threads** |
-| `getThreadMessages(threadId, request?)` | Return the thread's transcript. | **`'2'` required for v2 threads** |
+| `listThreads({ filters })` | List threads, newest first. | Set `filters.runtime_version` (e.g. `'2'`) to list v2 threads |
+| `getThread(threadId, request?)` | Fetch one thread. | **Required for v2 threads** (e.g. `'2'`) |
+| `updateThread(threadId, request)` | Update a thread (currently `title`). | **Required for v2 threads** (e.g. `'2'`) |
+| `getThreadMessages(threadId, request?)` | Return the thread's transcript. | **Required for v2 threads** (e.g. `'2'`) |
 | `getThreadTrace(threadId, request?)` | Reasoning trace per interaction (paginated). | v1 threads only |
 | `getInteractionTrace(interactionId)` | Reasoning trace for one interaction. | v1 threads only |
 
