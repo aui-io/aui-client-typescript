@@ -1368,7 +1368,9 @@ await client.projects.getProjectUsage("projectId", {
 
 List your organization's conversation threads, newest first. Repeatable
 filters (``tool``, ``rule``, ``param``, ``created``) OR within a field and
-AND across fields.
+AND across fields. ``runtime_version`` other than '1' lists runtime-v2
+threads instead — that engine's threads are indexed per agent, so an
+``agent_id`` (or ``user_id``) filter is required there.
 </dd>
 </dl>
 </dd>
@@ -1421,7 +1423,7 @@ await client.threads.listThreads({
 </dl>
 </details>
 
-<details><summary><code>client.threads.<a href="/src/api/resources/threads/client/Client.ts">getThread</a>(threadId) -> Apollo.Thread</code></summary>
+<details><summary><code>client.threads.<a href="/src/api/resources/threads/client/Client.ts">getThread</a>(threadId, { ...params }) -> Apollo.Thread</code></summary>
 <dl>
 <dd>
 
@@ -1448,7 +1450,9 @@ Fetch one thread's details — title, participants, and status.
 <dd>
 
 ```typescript
-await client.threads.getThread("threadId");
+await client.threads.getThread("threadId", {
+    runtime_version: "runtime_version"
+});
 
 ```
 </dd>
@@ -1465,6 +1469,14 @@ await client.threads.getThread("threadId");
 <dd>
 
 **threadId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `Apollo.GetThreadRequest` 
     
 </dd>
 </dl>
@@ -1512,7 +1524,9 @@ left unchanged; the full updated thread is returned.
 <dd>
 
 ```typescript
-await client.threads.updateThread("threadId");
+await client.threads.updateThread("threadId", {
+    runtime_version: "runtime_version"
+});
 
 ```
 </dd>
@@ -1697,7 +1711,7 @@ await client.threads.getInteractionTrace("interactionId");
 </dl>
 </details>
 
-<details><summary><code>client.threads.<a href="/src/api/resources/threads/client/Client.ts">getThreadMessages</a>(threadId) -> Apollo.Message[]</code></summary>
+<details><summary><code>client.threads.<a href="/src/api/resources/threads/client/Client.ts">getThreadMessages</a>(threadId, { ...params }) -> Apollo.Message[]</code></summary>
 <dl>
 <dd>
 
@@ -1724,7 +1738,9 @@ The thread's full transcript, in chronological order.
 <dd>
 
 ```typescript
-await client.threads.getThreadMessages("threadId");
+await client.threads.getThreadMessages("threadId", {
+    runtime_version: "runtime_version"
+});
 
 ```
 </dd>
@@ -1741,6 +1757,14 @@ await client.threads.getThreadMessages("threadId");
 <dd>
 
 **threadId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `Apollo.GetThreadMessagesRequest` 
     
 </dd>
 </dl>
@@ -1981,7 +2005,7 @@ await client.messaging.rerun("threadId", {
 </dl>
 </details>
 
-<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">listMessages</a>(threadId) -> Apollo.Message[]</code></summary>
+<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">listMessages</a>(threadId, { ...params }) -> Apollo.Message[]</code></summary>
 <dl>
 <dd>
 
@@ -2008,7 +2032,9 @@ The thread's full transcript, in chronological order.
 <dd>
 
 ```typescript
-await client.messaging.listMessages("threadId");
+await client.messaging.listMessages("threadId", {
+    runtime_version: "runtime_version"
+});
 
 ```
 </dd>
@@ -2025,6 +2051,14 @@ await client.messaging.listMessages("threadId");
 <dd>
 
 **threadId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `Apollo.ListMessagesRequest` 
     
 </dd>
 </dl>

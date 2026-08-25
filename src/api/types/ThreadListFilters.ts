@@ -21,4 +21,6 @@ export interface ThreadListFilters {
     param?: string[];
     /** Filter by agent id(s) */
     agent_id?: string[];
+    /** Runtime generation to list threads from: '1' (the default) lists threads of agents on the v1 runtime — today's behavior; any other value (e.g. '2' or '0.5.4') lists runtime-v2 threads, which requires an agent_id or user_id filter. */
+    runtime_version?: string;
 }

@@ -522,7 +522,9 @@ describe("Messaging", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.messaging.listMessages("threadId");
+        const response = await client.messaging.listMessages("threadId", {
+            runtime_version: "runtime_version",
+        });
         expect(response).toEqual([
             {
                 id: "id",

@@ -6,9 +6,7 @@
  *         runtime_version: "runtime_version"
  *     }
  */
-export interface UpdateThreadRequest {
+export interface GetThreadMessagesRequest {
     /** Runtime generation the thread lives on: '1' (the default) reads threads of agents on the v1 runtime — today's behavior; any other value (e.g. '2' or '0.5.4') reads runtime-v2 threads. */
     runtime_version?: string;
-    /** New thread title; omit to leave the title unchanged. */
-    title?: string;
 }

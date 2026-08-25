@@ -41,6 +41,8 @@ export * from "./SendMessageRequest.js";
 export * from "./SendMessageResponse.js";
 export * from "./StreamEvent.js";
 export * from "./SubmitMessageRequest.js";
+export * from "./SuggestionsStreamEvent.js";
+export * from "./SuggestionsStreamEventData.js";
 export * from "./Thread.js";
 export * from "./ThreadEnvelope.js";
 export * from "./ThreadListFilters.js";

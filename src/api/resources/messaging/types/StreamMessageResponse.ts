@@ -6,7 +6,8 @@ export type StreamMessageResponse =
     | Apollo.StreamMessageResponse.Thread
     | Apollo.StreamMessageResponse.Message
     | Apollo.StreamMessageResponse.Event
-    | Apollo.StreamMessageResponse.Error_;
+    | Apollo.StreamMessageResponse.Error_
+    | Apollo.StreamMessageResponse.Suggestions;
 
 export namespace StreamMessageResponse {
     export interface Thread extends Apollo.ThreadStreamEvent {
@@ -23,5 +24,9 @@ export namespace StreamMessageResponse {
 
     export interface Error_ extends Apollo.ErrorStreamEvent {
         type: "error";
+    }
+
+    export interface Suggestions extends Apollo.SuggestionsStreamEvent {
+        type: "suggestions";
     }
 }

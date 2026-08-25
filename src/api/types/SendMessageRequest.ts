@@ -13,4 +13,6 @@ export interface SendMessageRequest {
     image_url?: string;
     /** Per-message values for the agent's configured context variables. */
     agent_variables?: Record<string, unknown>;
+    /** Optional runtime build pin (e.g. '0.5.4') for agents on the runtime-v2 engine. Has no effect on which engine serves the agent; omit to use the current default runtime. */
+    runtime_version?: string;
 }

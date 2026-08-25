@@ -372,6 +372,7 @@ export class Messaging {
      * The thread's full transcript, in chronological order.
      *
      * @param {string} threadId
+     * @param {Apollo.ListMessagesRequest} request
      * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link Apollo.BadRequestError}
@@ -383,19 +384,29 @@ export class Messaging {
      * @throws {@link Apollo.InternalServerError}
      *
      * @example
-     *     await client.messaging.listMessages("threadId")
+     *     await client.messaging.listMessages("threadId", {
+     *         runtime_version: "runtime_version"
+     *     })
      */
     public listMessages(
         threadId: string,
+        request: Apollo.ListMessagesRequest = {},
         requestOptions?: Messaging.RequestOptions,
     ): core.HttpResponsePromise<Apollo.Message[]> {
-        return core.HttpResponsePromise.fromPromise(this.__listMessages(threadId, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__listMessages(threadId, request, requestOptions));
     }
 
     private async __listMessages(
         threadId: string,
+        request: Apollo.ListMessagesRequest = {},
         requestOptions?: Messaging.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.Message[]>> {
+        const { runtime_version: runtimeVersion } = request;
+        const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
+        if (runtimeVersion != null) {
+            _queryParams.runtime_version = runtimeVersion;
+        }
+
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
             mergeOnlyDefinedHeaders({
@@ -412,7 +423,7 @@ export class Messaging {
             ),
             method: "GET",
             headers: _headers,
-            queryParameters: requestOptions?.queryParams,
+            queryParameters: { ..._queryParams, ...requestOptions?.queryParams },
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,

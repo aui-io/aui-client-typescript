@@ -19,4 +19,6 @@ export interface InitiateThreadRequest {
     agent_display_name?: string;
     /** Optional sender to send from (your connected number). Omit to use the platform default sender. */
     sender_id?: string;
+    /** Optional runtime build pin (e.g. '0.5.4') for agents on the runtime-v2 engine. Has no effect on which engine serves the agent; omit to use the current default runtime. */
+    runtime_version?: string;
 }

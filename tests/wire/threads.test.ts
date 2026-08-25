@@ -250,7 +250,9 @@ describe("Threads", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.threads.getThread("threadId");
+        const response = await client.threads.getThread("threadId", {
+            runtime_version: "runtime_version",
+        });
         expect(response).toEqual({
             id: "id",
             user_id: "user_id",
@@ -438,7 +440,9 @@ describe("Threads", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.threads.updateThread("threadId");
+        const response = await client.threads.updateThread("threadId", {
+            runtime_version: "runtime_version",
+        });
         expect(response).toEqual({
             id: "id",
             user_id: "user_id",
@@ -1215,7 +1219,9 @@ describe("Threads", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.threads.getThreadMessages("threadId");
+        const response = await client.threads.getThreadMessages("threadId", {
+            runtime_version: "runtime_version",
+        });
         expect(response).toEqual([
             {
                 id: "id",

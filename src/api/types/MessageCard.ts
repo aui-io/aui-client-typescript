@@ -10,4 +10,10 @@ export interface MessageCard {
     is_recommended?: boolean;
     index?: number;
     json_data?: Apollo.MessageCardJsonData;
+    /** The capability whose widget template renders this card. */
+    capability?: string;
+    /** The record instance this card is about, if any. */
+    instance?: string;
+    /** The card's authored title. */
+    title?: string;
 }

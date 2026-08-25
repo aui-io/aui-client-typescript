@@ -23,7 +23,9 @@ export class Threads {
     /**
      * List your organization's conversation threads, newest first. Repeatable
      * filters (``tool``, ``rule``, ``param``, ``created``) OR within a field and
-     * AND across fields.
+     * AND across fields. ``runtime_version`` other than '1' lists runtime-v2
+     * threads instead — that engine's threads are indexed per agent, so an
+     * ``agent_id`` (or ``user_id``) filter is required there.
      *
      * @param {Apollo.ListThreadsRequest} request
      * @param {Threads.RequestOptions} requestOptions - Request-specific configuration.
@@ -164,6 +166,7 @@ export class Threads {
      * Fetch one thread's details — title, participants, and status.
      *
      * @param {string} threadId
+     * @param {Apollo.GetThreadRequest} request
      * @param {Threads.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link Apollo.BadRequestError}
@@ -175,19 +178,29 @@ export class Threads {
      * @throws {@link Apollo.InternalServerError}
      *
      * @example
-     *     await client.threads.getThread("threadId")
+     *     await client.threads.getThread("threadId", {
+     *         runtime_version: "runtime_version"
+     *     })
      */
     public getThread(
         threadId: string,
+        request: Apollo.GetThreadRequest = {},
         requestOptions?: Threads.RequestOptions,
     ): core.HttpResponsePromise<Apollo.Thread> {
-        return core.HttpResponsePromise.fromPromise(this.__getThread(threadId, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__getThread(threadId, request, requestOptions));
     }
 
     private async __getThread(
         threadId: string,
+        request: Apollo.GetThreadRequest = {},
         requestOptions?: Threads.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.Thread>> {
+        const { runtime_version: runtimeVersion } = request;
+        const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
+        if (runtimeVersion != null) {
+            _queryParams.runtime_version = runtimeVersion;
+        }
+
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
             mergeOnlyDefinedHeaders({
@@ -204,7 +217,7 @@ export class Threads {
             ),
             method: "GET",
             headers: _headers,
-            queryParameters: requestOptions?.queryParams,
+            queryParameters: { ..._queryParams, ...requestOptions?.queryParams },
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -285,7 +298,9 @@ export class Threads {
      * @throws {@link Apollo.InternalServerError}
      *
      * @example
-     *     await client.threads.updateThread("threadId")
+     *     await client.threads.updateThread("threadId", {
+     *         runtime_version: "runtime_version"
+     *     })
      */
     public updateThread(
         threadId: string,
@@ -300,6 +315,12 @@ export class Threads {
         request: Apollo.UpdateThreadRequest = {},
         requestOptions?: Threads.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.Thread>> {
+        const { runtime_version: runtimeVersion, ..._body } = request;
+        const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
+        if (runtimeVersion != null) {
+            _queryParams.runtime_version = runtimeVersion;
+        }
+
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
             mergeOnlyDefinedHeaders({
@@ -317,9 +338,9 @@ export class Threads {
             method: "PATCH",
             headers: _headers,
             contentType: "application/json",
-            queryParameters: requestOptions?.queryParams,
+            queryParameters: { ..._queryParams, ...requestOptions?.queryParams },
             requestType: "json",
-            body: request,
+            body: _body,
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -641,6 +662,7 @@ export class Threads {
      * The thread's full transcript, in chronological order.
      *
      * @param {string} threadId
+     * @param {Apollo.GetThreadMessagesRequest} request
      * @param {Threads.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link Apollo.BadRequestError}
@@ -652,19 +674,29 @@ export class Threads {
      * @throws {@link Apollo.InternalServerError}
      *
      * @example
-     *     await client.threads.getThreadMessages("threadId")
+     *     await client.threads.getThreadMessages("threadId", {
+     *         runtime_version: "runtime_version"
+     *     })
      */
     public getThreadMessages(
         threadId: string,
+        request: Apollo.GetThreadMessagesRequest = {},
         requestOptions?: Threads.RequestOptions,
     ): core.HttpResponsePromise<Apollo.Message[]> {
-        return core.HttpResponsePromise.fromPromise(this.__getThreadMessages(threadId, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__getThreadMessages(threadId, request, requestOptions));
     }
 
     private async __getThreadMessages(
         threadId: string,
+        request: Apollo.GetThreadMessagesRequest = {},
         requestOptions?: Threads.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.Message[]>> {
+        const { runtime_version: runtimeVersion } = request;
+        const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
+        if (runtimeVersion != null) {
+            _queryParams.runtime_version = runtimeVersion;
+        }
+
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
             mergeOnlyDefinedHeaders({
@@ -681,7 +713,7 @@ export class Threads {
             ),
             method: "GET",
             headers: _headers,
-            queryParameters: requestOptions?.queryParams,
+            queryParameters: { ..._queryParams, ...requestOptions?.queryParams },
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
