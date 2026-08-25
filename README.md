@@ -54,7 +54,7 @@ jobs depending on where you pass it:
 
 | Where | What it does | When to pass it |
 | --- | --- | --- |
-| Thread **reads**: `listMessages`, `threads.getThread`, `threads.updateThread`, `threads.getThreadMessages`, `threads.listThreads` filters | Tells the API which runtime the thread lives on. Defaults to v1. | **Required for v2 threads.** Omit for v1 threads. |
+| Thread **reads**: `listMessages`, `threads.getThread`, `threads.updateThread`, `threads.getThreadMessages`, `threads.listThreads` | Tells the API which runtime the thread lives on. Defaults to v1. | **Required for v2 threads.** Omit for v1 threads. |
 | Message **sends**: `sendMessage`, `streamMessage`, `rerun`, `channels.initiateThread` | Pins the turn to a specific runtime build (e.g. `'0.8.0'`). | Almost never — omit it and the platform uses the agent's own build. Advanced use only. Ignored by v1 agents. |
 
 **Accepted values on reads:** any runtime version that isn't the `1.x` family selects
@@ -354,6 +354,11 @@ const client = new ApolloManagementClient({
 });
 ```
 
+> **Upgrading from 3.3.4 or earlier:** list methods now take their filter fields
+> directly on the request — drop the `filters: { … }` wrapper (the TypeScript
+> compiler points at every call site). Versions up to 3.3.4 also did not apply
+> list filters on the wire; from 3.3.5 they filter reliably.
+
 ### Projects
 
 | Method | Description |
@@ -374,7 +379,7 @@ const usage = await client.projects.getProjectUsage(project.id);
 
 | Method | Description |
 | --- | --- |
-| `listAgents(projectId, { filters })` | List a project's agents. |
+| `listAgents(projectId, request?)` | List a project's agents (optional `name` substring filter). |
 | `createAgent(projectId, request)` | Create an agent. |
 | `getAgent(agentId)` | Fetch one agent. |
 | `updateAgent(agentId, request)` | Rename an agent (re-publishes the live version with the new name). |
@@ -382,7 +387,8 @@ const usage = await client.projects.getProjectUsage(project.id);
 | `getAgentUsage(agentId)` | Usage metrics for one agent. |
 
 ```ts
-const page = await client.agents.listAgents(projectId, { filters: {} });
+const page = await client.agents.listAgents(projectId, {});
+const filtered = await client.agents.listAgents(projectId, { name: 'support' });
 const agent = await client.agents.createAgent(projectId, { name: 'Support bot' });
 const usage = await client.agents.getAgentUsage(agent.id);
 ```
@@ -391,7 +397,7 @@ const usage = await client.agents.getAgentUsage(agent.id);
 
 | Method | Description |
 | --- | --- |
-| `listVersions(agentId, { filters })` | List an agent's versions, newest first. |
+| `listVersions(agentId, request?)` | List an agent's versions, newest first (filter by `status`, `tag`, `label`, `version_number`, `exclude_revisions`). |
 | `createVersion(agentId, request)` | Create a draft version. |
 | `updateVersion(agentId, versionId, request)` | Update a version's metadata. |
 | `pushVersion(agentId, versionId, request)` | Push a configuration bundle. |
@@ -400,8 +406,12 @@ const usage = await client.agents.getAgentUsage(agent.id);
 | `archiveVersion(agentId, versionId)` | Archive a version. |
 
 ```ts
-const draft = await client.agentVersions.createVersion(agentId, {});
-await client.agentVersions.pushVersion(agentId, draft.id, { /* config bundle */ });
+const versions = await client.agentVersions.listVersions(agentId, {});
+const draft = await client.agentVersions.createVersion(agentId, { source: 'agent-scope' });
+await client.agentVersions.pushVersion(agentId, draft.id, {
+  caller: 'cli',
+  bundle: { /* config bundle (schema_version, general_settings, …) */ },
+});
 await client.agentVersions.publishVersion(agentId, draft.id);
 ```
 
@@ -409,7 +419,7 @@ await client.agentVersions.publishVersion(agentId, draft.id);
 
 | Method | Description | `runtime_version`? |
 | --- | --- | --- |
-| `listThreads({ filters })` | List threads, newest first. | Set `filters.runtime_version` (e.g. `'2'`) to list v2 threads |
+| `listThreads(request?)` | List threads, newest first. | Set `runtime_version` (e.g. `'2'`) to list v2 threads |
 | `getThread(threadId, request?)` | Fetch one thread. | **Required for v2 threads** (e.g. `'2'`) |
 | `updateThread(threadId, request)` | Update a thread (currently `title`). | **Required for v2 threads** (e.g. `'2'`) |
 | `getThreadMessages(threadId, request?)` | Return the thread's transcript. | **Required for v2 threads** (e.g. `'2'`) |
@@ -437,29 +447,31 @@ await client.threads.updateThread(threadId, {
 
 #### Listing threads
 
-`filters` supports `project_id`, `agent_id`, `user_id`, `external_id`, `created`
-(range), `tool`, `rule`, and `param`. Prefer a filter such as `project_id` over an
-empty object; the unfiltered list sorts every thread in the organization and can be slow.
+Filter fields go directly on the request: `project_id`, `agent_id`, `user_id`,
+`external_id`, `created` (range), `tool`, `rule`, and `param`. Prefer a filter such
+as `project_id` over an empty request; the unfiltered list sorts every thread in
+the organization and can be slow.
 
 ```ts
 const page = await client.threads.listThreads(
-  { filters: { project_id: projectId } },
+  { project_id: projectId },
   { timeoutInSeconds: 120 },
 );
 ```
 
 **Listing v2 threads** has two extra rules:
 
-- Set `filters.runtime_version: '2'` **and** include an `agent_id` or a `user_id`
-  filter (v2 listings are always scoped to an agent or an end user; an unscoped v2
-  list returns 400).
+- Set `runtime_version: '2'` **and** include an `agent_id` or a `user_id` filter
+  (v2 listings are always scoped to an agent or an end user; an unscoped v2 list
+  returns 400).
 - Only `agent_id`, `user_id`, and `created` (together with `agent_id`) apply to v2
   listings. The v1-specific filters (`project_id`, `external_id`, `tool`, `rule`,
   `param`) and custom sorts return a clear 400 on the v2 path.
 
 ```ts
 const v2Page = await client.threads.listThreads({
-  filters: { runtime_version: '2', agent_id: [agentId] },
+  runtime_version: '2',
+  agent_id: [agentId],
 });
 ```
 
@@ -477,7 +489,7 @@ List endpoints — including thread traces — return `{ results, meta }`. Use
 There is no client-wide timeout. Set `timeoutInSeconds` per call when needed:
 
 ```ts
-await client.threads.listThreads({ filters: {} }, { timeoutInSeconds: 120 });
+await client.threads.listThreads({}, { timeoutInSeconds: 120 });
 ```
 
 ## Error handling
