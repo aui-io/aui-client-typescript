@@ -84,7 +84,12 @@ List the project's agents, optionally filtered by name.
 
 ```typescript
 await client.agents.listAgents("projectId", {
-    filters: {}
+    name: "name",
+    "page[size]": 1,
+    "page[after]": "page[after]",
+    "page[before]": "page[before]",
+    sort_by: "sort_by",
+    sort_order: "asc"
 });
 
 ```
@@ -505,7 +510,15 @@ or version number; set ``exclude_revisions`` to see only base versions.
 
 ```typescript
 await client.agentVersions.listVersions("agentId", {
-    filters: {}
+    tag: "tag",
+    version_number: 1,
+    label: "label",
+    exclude_revisions: true,
+    "page[size]": 1,
+    "page[after]": "page[after]",
+    "page[before]": "page[before]",
+    sort_by: "sort_by",
+    sort_order: "asc"
 });
 
 ```
@@ -1386,7 +1399,15 @@ threads instead — that engine's threads are indexed per agent, so an
 
 ```typescript
 await client.threads.listThreads({
-    filters: {}
+    project_id: "project_id",
+    user_id: "user_id",
+    external_id: "external_id",
+    runtime_version: "runtime_version",
+    "page[size]": 1,
+    "page[after]": "page[after]",
+    "page[before]": "page[before]",
+    sort_by: "sort_by",
+    sort_order: "asc"
 });
 
 ```

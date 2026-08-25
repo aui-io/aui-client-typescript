@@ -37,12 +37,17 @@ export class Agents {
      *
      * @example
      *     await client.agents.listAgents("projectId", {
-     *         filters: {}
+     *         name: "name",
+     *         "page[size]": 1,
+     *         "page[after]": "page[after]",
+     *         "page[before]": "page[before]",
+     *         sort_by: "sort_by",
+     *         sort_order: "asc"
      *     })
      */
     public listAgents(
         projectId: string,
-        request: Apollo.ListAgentsRequest,
+        request: Apollo.ListAgentsRequest = {},
         requestOptions?: Agents.RequestOptions,
     ): core.HttpResponsePromise<Apollo.PageAgent> {
         return core.HttpResponsePromise.fromPromise(this.__listAgents(projectId, request, requestOptions));
@@ -50,11 +55,11 @@ export class Agents {
 
     private async __listAgents(
         projectId: string,
-        request: Apollo.ListAgentsRequest,
+        request: Apollo.ListAgentsRequest = {},
         requestOptions?: Agents.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.PageAgent>> {
         const {
-            filters,
+            name,
             "page[size]": pageSize,
             "page[after]": pageAfter,
             "page[before]": pageBefore,
@@ -62,7 +67,10 @@ export class Agents {
             sort_order: sortOrder,
         } = request;
         const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
-        _queryParams.filters = filters;
+        if (name != null) {
+            _queryParams.name = name;
+        }
+
         if (pageSize != null) {
             _queryParams["page[size]"] = pageSize.toString();
         }

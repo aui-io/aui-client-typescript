@@ -40,22 +40,38 @@ export class Threads {
      *
      * @example
      *     await client.threads.listThreads({
-     *         filters: {}
+     *         project_id: "project_id",
+     *         user_id: "user_id",
+     *         external_id: "external_id",
+     *         runtime_version: "runtime_version",
+     *         "page[size]": 1,
+     *         "page[after]": "page[after]",
+     *         "page[before]": "page[before]",
+     *         sort_by: "sort_by",
+     *         sort_order: "asc"
      *     })
      */
     public listThreads(
-        request: Apollo.ListThreadsRequest,
+        request: Apollo.ListThreadsRequest = {},
         requestOptions?: Threads.RequestOptions,
     ): core.HttpResponsePromise<Apollo.PageThreadListItem> {
         return core.HttpResponsePromise.fromPromise(this.__listThreads(request, requestOptions));
     }
 
     private async __listThreads(
-        request: Apollo.ListThreadsRequest,
+        request: Apollo.ListThreadsRequest = {},
         requestOptions?: Threads.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.PageThreadListItem>> {
         const {
-            filters,
+            project_id: projectId,
+            user_id: userId,
+            external_id: externalId,
+            created,
+            tool,
+            rule,
+            param,
+            agent_id: agentId,
+            runtime_version: runtimeVersion,
             "page[size]": pageSize,
             "page[after]": pageAfter,
             "page[before]": pageBefore,
@@ -63,7 +79,62 @@ export class Threads {
             sort_order: sortOrder,
         } = request;
         const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
-        _queryParams.filters = filters;
+        if (projectId != null) {
+            _queryParams.project_id = projectId;
+        }
+
+        if (userId != null) {
+            _queryParams.user_id = userId;
+        }
+
+        if (externalId != null) {
+            _queryParams.external_id = externalId;
+        }
+
+        if (created != null) {
+            if (Array.isArray(created)) {
+                _queryParams.created = created.map((item) => item);
+            } else {
+                _queryParams.created = created;
+            }
+        }
+
+        if (tool != null) {
+            if (Array.isArray(tool)) {
+                _queryParams.tool = tool.map((item) => item);
+            } else {
+                _queryParams.tool = tool;
+            }
+        }
+
+        if (rule != null) {
+            if (Array.isArray(rule)) {
+                _queryParams.rule = rule.map((item) => item);
+            } else {
+                _queryParams.rule = rule;
+            }
+        }
+
+        if (param != null) {
+            if (Array.isArray(param)) {
+                _queryParams.param = param.map((item) => item);
+            } else {
+                _queryParams.param = param;
+            }
+        }
+
+        if (agentId != null) {
+            if (Array.isArray(agentId)) {
+                _queryParams.agent_id = agentId.map((item) => item);
+            } else {
+                _queryParams.agent_id = agentId;
+            }
+        }
+
+        if (runtimeVersion != null) {
+            _queryParams.runtime_version = runtimeVersion;
+        }
+
         if (pageSize != null) {
             _queryParams["page[size]"] = pageSize.toString();
         }

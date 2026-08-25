@@ -5,11 +5,17 @@ import type * as Apollo from "../../../../index.js";
 /**
  * @example
  *     {
- *         filters: {}
+ *         name: "name",
+ *         "page[size]": 1,
+ *         "page[after]": "page[after]",
+ *         "page[before]": "page[before]",
+ *         sort_by: "sort_by",
+ *         sort_order: "asc"
  *     }
  */
 export interface ListAgentsRequest {
-    filters: Apollo.AgentListFilters;
+    /** Case-insensitive substring match on name */
+    name?: string;
     "page[size]"?: number;
     "page[after]"?: string;
     "page[before]"?: string;

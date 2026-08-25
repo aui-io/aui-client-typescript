@@ -15,6 +15,8 @@ export interface AgentVersionCreateRequest {
     label?: string;
     tags?: string[];
     notes?: string;
+    /** Runtime build (e.g. '0.4.0') to stamp on the draft. Omit to inherit the cloned source's runtime (or none, for source='empty'). */
+    runtime_version?: string;
 }
 
 export namespace AgentVersionCreateRequest {

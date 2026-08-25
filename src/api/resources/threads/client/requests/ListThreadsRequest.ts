@@ -5,11 +5,36 @@ import type * as Apollo from "../../../../index.js";
 /**
  * @example
  *     {
- *         filters: {}
+ *         project_id: "project_id",
+ *         user_id: "user_id",
+ *         external_id: "external_id",
+ *         runtime_version: "runtime_version",
+ *         "page[size]": 1,
+ *         "page[after]": "page[after]",
+ *         "page[before]": "page[before]",
+ *         sort_by: "sort_by",
+ *         sort_order: "asc"
  *     }
  */
 export interface ListThreadsRequest {
-    filters: Apollo.ThreadListFilters;
+    /** Filter by project (account) id */
+    project_id?: string;
+    /** Filter by end-user id */
+    user_id?: string;
+    /** Filter by caller-supplied external id */
+    external_id?: string;
+    /** RFC3339 timestamp(s); two values = a [start, end] range */
+    created?: string | string[];
+    /** Filter by activated tool code(s) */
+    tool?: string | string[];
+    /** Rule 'code', or 'code:fired|blocked|passed' */
+    rule?: string | string[];
+    /** 'key:value', 'key:*', or 'key' with >,<,>=,<= */
+    param?: string | string[];
+    /** Filter by agent id(s) */
+    agent_id?: string | string[];
+    /** Runtime generation to list threads from: '1' (the default) lists threads of agents on the v1 runtime — today's behavior; any other value (e.g. '2' or '0.5.4') lists runtime-v2 threads, which requires an agent_id or user_id filter. */
+    runtime_version?: string;
     "page[size]"?: number;
     "page[after]"?: string;
     "page[before]"?: string;

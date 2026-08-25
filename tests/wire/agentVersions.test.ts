@@ -24,44 +24,11 @@ describe("AgentVersions", () => {
                     status: "draft",
                     parent_version_id: "parent_version_id",
                     label: "label",
-                    tags: ["tags", "tags"],
+                    tags: ["tags"],
                     notes: "notes",
-                    stats: {
-                        workflows: 1,
-                        policies: 1,
-                        agent_placeholders: 1,
-                        scope_entities: 1,
-                        integrations: 1,
-                        card_templates: 1,
-                        parameters: 1,
-                        knowledge_bases: 1,
-                        agent_properties: 1,
-                    },
-                    created_at: "2024-01-15T09:30:00Z",
-                    published_at: "2024-01-15T09:30:00Z",
-                },
-                {
-                    id: "id",
-                    agent_id: "agent_id",
-                    version_number: 1,
-                    version_revision_number: 1,
-                    version_tag: "version_tag",
-                    status: "draft",
-                    parent_version_id: "parent_version_id",
-                    label: "label",
-                    tags: ["tags", "tags"],
-                    notes: "notes",
-                    stats: {
-                        workflows: 1,
-                        policies: 1,
-                        agent_placeholders: 1,
-                        scope_entities: 1,
-                        integrations: 1,
-                        card_templates: 1,
-                        parameters: 1,
-                        knowledge_bases: 1,
-                        agent_properties: 1,
-                    },
+                    stats: {},
+                    runtime_version: "runtime_version",
+                    schema_version: "schema_version",
                     created_at: "2024-01-15T09:30:00Z",
                     published_at: "2024-01-15T09:30:00Z",
                 },
@@ -78,7 +45,15 @@ describe("AgentVersions", () => {
             .build();
 
         const response = await client.agentVersions.listVersions("agentId", {
-            filters: {},
+            tag: "tag",
+            version_number: 1,
+            label: "label",
+            exclude_revisions: true,
+            "page[size]": 1,
+            "page[after]": "page[after]",
+            "page[before]": "page[before]",
+            sort_by: "sort_by",
+            sort_order: "asc",
         });
         expect(response).toEqual({
             results: [
@@ -91,44 +66,11 @@ describe("AgentVersions", () => {
                     status: "draft",
                     parent_version_id: "parent_version_id",
                     label: "label",
-                    tags: ["tags", "tags"],
+                    tags: ["tags"],
                     notes: "notes",
-                    stats: {
-                        workflows: 1,
-                        policies: 1,
-                        agent_placeholders: 1,
-                        scope_entities: 1,
-                        integrations: 1,
-                        card_templates: 1,
-                        parameters: 1,
-                        knowledge_bases: 1,
-                        agent_properties: 1,
-                    },
-                    created_at: "2024-01-15T09:30:00Z",
-                    published_at: "2024-01-15T09:30:00Z",
-                },
-                {
-                    id: "id",
-                    agent_id: "agent_id",
-                    version_number: 1,
-                    version_revision_number: 1,
-                    version_tag: "version_tag",
-                    status: "draft",
-                    parent_version_id: "parent_version_id",
-                    label: "label",
-                    tags: ["tags", "tags"],
-                    notes: "notes",
-                    stats: {
-                        workflows: 1,
-                        policies: 1,
-                        agent_placeholders: 1,
-                        scope_entities: 1,
-                        integrations: 1,
-                        card_templates: 1,
-                        parameters: 1,
-                        knowledge_bases: 1,
-                        agent_properties: 1,
-                    },
+                    stats: {},
+                    runtime_version: "runtime_version",
+                    schema_version: "schema_version",
                     created_at: "2024-01-15T09:30:00Z",
                     published_at: "2024-01-15T09:30:00Z",
                 },
@@ -163,9 +105,7 @@ describe("AgentVersions", () => {
             .build();
 
         await expect(async () => {
-            return await client.agentVersions.listVersions("agentId", {
-                filters: {},
-            });
+            return await client.agentVersions.listVersions("agentId");
         }).rejects.toThrow(Apollo.BadRequestError);
     });
 
@@ -187,9 +127,7 @@ describe("AgentVersions", () => {
             .build();
 
         await expect(async () => {
-            return await client.agentVersions.listVersions("agentId", {
-                filters: {},
-            });
+            return await client.agentVersions.listVersions("agentId");
         }).rejects.toThrow(Apollo.UnauthorizedError);
     });
 
@@ -211,9 +149,7 @@ describe("AgentVersions", () => {
             .build();
 
         await expect(async () => {
-            return await client.agentVersions.listVersions("agentId", {
-                filters: {},
-            });
+            return await client.agentVersions.listVersions("agentId");
         }).rejects.toThrow(Apollo.ForbiddenError);
     });
 
@@ -235,9 +171,7 @@ describe("AgentVersions", () => {
             .build();
 
         await expect(async () => {
-            return await client.agentVersions.listVersions("agentId", {
-                filters: {},
-            });
+            return await client.agentVersions.listVersions("agentId");
         }).rejects.toThrow(Apollo.NotFoundError);
     });
 
@@ -259,9 +193,7 @@ describe("AgentVersions", () => {
             .build();
 
         await expect(async () => {
-            return await client.agentVersions.listVersions("agentId", {
-                filters: {},
-            });
+            return await client.agentVersions.listVersions("agentId");
         }).rejects.toThrow(Apollo.ConflictError);
     });
 
@@ -283,9 +215,7 @@ describe("AgentVersions", () => {
             .build();
 
         await expect(async () => {
-            return await client.agentVersions.listVersions("agentId", {
-                filters: {},
-            });
+            return await client.agentVersions.listVersions("agentId");
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
@@ -307,9 +237,7 @@ describe("AgentVersions", () => {
             .build();
 
         await expect(async () => {
-            return await client.agentVersions.listVersions("agentId", {
-                filters: {},
-            });
+            return await client.agentVersions.listVersions("agentId");
         }).rejects.toThrow(Apollo.InternalServerError);
     });
 
@@ -343,6 +271,8 @@ describe("AgentVersions", () => {
                 knowledge_bases: 1,
                 agent_properties: 1,
             },
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             published_at: "2024-01-15T09:30:00Z",
         };
@@ -380,6 +310,8 @@ describe("AgentVersions", () => {
                 knowledge_bases: 1,
                 agent_properties: 1,
             },
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             published_at: "2024-01-15T09:30:00Z",
         });
@@ -590,6 +522,8 @@ describe("AgentVersions", () => {
                 knowledge_bases: 1,
                 agent_properties: 1,
             },
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             published_at: "2024-01-15T09:30:00Z",
         };
@@ -625,6 +559,8 @@ describe("AgentVersions", () => {
                 knowledge_bases: 1,
                 agent_properties: 1,
             },
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             published_at: "2024-01-15T09:30:00Z",
         });
@@ -821,6 +757,8 @@ describe("AgentVersions", () => {
                 knowledge_bases: 1,
                 agent_properties: 1,
             },
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             published_at: "2024-01-15T09:30:00Z",
         };
@@ -855,6 +793,8 @@ describe("AgentVersions", () => {
                 knowledge_bases: 1,
                 agent_properties: 1,
             },
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             published_at: "2024-01-15T09:30:00Z",
         });
@@ -1044,6 +984,8 @@ describe("AgentVersions", () => {
                 knowledge_bases: 1,
                 agent_properties: 1,
             },
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             published_at: "2024-01-15T09:30:00Z",
         };
@@ -1078,6 +1020,8 @@ describe("AgentVersions", () => {
                 knowledge_bases: 1,
                 agent_properties: 1,
             },
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             published_at: "2024-01-15T09:30:00Z",
         });

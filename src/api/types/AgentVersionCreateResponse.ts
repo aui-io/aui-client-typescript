@@ -21,6 +21,10 @@ export interface AgentVersionCreateResponse {
     tags?: string[];
     notes?: string;
     stats?: Apollo.VersionStats;
+    /** Runtime build this version's bundle targets, e.g. '0.8.0'. None when the bundle pins no runtime */
+    runtime_version?: string;
+    /** AUI schema version of this version's bundle — the 'schema_version' it was pushed with. None until a bundle is pushed */
+    schema_version?: string;
     created_at: string;
     published_at?: string;
 }

@@ -5,11 +5,27 @@ import type * as Apollo from "../../../../index.js";
 /**
  * @example
  *     {
- *         filters: {}
+ *         tag: "tag",
+ *         version_number: 1,
+ *         label: "label",
+ *         exclude_revisions: true,
+ *         "page[size]": 1,
+ *         "page[after]": "page[after]",
+ *         "page[before]": "page[before]",
+ *         sort_by: "sort_by",
+ *         sort_order: "asc"
  *     }
  */
 export interface ListVersionsRequest {
-    filters: Apollo.AgentVersionListFilters;
+    status?: Apollo.ListVersionsRequestStatusItem | Apollo.ListVersionsRequestStatusItem[];
+    /** Filter by tag (partial match) */
+    tag?: string;
+    /** Filter by version number (exact match) */
+    version_number?: number;
+    /** Filter by label (partial match) */
+    label?: string;
+    /** If true, only return base versions (revision 0) */
+    exclude_revisions?: boolean;
     "page[size]"?: number;
     "page[after]"?: string;
     "page[before]"?: string;

@@ -38,12 +38,20 @@ export class AgentVersions {
      *
      * @example
      *     await client.agentVersions.listVersions("agentId", {
-     *         filters: {}
+     *         tag: "tag",
+     *         version_number: 1,
+     *         label: "label",
+     *         exclude_revisions: true,
+     *         "page[size]": 1,
+     *         "page[after]": "page[after]",
+     *         "page[before]": "page[before]",
+     *         sort_by: "sort_by",
+     *         sort_order: "asc"
      *     })
      */
     public listVersions(
         agentId: string,
-        request: Apollo.ListVersionsRequest,
+        request: Apollo.ListVersionsRequest = {},
         requestOptions?: AgentVersions.RequestOptions,
     ): core.HttpResponsePromise<Apollo.PageAgentVersion> {
         return core.HttpResponsePromise.fromPromise(this.__listVersions(agentId, request, requestOptions));
@@ -51,11 +59,15 @@ export class AgentVersions {
 
     private async __listVersions(
         agentId: string,
-        request: Apollo.ListVersionsRequest,
+        request: Apollo.ListVersionsRequest = {},
         requestOptions?: AgentVersions.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.PageAgentVersion>> {
         const {
-            filters,
+            status,
+            tag,
+            version_number: versionNumber,
+            label,
+            exclude_revisions: excludeRevisions,
             "page[size]": pageSize,
             "page[after]": pageAfter,
             "page[before]": pageBefore,
@@ -63,7 +75,30 @@ export class AgentVersions {
             sort_order: sortOrder,
         } = request;
         const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
-        _queryParams.filters = filters;
+        if (status != null) {
+            if (Array.isArray(status)) {
+                _queryParams.status = status.map((item) => item);
+            } else {
+                _queryParams.status = status;
+            }
+        }
+
+        if (tag != null) {
+            _queryParams.tag = tag;
+        }
+
+        if (versionNumber != null) {
+            _queryParams.version_number = versionNumber.toString();
+        }
+
+        if (label != null) {
+            _queryParams.label = label;
+        }
+
+        if (excludeRevisions != null) {
+            _queryParams.exclude_revisions = excludeRevisions.toString();
+        }
+
         if (pageSize != null) {
             _queryParams["page[size]"] = pageSize.toString();
         }

@@ -12,6 +12,10 @@ export interface AgentUpdateResponse {
     name: string;
     /** Tag of the currently deployed version; None until deployed */
     live_version_id?: string;
+    /** Runtime build the live version's bundle targets, e.g. '0.8.0'. None when nothing is deployed or the bundle pins no runtime */
+    runtime_version?: string;
+    /** AUI schema version of the live version's bundle. None until deployed */
+    schema_version?: string;
     /** Creation timestamp */
     created_at: string;
     /** Last update timestamp */

@@ -9,4 +9,8 @@
 export interface AgentCreateRequest {
     /** Agent name */
     name: string;
+    /** Template agent to clone the new agent from. Omit to use the default template of the environment's default category. */
+    from_template?: string;
+    /** Runtime build (e.g. '0.4.0') to stamp on the versions this create seeds. Omit to inherit the template's own runtime. Caller-supplied only — apollo never resolves a default from the runtime catalog. */
+    runtime_version?: string;
 }

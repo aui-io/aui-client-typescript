@@ -14,10 +14,7 @@ describe("Threads", () => {
         });
 
         const rawResponseBody = {
-            results: [
-                { id: "id", title: "title", created_at: "created_at", version_tag: "version_tag" },
-                { id: "id", title: "title", created_at: "created_at", version_tag: "version_tag" },
-            ],
+            results: [{ id: "id", title: "title", created_at: "created_at", version_tag: "version_tag" }],
             meta: { has_more: true, after_cursor: "after_cursor", before_cursor: "before_cursor" },
             links: { next: "next", prev: "prev" },
         };
@@ -30,16 +27,18 @@ describe("Threads", () => {
             .build();
 
         const response = await client.threads.listThreads({
-            filters: {},
+            project_id: "project_id",
+            user_id: "user_id",
+            external_id: "external_id",
+            runtime_version: "runtime_version",
+            "page[size]": 1,
+            "page[after]": "page[after]",
+            "page[before]": "page[before]",
+            sort_by: "sort_by",
+            sort_order: "asc",
         });
         expect(response).toEqual({
             results: [
-                {
-                    id: "id",
-                    title: "title",
-                    created_at: "created_at",
-                    version_tag: "version_tag",
-                },
                 {
                     id: "id",
                     title: "title",
@@ -77,9 +76,7 @@ describe("Threads", () => {
             .build();
 
         await expect(async () => {
-            return await client.threads.listThreads({
-                filters: {},
-            });
+            return await client.threads.listThreads();
         }).rejects.toThrow(Apollo.BadRequestError);
     });
 
@@ -101,9 +98,7 @@ describe("Threads", () => {
             .build();
 
         await expect(async () => {
-            return await client.threads.listThreads({
-                filters: {},
-            });
+            return await client.threads.listThreads();
         }).rejects.toThrow(Apollo.UnauthorizedError);
     });
 
@@ -125,9 +120,7 @@ describe("Threads", () => {
             .build();
 
         await expect(async () => {
-            return await client.threads.listThreads({
-                filters: {},
-            });
+            return await client.threads.listThreads();
         }).rejects.toThrow(Apollo.ForbiddenError);
     });
 
@@ -149,9 +142,7 @@ describe("Threads", () => {
             .build();
 
         await expect(async () => {
-            return await client.threads.listThreads({
-                filters: {},
-            });
+            return await client.threads.listThreads();
         }).rejects.toThrow(Apollo.NotFoundError);
     });
 
@@ -173,9 +164,7 @@ describe("Threads", () => {
             .build();
 
         await expect(async () => {
-            return await client.threads.listThreads({
-                filters: {},
-            });
+            return await client.threads.listThreads();
         }).rejects.toThrow(Apollo.ConflictError);
     });
 
@@ -197,9 +186,7 @@ describe("Threads", () => {
             .build();
 
         await expect(async () => {
-            return await client.threads.listThreads({
-                filters: {},
-            });
+            return await client.threads.listThreads();
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
@@ -221,9 +208,7 @@ describe("Threads", () => {
             .build();
 
         await expect(async () => {
-            return await client.threads.listThreads({
-                filters: {},
-            });
+            return await client.threads.listThreads();
         }).rejects.toThrow(Apollo.InternalServerError);
     });
 

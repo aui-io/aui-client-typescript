@@ -20,14 +20,8 @@ describe("Agents", () => {
                     project_id: "project_id",
                     name: "name",
                     live_version_id: "live_version_id",
-                    created_at: "2024-01-15T09:30:00Z",
-                    updated_at: "2024-01-15T09:30:00Z",
-                },
-                {
-                    id: "id",
-                    project_id: "project_id",
-                    name: "name",
-                    live_version_id: "live_version_id",
+                    runtime_version: "runtime_version",
+                    schema_version: "schema_version",
                     created_at: "2024-01-15T09:30:00Z",
                     updated_at: "2024-01-15T09:30:00Z",
                 },
@@ -44,7 +38,12 @@ describe("Agents", () => {
             .build();
 
         const response = await client.agents.listAgents("projectId", {
-            filters: {},
+            name: "name",
+            "page[size]": 1,
+            "page[after]": "page[after]",
+            "page[before]": "page[before]",
+            sort_by: "sort_by",
+            sort_order: "asc",
         });
         expect(response).toEqual({
             results: [
@@ -53,14 +52,8 @@ describe("Agents", () => {
                     project_id: "project_id",
                     name: "name",
                     live_version_id: "live_version_id",
-                    created_at: "2024-01-15T09:30:00Z",
-                    updated_at: "2024-01-15T09:30:00Z",
-                },
-                {
-                    id: "id",
-                    project_id: "project_id",
-                    name: "name",
-                    live_version_id: "live_version_id",
+                    runtime_version: "runtime_version",
+                    schema_version: "schema_version",
                     created_at: "2024-01-15T09:30:00Z",
                     updated_at: "2024-01-15T09:30:00Z",
                 },
@@ -95,9 +88,7 @@ describe("Agents", () => {
             .build();
 
         await expect(async () => {
-            return await client.agents.listAgents("projectId", {
-                filters: {},
-            });
+            return await client.agents.listAgents("projectId");
         }).rejects.toThrow(Apollo.BadRequestError);
     });
 
@@ -119,9 +110,7 @@ describe("Agents", () => {
             .build();
 
         await expect(async () => {
-            return await client.agents.listAgents("projectId", {
-                filters: {},
-            });
+            return await client.agents.listAgents("projectId");
         }).rejects.toThrow(Apollo.UnauthorizedError);
     });
 
@@ -143,9 +132,7 @@ describe("Agents", () => {
             .build();
 
         await expect(async () => {
-            return await client.agents.listAgents("projectId", {
-                filters: {},
-            });
+            return await client.agents.listAgents("projectId");
         }).rejects.toThrow(Apollo.ForbiddenError);
     });
 
@@ -167,9 +154,7 @@ describe("Agents", () => {
             .build();
 
         await expect(async () => {
-            return await client.agents.listAgents("projectId", {
-                filters: {},
-            });
+            return await client.agents.listAgents("projectId");
         }).rejects.toThrow(Apollo.NotFoundError);
     });
 
@@ -191,9 +176,7 @@ describe("Agents", () => {
             .build();
 
         await expect(async () => {
-            return await client.agents.listAgents("projectId", {
-                filters: {},
-            });
+            return await client.agents.listAgents("projectId");
         }).rejects.toThrow(Apollo.ConflictError);
     });
 
@@ -215,9 +198,7 @@ describe("Agents", () => {
             .build();
 
         await expect(async () => {
-            return await client.agents.listAgents("projectId", {
-                filters: {},
-            });
+            return await client.agents.listAgents("projectId");
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
@@ -239,9 +220,7 @@ describe("Agents", () => {
             .build();
 
         await expect(async () => {
-            return await client.agents.listAgents("projectId", {
-                filters: {},
-            });
+            return await client.agents.listAgents("projectId");
         }).rejects.toThrow(Apollo.InternalServerError);
     });
 
@@ -258,6 +237,8 @@ describe("Agents", () => {
             project_id: "project_id",
             name: "name",
             live_version_id: "live_version_id",
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             updated_at: "2024-01-15T09:30:00Z",
         };
@@ -278,6 +259,8 @@ describe("Agents", () => {
             project_id: "project_id",
             name: "name",
             live_version_id: "live_version_id",
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             updated_at: "2024-01-15T09:30:00Z",
         });
@@ -471,6 +454,8 @@ describe("Agents", () => {
             project_id: "project_id",
             name: "name",
             live_version_id: "live_version_id",
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             updated_at: "2024-01-15T09:30:00Z",
         };
@@ -488,6 +473,8 @@ describe("Agents", () => {
             project_id: "project_id",
             name: "name",
             live_version_id: "live_version_id",
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             updated_at: "2024-01-15T09:30:00Z",
         });
@@ -828,6 +815,8 @@ describe("Agents", () => {
             project_id: "project_id",
             name: "name",
             live_version_id: "live_version_id",
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             updated_at: "2024-01-15T09:30:00Z",
         };
@@ -846,6 +835,8 @@ describe("Agents", () => {
             project_id: "project_id",
             name: "name",
             live_version_id: "live_version_id",
+            runtime_version: "runtime_version",
+            schema_version: "schema_version",
             created_at: "2024-01-15T09:30:00Z",
             updated_at: "2024-01-15T09:30:00Z",
         });
