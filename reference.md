@@ -2317,7 +2317,9 @@ await client.messaging.generateFollowupSuggestions();
 <dd>
 
 The welcome message of the agent's live version — what to show before
-the first user message.
+the first user message. Pass ``placeholders`` in the body to seed
+``dynamic_welcome_message``; otherwise the static ``welcome_message``
+is returned.
 </dd>
 </dl>
 </dd>

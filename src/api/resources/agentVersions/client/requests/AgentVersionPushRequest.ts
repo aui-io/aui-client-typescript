@@ -12,6 +12,8 @@
 export interface AgentVersionPushRequest {
     caller: AgentVersionPushRequest.Caller;
     commit_message?: string;
+    /** Runtime build this revision targets, e.g. '0.8.0'. Omit to leave the revision unpinned. */
+    runtime_version?: string;
     /** Versioned agent configuration bundle. Must include 'schema_version' and 'general_settings'. */
     bundle: Record<string, unknown>;
 }

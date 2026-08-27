@@ -858,7 +858,9 @@ export class Messaging {
 
     /**
      * The welcome message of the agent's live version — what to show before
-     * the first user message.
+     * the first user message. Pass ``placeholders`` in the body to seed
+     * ``dynamic_welcome_message``; otherwise the static ``welcome_message``
+     * is returned.
      *
      * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
      *

@@ -64,3 +64,4 @@ export * from "./TraceUnderstanding.js";
 export * from "./UsageResponse.js";
 export * from "./ValidationError.js";
 export * from "./VersionStats.js";
+export * from "./WelcomeMessageRequest.js";
