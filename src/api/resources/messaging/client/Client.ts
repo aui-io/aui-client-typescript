@@ -862,6 +862,7 @@ export class Messaging {
      * ``dynamic_welcome_message``; otherwise the static ``welcome_message``
      * is returned.
      *
+     * @param {Apollo.WelcomeMessageRequest} request
      * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link Apollo.BadRequestError}
@@ -876,12 +877,14 @@ export class Messaging {
      *     await client.messaging.getWelcomeMessage()
      */
     public getWelcomeMessage(
+        request?: Apollo.WelcomeMessageRequest,
         requestOptions?: Messaging.RequestOptions,
     ): core.HttpResponsePromise<Apollo.AgentVersionWelcomeMessageResponse> {
-        return core.HttpResponsePromise.fromPromise(this.__getWelcomeMessage(requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__getWelcomeMessage(request, requestOptions));
     }
 
     private async __getWelcomeMessage(
+        request?: Apollo.WelcomeMessageRequest,
         requestOptions?: Messaging.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.AgentVersionWelcomeMessageResponse>> {
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
@@ -898,9 +901,12 @@ export class Messaging {
                     ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
                 "messaging/v1/welcome-message",
             ),
-            method: "GET",
+            method: "POST",
             headers: _headers,
+            contentType: "application/json",
             queryParameters: requestOptions?.queryParams,
+            requestType: "json",
+            body: request != null ? request : undefined,
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -956,7 +962,9 @@ export class Messaging {
                     rawResponse: _response.rawResponse,
                 });
             case "timeout":
-                throw new errors.ApolloTimeoutError("Timeout exceeded when calling GET /messaging/v1/welcome-message.");
+                throw new errors.ApolloTimeoutError(
+                    "Timeout exceeded when calling POST /messaging/v1/welcome-message.",
+                );
             case "unknown":
                 throw new errors.ApolloError({
                     message: _response.error.errorMessage,

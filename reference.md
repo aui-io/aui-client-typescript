@@ -2304,7 +2304,7 @@ await client.messaging.generateFollowupSuggestions();
 </dl>
 </details>
 
-<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">getWelcomeMessage</a>() -> Apollo.AgentVersionWelcomeMessageResponse</code></summary>
+<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">getWelcomeMessage</a>({ ...params }) -> Apollo.AgentVersionWelcomeMessageResponse</code></summary>
 <dl>
 <dd>
 
@@ -2346,6 +2346,14 @@ await client.messaging.getWelcomeMessage();
 
 <dl>
 <dd>
+
+<dl>
+<dd>
+
+**request:** `Apollo.WelcomeMessageRequest` 
+    
+</dd>
+</dl>
 
 <dl>
 <dd>

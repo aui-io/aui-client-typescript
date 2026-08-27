@@ -1474,7 +1474,7 @@ describe("Messaging", () => {
         const rawResponseBody = { welcome_message: "welcome_message" };
         server
             .mockEndpoint()
-            .get("/messaging/v1/welcome-message")
+            .post("/messaging/v1/welcome-message")
             .respondWith()
             .statusCode(200)
             .jsonBody(rawResponseBody)
@@ -1497,14 +1497,14 @@ describe("Messaging", () => {
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
-            .get("/messaging/v1/welcome-message")
+            .post("/messaging/v1/welcome-message")
             .respondWith()
             .statusCode(400)
             .jsonBody(rawResponseBody)
             .build();
 
         await expect(async () => {
-            return await client.messaging.getWelcomeMessage();
+            return await client.messaging.getWelcomeMessage(undefined);
         }).rejects.toThrow(Apollo.BadRequestError);
     });
 
@@ -1519,14 +1519,14 @@ describe("Messaging", () => {
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
-            .get("/messaging/v1/welcome-message")
+            .post("/messaging/v1/welcome-message")
             .respondWith()
             .statusCode(401)
             .jsonBody(rawResponseBody)
             .build();
 
         await expect(async () => {
-            return await client.messaging.getWelcomeMessage();
+            return await client.messaging.getWelcomeMessage(undefined);
         }).rejects.toThrow(Apollo.UnauthorizedError);
     });
 
@@ -1541,14 +1541,14 @@ describe("Messaging", () => {
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
-            .get("/messaging/v1/welcome-message")
+            .post("/messaging/v1/welcome-message")
             .respondWith()
             .statusCode(403)
             .jsonBody(rawResponseBody)
             .build();
 
         await expect(async () => {
-            return await client.messaging.getWelcomeMessage();
+            return await client.messaging.getWelcomeMessage(undefined);
         }).rejects.toThrow(Apollo.ForbiddenError);
     });
 
@@ -1563,14 +1563,14 @@ describe("Messaging", () => {
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
-            .get("/messaging/v1/welcome-message")
+            .post("/messaging/v1/welcome-message")
             .respondWith()
             .statusCode(404)
             .jsonBody(rawResponseBody)
             .build();
 
         await expect(async () => {
-            return await client.messaging.getWelcomeMessage();
+            return await client.messaging.getWelcomeMessage(undefined);
         }).rejects.toThrow(Apollo.NotFoundError);
     });
 
@@ -1585,14 +1585,14 @@ describe("Messaging", () => {
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
-            .get("/messaging/v1/welcome-message")
+            .post("/messaging/v1/welcome-message")
             .respondWith()
             .statusCode(409)
             .jsonBody(rawResponseBody)
             .build();
 
         await expect(async () => {
-            return await client.messaging.getWelcomeMessage();
+            return await client.messaging.getWelcomeMessage(undefined);
         }).rejects.toThrow(Apollo.ConflictError);
     });
 
@@ -1607,14 +1607,14 @@ describe("Messaging", () => {
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
-            .get("/messaging/v1/welcome-message")
+            .post("/messaging/v1/welcome-message")
             .respondWith()
             .statusCode(422)
             .jsonBody(rawResponseBody)
             .build();
 
         await expect(async () => {
-            return await client.messaging.getWelcomeMessage();
+            return await client.messaging.getWelcomeMessage(undefined);
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
@@ -1629,14 +1629,14 @@ describe("Messaging", () => {
         const rawResponseBody = { error: { code: "code", message: "message" } };
         server
             .mockEndpoint()
-            .get("/messaging/v1/welcome-message")
+            .post("/messaging/v1/welcome-message")
             .respondWith()
             .statusCode(500)
             .jsonBody(rawResponseBody)
             .build();
 
         await expect(async () => {
-            return await client.messaging.getWelcomeMessage();
+            return await client.messaging.getWelcomeMessage(undefined);
         }).rejects.toThrow(Apollo.InternalServerError);
     });
 });
