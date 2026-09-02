@@ -8,6 +8,7 @@ import { Messaging } from "./api/resources/messaging/client/Client.js";
 import { Projects } from "./api/resources/projects/client/Client.js";
 import { Session } from "./api/resources/session/client/Client.js";
 import { Threads } from "./api/resources/threads/client/Client.js";
+import { Webhooks } from "./api/resources/webhooks/client/Client.js";
 import type { BaseClientOptions, BaseRequestOptions } from "./BaseClient.js";
 import { mergeHeaders, mergeOnlyDefinedHeaders } from "./core/headers.js";
 import * as core from "./core/index.js";
@@ -29,6 +30,7 @@ export class ApolloClient {
     protected _messaging: Messaging | undefined;
     protected _channels: Channels | undefined;
     protected _auth: Auth | undefined;
+    protected _webhooks: Webhooks | undefined;
     protected _session: Session | undefined;
 
     constructor(_options: ApolloClient.Options) {
@@ -40,8 +42,8 @@ export class ApolloClient {
                     "x-organization-api-key": _options?.organizationApiKey,
                     "X-Fern-Language": "JavaScript",
                     "X-Fern-SDK-Name": "@aui.io/aui-client",
-                    "X-Fern-SDK-Version": "3.3.8",
-                    "User-Agent": "@aui.io/aui-client/3.3.8",
+                    "X-Fern-SDK-Version": "3.3.9",
+                    "User-Agent": "@aui.io/aui-client/3.3.9",
                     "X-Fern-Runtime": core.RUNTIME.type,
                     "X-Fern-Runtime-Version": core.RUNTIME.version,
                 },
@@ -76,6 +78,10 @@ export class ApolloClient {
 
     public get auth(): Auth {
         return (this._auth ??= new Auth(this._options));
+    }
+
+    public get webhooks(): Webhooks {
+        return (this._webhooks ??= new Webhooks(this._options));
     }
 
     public get session(): Session {

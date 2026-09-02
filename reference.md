@@ -2513,3 +2513,67 @@ await client.auth.issueToken({
 </dd>
 </dl>
 </details>
+
+## Webhooks
+<details><summary><code>client.webhooks.<a href="/src/api/resources/webhooks/client/Client.ts">receiveAgentEvent</a>({ ...params }) -> Apollo.WebhookEventReceipt</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Enqueues an event for the agent bound to your webhook credential. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.webhooks.receiveAgentEvent();
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Apollo.WebhookEvent` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `Webhooks.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>

@@ -17,3 +17,5 @@ export * as session from "./session/index.js";
 export * from "./threads/client/requests/index.js";
 export * as threads from "./threads/index.js";
 export * from "./threads/types/index.js";
+export * from "./webhooks/client/requests/index.js";
+export * as webhooks from "./webhooks/index.js";
