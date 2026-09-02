@@ -110,10 +110,13 @@ console.log(response.thread_id);
 console.log(response.message.text);
 ```
 
-You can pass optional per-message values for the agent's configured context variables:
+You can pass optional per-message values for the agent's configured context
+variables. The response returns your `agent_variables` back — next to
+`thread_id`, exactly as you sent them: same keys, same values, no reshaping —
+so you can correlate each reply with the context that produced it:
 
 ```ts
-await client.messaging.sendMessage({
+const response = await client.messaging.sendMessage({
   user_id: 'end-user-123',
   text: 'Where is my order?',
   agent_variables: {
@@ -121,7 +124,11 @@ await client.messaging.sendMessage({
     order_id: 'ORD-1042',
   },
 });
+
+console.log(response.agent_variables); // { customer_name: 'Ada', order_id: 'ORD-1042' }
 ```
+
+`streamMessage` echoes them the same way on its terminal `message` frame.
 
 ### Stream a message (SSE)
 
@@ -153,7 +160,8 @@ for await (const event of stream) {
       if (typeof event.data?.text === 'string') reply += event.data.text;
       break;
     case 'message':
-      // Terminal frame: the completed reply (authoritative text and cards).
+      // Terminal frame: the completed reply (authoritative text and cards),
+      // plus your agent_variables echoed back exactly as sent.
       reply = event.data?.text ?? reply;
       break;
     case 'suggestions':
@@ -198,11 +206,40 @@ const messagesV2 = await client.messaging.listMessages(threadId, {
 }); // v2 thread
 ```
 
-### Welcome message and follow-up suggestions
+### Welcome message
+
+`getWelcomeMessage` returns the agent's opening message — what to show before the
+first user message:
 
 ```ts
 const { welcome_message } = await client.messaging.getWelcomeMessage();
+```
 
+Agents can also carry a **dynamic welcome message** — a template with
+`{{placeholder}}` tokens, e.g. `Hi! Interested in {{page-title}}?`. Pass
+`placeholders` (a string-to-string map) to resolve it:
+
+```ts
+const { welcome_message } = await client.messaging.getWelcomeMessage({
+  placeholders: { 'page-title': 'honda civic' },
+});
+```
+
+One rule decides what you get back: the dynamic template wins when every
+`{{token}}` in it receives a non-empty value (extra keys are ignored); otherwise —
+no template on the agent, a token left unfilled, or no `placeholders` passed — the
+static welcome message is returned instead. You never receive a half-resolved
+template, and the response is always the single `welcome_message` field.
+
+> **Upgrade note:** the endpoint behind this method is now `POST
+> /welcome-message` (the body carries `placeholders`) — it previously was a GET.
+> The method name and response shape are unchanged, but older SDK releases that
+> still issue the GET request no longer work: upgrade the package before relying
+> on this call.
+
+### Follow-up suggestions
+
+```ts
 const { suggestions } = await client.messaging.generateFollowupSuggestions({
   context: { topic: 'order tracking' },
 });
@@ -221,7 +258,7 @@ const { suggestions } = await client.messaging.generateFollowupSuggestions({
 | `listMessages(threadId, request?)` | Return the messages in a thread. | **Required for v2 threads** (e.g. `'0.8.0'`) |
 | `threadTrace(threadId, request?)` | Reasoning trace per interaction (paginated). | v1 agents only |
 | `interactionTrace(interactionId)` | Reasoning trace for one interaction. | v1 agents only |
-| `getWelcomeMessage()` | Return the agent's welcome message. | — |
+| `getWelcomeMessage(request?)` | Return the agent's welcome message; pass `placeholders` to resolve its dynamic template. | — |
 | `generateFollowupSuggestions(request)` | Generate follow-up prompts from a context. | — |
 
 ### Message cards
