@@ -1,4 +1,5 @@
 export type { GenerateFollowupSuggestionsRequest } from "./GenerateFollowupSuggestionsRequest.js";
+export type { InteractionTraceRequest } from "./InteractionTraceRequest.js";
 export type { ListMessagesRequest } from "./ListMessagesRequest.js";
 export type { RerunMessageRequest } from "./RerunMessageRequest.js";
 export type { StreamMessageRequest } from "./StreamMessageRequest.js";

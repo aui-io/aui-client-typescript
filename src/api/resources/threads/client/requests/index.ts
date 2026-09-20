@@ -1,3 +1,4 @@
+export type { GetInteractionTraceRequest } from "./GetInteractionTraceRequest.js";
 export type { GetThreadMessagesRequest } from "./GetThreadMessagesRequest.js";
 export type { GetThreadRequest } from "./GetThreadRequest.js";
 export type { GetThreadTraceRequest } from "./GetThreadTraceRequest.js";

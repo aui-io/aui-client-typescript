@@ -3,17 +3,11 @@
 import type * as Apollo from "../index.js";
 
 /**
- * type=message — the completed agent reply (Message + optional trace_info).
+ * type=message — the completed agent reply. `data.trace_info` carries the reasoning trace when the session was opened with include_trace=true.
  */
 export interface MessageEnvelope {
     type?: "message";
-    data?: MessageEnvelope.Data;
+    data?: Apollo.Message;
     /** Monotonic sequence for gap detection / replay. Locally-generated errors use -1. */
     seq: number;
-}
-
-export namespace MessageEnvelope {
-    export interface Data extends Apollo.Message {
-        trace_info?: Apollo.Trace;
-    }
 }

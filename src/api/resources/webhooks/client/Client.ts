@@ -21,7 +21,7 @@ export class Webhooks {
     }
 
     /**
-     * Enqueues an event for the agent bound to your webhook credential. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously.
+     * Enqueues an event for the agent bound to your agent API key, sent in the `x-agent-api-key` header. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously.
      *
      * @param {Apollo.WebhookEvent} request
      * @param {Webhooks.RequestOptions} requestOptions - Request-specific configuration.
@@ -53,6 +53,7 @@ export class Webhooks {
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );

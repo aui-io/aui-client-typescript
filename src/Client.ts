@@ -40,10 +40,11 @@ export class ApolloClient {
             headers: mergeHeaders(
                 {
                     "x-organization-api-key": _options?.organizationApiKey,
+                    "x-agent-api-key": _options?.agentApiKey,
                     "X-Fern-Language": "JavaScript",
                     "X-Fern-SDK-Name": "@aui.io/aui-client",
-                    "X-Fern-SDK-Version": "3.3.10",
-                    "User-Agent": "@aui.io/aui-client/3.3.10",
+                    "X-Fern-SDK-Version": "3.3.11",
+                    "User-Agent": "@aui.io/aui-client/3.3.11",
                     "X-Fern-Runtime": core.RUNTIME.type,
                     "X-Fern-Runtime-Version": core.RUNTIME.version,
                 },
@@ -108,6 +109,7 @@ export class ApolloClient {
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );

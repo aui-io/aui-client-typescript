@@ -19,4 +19,5 @@ export interface Message {
     url?: string;
     input_tokens?: number;
     output_tokens?: number;
+    trace_info?: Apollo.Trace;
 }

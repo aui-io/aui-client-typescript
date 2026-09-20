@@ -58,6 +58,7 @@ export class Messaging {
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );
@@ -159,6 +160,7 @@ export class Messaging {
                 Authorization: await this._getAuthorizationHeader(),
                 "Last-Event-ID": lastEventId != null ? lastEventId : undefined,
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );
@@ -290,6 +292,7 @@ export class Messaging {
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );
@@ -412,6 +415,7 @@ export class Messaging {
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );
@@ -488,7 +492,9 @@ export class Messaging {
     }
 
     /**
-     * Every interaction trace in the thread.
+     * Every interaction trace in the thread, oldest first. ``runtime`` on each
+     * item says which shape follows: ``v1`` — what the agent understood, which
+     * rules fired, the decisions it took; ``v2`` — the runtime v2 turn trace as typed sections.
      *
      * @param {string} threadId
      * @param {Apollo.ThreadTraceRequest} request
@@ -557,6 +563,7 @@ export class Messaging {
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );
@@ -633,9 +640,11 @@ export class Messaging {
     }
 
     /**
-     * The reasoning trace of a single interaction, resolved by its id.
+     * The reasoning trace of a single interaction, by its id. An interaction
+     * of a runtime v2 agent is read by its thread as well — pass ``thread_id``.
      *
      * @param {string} interactionId
+     * @param {Apollo.InteractionTraceRequest} request
      * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link Apollo.BadRequestError}
@@ -647,24 +656,35 @@ export class Messaging {
      * @throws {@link Apollo.InternalServerError}
      *
      * @example
-     *     await client.messaging.interactionTrace("interactionId")
+     *     await client.messaging.interactionTrace("interactionId", {
+     *         thread_id: "thread_id"
+     *     })
      */
     public interactionTrace(
         interactionId: string,
+        request: Apollo.InteractionTraceRequest = {},
         requestOptions?: Messaging.RequestOptions,
     ): core.HttpResponsePromise<Apollo.Trace> {
-        return core.HttpResponsePromise.fromPromise(this.__interactionTrace(interactionId, requestOptions));
+        return core.HttpResponsePromise.fromPromise(this.__interactionTrace(interactionId, request, requestOptions));
     }
 
     private async __interactionTrace(
         interactionId: string,
+        request: Apollo.InteractionTraceRequest = {},
         requestOptions?: Messaging.RequestOptions,
     ): Promise<core.WithRawResponse<Apollo.Trace>> {
+        const { thread_id: threadId } = request;
+        const _queryParams: Record<string, string | string[] | object | object[] | null> = {};
+        if (threadId != null) {
+            _queryParams.thread_id = threadId;
+        }
+
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             this._options?.headers,
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );
@@ -676,7 +696,7 @@ export class Messaging {
             ),
             method: "GET",
             headers: _headers,
-            queryParameters: requestOptions?.queryParams,
+            queryParameters: { ..._queryParams, ...requestOptions?.queryParams },
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -775,6 +795,7 @@ export class Messaging {
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );
@@ -892,6 +913,7 @@ export class Messaging {
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );

@@ -10,6 +10,8 @@ export interface BaseClientOptions {
     token?: core.Supplier<core.BearerToken | undefined>;
     /** Override the x-organization-api-key header */
     organizationApiKey: core.Supplier<string>;
+    /** Override the x-agent-api-key header */
+    agentApiKey: core.Supplier<string>;
     /** Additional headers to include in requests. */
     headers?: Record<string, string | core.Supplier<string | null | undefined> | null | undefined>;
     /** The default maximum time to wait for a response in seconds. */
@@ -31,6 +33,8 @@ export interface BaseRequestOptions {
     abortSignal?: AbortSignal;
     /** Override the x-organization-api-key header */
     organizationApiKey?: string;
+    /** Override the x-agent-api-key header */
+    agentApiKey?: string;
     /** Additional query string parameters to include in the request. */
     queryParams?: Record<string, unknown>;
     /** Additional headers to include in the request. */

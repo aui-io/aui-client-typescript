@@ -9,6 +9,7 @@ describe("ApolloClient", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 

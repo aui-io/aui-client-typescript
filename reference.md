@@ -1603,8 +1603,10 @@ await client.threads.updateThread("threadId", {
 <dl>
 <dd>
 
-The reasoning trace of every interaction in the thread — what the agent
-understood, which rules fired, and the decisions it took.
+The reasoning trace of every interaction in the thread, oldest first.
+``runtime`` on each item says which shape follows: ``v1`` — what the agent
+understood, which rules fired, the decisions it took; ``v2`` — the runtime
+v2 turn trace as typed sections.
 </dd>
 </dl>
 </dd>
@@ -1669,7 +1671,7 @@ await client.threads.getThreadTrace("threadId", {
 </dl>
 </details>
 
-<details><summary><code>client.threads.<a href="/src/api/resources/threads/client/Client.ts">getInteractionTrace</a>(interactionId) -> Apollo.Trace</code></summary>
+<details><summary><code>client.threads.<a href="/src/api/resources/threads/client/Client.ts">getInteractionTrace</a>(interactionId, { ...params }) -> Apollo.Trace</code></summary>
 <dl>
 <dd>
 
@@ -1681,7 +1683,8 @@ await client.threads.getThreadTrace("threadId", {
 <dl>
 <dd>
 
-The reasoning trace of a single interaction, resolved by its id.
+The reasoning trace of a single interaction, by its id. An interaction
+of a runtime v2 agent is read by its thread as well — pass ``thread_id``.
 </dd>
 </dl>
 </dd>
@@ -1696,7 +1699,9 @@ The reasoning trace of a single interaction, resolved by its id.
 <dd>
 
 ```typescript
-await client.threads.getInteractionTrace("interactionId");
+await client.threads.getInteractionTrace("interactionId", {
+    thread_id: "thread_id"
+});
 
 ```
 </dd>
@@ -1713,6 +1718,14 @@ await client.threads.getInteractionTrace("interactionId");
 <dd>
 
 **interactionId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `Apollo.GetInteractionTraceRequest` 
     
 </dd>
 </dl>
@@ -2111,7 +2124,9 @@ await client.messaging.listMessages("threadId", {
 <dl>
 <dd>
 
-Every interaction trace in the thread.
+Every interaction trace in the thread, oldest first. ``runtime`` on each
+item says which shape follows: ``v1`` — what the agent understood, which
+rules fired, the decisions it took; ``v2`` — the runtime v2 turn trace as typed sections.
 </dd>
 </dl>
 </dd>
@@ -2176,7 +2191,7 @@ await client.messaging.threadTrace("threadId", {
 </dl>
 </details>
 
-<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">interactionTrace</a>(interactionId) -> Apollo.Trace</code></summary>
+<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">interactionTrace</a>(interactionId, { ...params }) -> Apollo.Trace</code></summary>
 <dl>
 <dd>
 
@@ -2188,7 +2203,8 @@ await client.messaging.threadTrace("threadId", {
 <dl>
 <dd>
 
-The reasoning trace of a single interaction, resolved by its id.
+The reasoning trace of a single interaction, by its id. An interaction
+of a runtime v2 agent is read by its thread as well — pass ``thread_id``.
 </dd>
 </dl>
 </dd>
@@ -2203,7 +2219,9 @@ The reasoning trace of a single interaction, resolved by its id.
 <dd>
 
 ```typescript
-await client.messaging.interactionTrace("interactionId");
+await client.messaging.interactionTrace("interactionId", {
+    thread_id: "thread_id"
+});
 
 ```
 </dd>
@@ -2220,6 +2238,14 @@ await client.messaging.interactionTrace("interactionId");
 <dd>
 
 **interactionId:** `string` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request:** `Apollo.InteractionTraceRequest` 
     
 </dd>
 </dl>
@@ -2527,7 +2553,7 @@ await client.auth.issueToken({
 <dl>
 <dd>
 
-Enqueues an event for the agent bound to your webhook credential. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously.
+Enqueues an event for the agent bound to your agent API key, sent in the `x-agent-api-key` header. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously.
 </dd>
 </dl>
 </dd>

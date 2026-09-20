@@ -10,6 +10,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -75,6 +76,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -97,6 +99,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -119,6 +122,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -141,6 +145,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -163,6 +168,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -185,6 +191,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -207,6 +214,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -229,6 +237,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { name: "name" };
@@ -271,6 +280,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { name: "xy" };
@@ -296,6 +306,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { name: "xy" };
@@ -321,6 +332,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { name: "xy" };
@@ -346,6 +358,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { name: "xy" };
@@ -371,6 +384,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { name: "xy" };
@@ -396,6 +410,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { name: "xy" };
@@ -421,6 +436,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { name: "xy" };
@@ -446,6 +462,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -485,6 +502,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -507,6 +525,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -529,6 +548,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -551,6 +571,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -573,6 +594,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -595,6 +617,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -617,6 +640,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -639,6 +663,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -653,6 +678,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -675,6 +701,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -697,6 +724,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -719,6 +747,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -741,6 +770,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -763,6 +793,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -785,6 +816,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -807,6 +839,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -847,6 +880,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -870,6 +904,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -893,6 +928,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -916,6 +952,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -939,6 +976,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -962,6 +1000,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -985,6 +1024,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -1008,6 +1048,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1046,6 +1087,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1068,6 +1110,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1090,6 +1133,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1112,6 +1156,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1134,6 +1179,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1156,6 +1202,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1178,6 +1225,7 @@ describe("Agents", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 

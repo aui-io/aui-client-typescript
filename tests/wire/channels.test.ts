@@ -10,6 +10,7 @@ describe("Channels", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { phone_number: "phone_number" };
@@ -38,6 +39,7 @@ describe("Channels", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { phone_number: "phone_number" };
@@ -63,6 +65,7 @@ describe("Channels", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { phone_number: "phone_number" };
@@ -88,6 +91,7 @@ describe("Channels", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { phone_number: "phone_number" };
@@ -113,6 +117,7 @@ describe("Channels", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { phone_number: "phone_number" };
@@ -138,6 +143,7 @@ describe("Channels", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { phone_number: "phone_number" };
@@ -163,6 +169,7 @@ describe("Channels", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { phone_number: "phone_number" };
@@ -188,6 +195,7 @@ describe("Channels", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { phone_number: "phone_number" };

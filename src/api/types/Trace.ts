@@ -3,13 +3,16 @@
 import type * as Apollo from "../index.js";
 
 /**
- * Reasoning trace for the interaction, embedded only when include_trace=true. Same shape as the REST `Trace` model (GET /messaging/v1/threads/{threadId}/trace); summarized here.
+ * One interaction's reasoning trace. `runtime` says which shape follows: v1 — the typed trace of a runtime v1 agent; v2 — the runtime v2 turn trace as typed sections. Same shape as the REST `Trace` model (GET /messaging/v1/threads/{threadId}/trace).
  */
-export interface Trace {
-    input?: Apollo.TraceInput;
-    understanding?: Record<string, unknown>;
-    decisions?: Record<string, unknown>[];
-    computed_parameters?: Record<string, unknown>[];
-    response?: Record<string, unknown>;
-    rules_evaluations?: Record<string, unknown>[];
+export type Trace = Apollo.Trace.V1 | Apollo.Trace.V2;
+
+export namespace Trace {
+    export interface V1 extends Apollo.RuntimeV1Trace {
+        runtime: "v1";
+    }
+
+    export interface V2 extends Apollo.RuntimeV2Trace {
+        runtime: "v2";
+    }
 }

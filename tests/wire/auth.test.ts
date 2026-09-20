@@ -10,6 +10,7 @@ describe("Auth", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { grant_type: "publishable_key", publishable_key: "pk_network_..." };
@@ -47,6 +48,7 @@ describe("Auth", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { string: { key: "value" } };
@@ -74,6 +76,7 @@ describe("Auth", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { string: { key: "value" } };
@@ -101,6 +104,7 @@ describe("Auth", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { string: { key: "value" } };

@@ -52,6 +52,7 @@ export class Auth {
             mergeOnlyDefinedHeaders({
                 Authorization: await this._getAuthorizationHeader(),
                 "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
             }),
             requestOptions?.headers,
         );

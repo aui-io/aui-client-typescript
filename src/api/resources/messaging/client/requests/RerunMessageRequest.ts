@@ -16,6 +16,8 @@ export interface RerunMessageRequest {
     image_url?: string;
     version_id?: string;
     version_tag?: string;
+    /** When true, the replayed reply carries its reasoning trace as message.trace_info (the same shape the trace endpoints return). Off by default: a trace can be large. */
+    include_trace?: boolean;
     /** Optional runtime build pin (e.g. '0.5.4') for agents on the runtime-v2 engine. Has no effect on which engine serves the agent; omit to use the current default runtime. */
     runtime_version?: string;
 }

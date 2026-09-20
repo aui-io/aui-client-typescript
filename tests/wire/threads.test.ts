@@ -10,6 +10,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -63,6 +64,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -85,6 +87,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -107,6 +110,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -129,6 +133,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -151,6 +156,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -173,6 +179,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -195,6 +202,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -217,6 +225,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -252,6 +261,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -274,6 +284,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -296,6 +307,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -318,6 +330,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -340,6 +353,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -362,6 +376,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -384,6 +399,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -406,6 +422,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -442,6 +459,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -465,6 +483,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -488,6 +507,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -511,6 +531,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -534,6 +555,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -557,6 +579,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -580,6 +603,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
@@ -603,12 +627,14 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
         const rawResponseBody = {
             results: [
                 {
+                    runtime: "v1",
                     input: {},
                     understanding: { intents: null, guardrails: null },
                     decisions: [
@@ -666,6 +692,7 @@ describe("Threads", () => {
         expect(response).toEqual({
             results: [
                 {
+                    runtime: "v1",
                     input: {},
                     understanding: {
                         intents: null,
@@ -734,6 +761,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -756,6 +784,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -778,6 +807,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -800,6 +830,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -822,6 +853,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -844,6 +876,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -866,6 +899,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -888,10 +922,12 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
         const rawResponseBody = {
+            runtime: "v1",
             input: { message: "message" },
             understanding: { intents: ["intents"], guardrails: { passed: true, reason: "reason" } },
             decisions: [
@@ -937,8 +973,11 @@ describe("Threads", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.threads.getInteractionTrace("interactionId");
+        const response = await client.threads.getInteractionTrace("interactionId", {
+            thread_id: "thread_id",
+        });
         expect(response).toEqual({
+            runtime: "v1",
             input: {
                 message: "message",
             },
@@ -1024,6 +1063,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1046,6 +1086,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1068,6 +1109,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1090,6 +1132,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1112,6 +1155,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1134,6 +1178,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1156,6 +1201,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1178,6 +1224,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1194,6 +1241,43 @@ describe("Threads", () => {
                 url: "url",
                 input_tokens: 1,
                 output_tokens: 1,
+                trace_info: {
+                    runtime: "v1",
+                    input: {},
+                    understanding: { intents: null, guardrails: null },
+                    decisions: [
+                        {
+                            type: null,
+                            tool: null,
+                            parent_tool: null,
+                            track_id: null,
+                            status: null,
+                            check_status: null,
+                            trigger: null,
+                            trigger_type: null,
+                            rule: null,
+                            text: null,
+                            fail_reason: null,
+                            computation: null,
+                            output_param: null,
+                            output_title: null,
+                            qualified: null,
+                            matched_branch: null,
+                        },
+                    ],
+                    computed_parameters: [{ code: null, title: null, scope: null }],
+                    response: {
+                        type: null,
+                        message: null,
+                        suggestions: null,
+                        question_reason: null,
+                        asking_for: null,
+                        block_message: null,
+                        error: null,
+                        jsx_widgets: null,
+                    },
+                    rules_evaluations: [{ code: null, triggered: null, reason: null }],
+                },
             },
         ];
         server
@@ -1226,6 +1310,58 @@ describe("Threads", () => {
                 url: "url",
                 input_tokens: 1,
                 output_tokens: 1,
+                trace_info: {
+                    runtime: "v1",
+                    input: {},
+                    understanding: {
+                        intents: null,
+                        guardrails: null,
+                    },
+                    decisions: [
+                        {
+                            type: null,
+                            tool: null,
+                            parent_tool: null,
+                            track_id: null,
+                            status: null,
+                            check_status: null,
+                            trigger: null,
+                            trigger_type: null,
+                            rule: null,
+                            text: null,
+                            fail_reason: null,
+                            computation: null,
+                            output_param: null,
+                            output_title: null,
+                            qualified: null,
+                            matched_branch: null,
+                        },
+                    ],
+                    computed_parameters: [
+                        {
+                            code: null,
+                            title: null,
+                            scope: null,
+                        },
+                    ],
+                    response: {
+                        type: null,
+                        message: null,
+                        suggestions: null,
+                        question_reason: null,
+                        asking_for: null,
+                        block_message: null,
+                        error: null,
+                        jsx_widgets: null,
+                    },
+                    rules_evaluations: [
+                        {
+                            code: null,
+                            triggered: null,
+                            reason: null,
+                        },
+                    ],
+                },
             },
         ]);
     });
@@ -1235,6 +1371,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1257,6 +1394,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1279,6 +1417,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1301,6 +1440,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1323,6 +1463,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1345,6 +1486,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 
@@ -1367,6 +1509,7 @@ describe("Threads", () => {
         const client = new ApolloClient({
             token: "test",
             organizationApiKey: "test",
+            agentApiKey: "test",
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
 

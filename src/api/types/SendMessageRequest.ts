@@ -15,4 +15,6 @@ export interface SendMessageRequest {
     agent_variables?: Record<string, unknown>;
     /** Optional runtime build pin (e.g. '0.5.4') for agents on the runtime-v2 engine. Has no effect on which engine serves the agent; omit to use the current default runtime. */
     runtime_version?: string;
+    /** When true, the reply carries its reasoning trace as message.trace_info (the same shape the trace endpoints return). Off by default: a trace can be large. */
+    include_trace?: boolean;
 }
