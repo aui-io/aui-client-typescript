@@ -503,7 +503,8 @@ export class Agents {
     }
 
     /**
-     * Rename an agent. re-publishes the published version with the updated name.
+     * Rename an agent. When the live version stores the agent's name, it is
+     * re-published carrying the new name; otherwise the live version is untouched.
      * To change which version is live, publish a version instead.
      *
      * @param {string} agentId

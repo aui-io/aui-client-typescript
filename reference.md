@@ -346,7 +346,8 @@ await client.agents.deleteAgent("agentId");
 <dl>
 <dd>
 
-Rename an agent. re-publishes the published version with the updated name.
+Rename an agent. When the live version stores the agent's name, it is
+re-published carrying the new name; otherwise the live version is untouched.
 To change which version is live, publish a version instead.
 </dd>
 </dl>
@@ -1963,6 +1964,72 @@ for await (const item of response) {
 </dl>
 </details>
 
+<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">createUpload</a>({ ...params }) -> Apollo.Upload</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Get a link to upload one file to, for attaching it to a message. PUT exactly `size` bytes to `upload_url`, sending every header in `headers`, then pass `file_url` in `file_urls` when you send the message. Both links expire in 15 minutes; create one upload per file. An upload no message attaches is deleted after 1 day; the first message that attaches it keeps it for 30 days, during which it can be attached again. Rerun and the WebSocket session do not take files.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.messaging.createUpload({
+    filename: "filename",
+    size: 1
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Apollo.CreateUploadRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `Messaging.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">rerun</a>(threadId, { ...params }) -> Apollo.SendMessageResponse</code></summary>
 <dl>
 <dd>
@@ -2553,7 +2620,7 @@ await client.auth.issueToken({
 <dl>
 <dd>
 
-Enqueues an event for the agent bound to your agent API key, sent in the `x-agent-api-key` header. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously.
+Enqueues an event for the agent bound to your agent API key, sent in the `x-agent-api-key` header. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously. `text` is limited to 262,144 characters and the body to 1 MiB; over either, the event is refused with `413` and never queued.
 </dd>
 </dl>
 </dd>

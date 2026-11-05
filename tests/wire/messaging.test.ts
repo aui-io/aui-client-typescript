@@ -300,6 +300,33 @@ describe("Messaging", () => {
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { text: "text", user_id: "user_id" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(413)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.sendMessage({
+                text: "text",
+                user_id: "user_id",
+            });
+        }).rejects.toThrow(Apollo.ContentTooLargeError);
+    });
+
+    test("send_message (8)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { text: "text", user_id: "user_id" };
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
@@ -318,7 +345,7 @@ describe("Messaging", () => {
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
-    test("send_message (8)", async () => {
+    test("send_message (9)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
             token: "test",
@@ -343,6 +370,287 @@ describe("Messaging", () => {
                 user_id: "user_id",
             });
         }).rejects.toThrow(Apollo.InternalServerError);
+    });
+
+    test("send_message (10)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { text: "text", user_id: "user_id" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/messages")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(503)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.sendMessage({
+                text: "text",
+                user_id: "user_id",
+            });
+        }).rejects.toThrow(Apollo.ServiceUnavailableError);
+    });
+
+    test("create_upload (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { filename: "filename", size: 1 };
+        const rawResponseBody = {
+            upload_url: "upload_url",
+            headers: { key: "value" },
+            file_name: "file_name",
+            file_url: "file_url",
+        };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/uploads")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.messaging.createUpload({
+            filename: "filename",
+            size: 1,
+        });
+        expect(response).toEqual({
+            upload_url: "upload_url",
+            headers: {
+                key: "value",
+            },
+            file_name: "file_name",
+            file_url: "file_url",
+        });
+    });
+
+    test("create_upload (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { filename: "x", size: 1 };
+        const rawResponseBody = { key: "value" };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/uploads")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(400)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.createUpload({
+                filename: "x",
+                size: 1,
+            });
+        }).rejects.toThrow(Apollo.BadRequestError);
+    });
+
+    test("create_upload (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { filename: "x", size: 1 };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/uploads")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(401)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.createUpload({
+                filename: "x",
+                size: 1,
+            });
+        }).rejects.toThrow(Apollo.UnauthorizedError);
+    });
+
+    test("create_upload (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { filename: "x", size: 1 };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/uploads")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.createUpload({
+                filename: "x",
+                size: 1,
+            });
+        }).rejects.toThrow(Apollo.ForbiddenError);
+    });
+
+    test("create_upload (5)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { filename: "x", size: 1 };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/uploads")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.createUpload({
+                filename: "x",
+                size: 1,
+            });
+        }).rejects.toThrow(Apollo.NotFoundError);
+    });
+
+    test("create_upload (6)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { filename: "x", size: 1 };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/uploads")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(409)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.createUpload({
+                filename: "x",
+                size: 1,
+            });
+        }).rejects.toThrow(Apollo.ConflictError);
+    });
+
+    test("create_upload (7)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { filename: "x", size: 1 };
+        const rawResponseBody = { key: "value" };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/uploads")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.createUpload({
+                filename: "x",
+                size: 1,
+            });
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
+
+    test("create_upload (8)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { filename: "x", size: 1 };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/uploads")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.createUpload({
+                filename: "x",
+                size: 1,
+            });
+        }).rejects.toThrow(Apollo.InternalServerError);
+    });
+
+    test("create_upload (9)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { filename: "x", size: 1 };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/uploads")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(503)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.createUpload({
+                filename: "x",
+                size: 1,
+            });
+        }).rejects.toThrow(Apollo.ServiceUnavailableError);
     });
 
     test("rerun (1)", async () => {
@@ -640,6 +948,33 @@ describe("Messaging", () => {
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = { interaction_id: "interaction_id", text: "x" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/threads/threadId/rerun")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(413)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.rerun("threadId", {
+                interaction_id: "interaction_id",
+                text: "x",
+            });
+        }).rejects.toThrow(Apollo.ContentTooLargeError);
+    });
+
+    test("rerun (8)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { interaction_id: "interaction_id", text: "x" };
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
@@ -658,7 +993,7 @@ describe("Messaging", () => {
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
-    test("rerun (8)", async () => {
+    test("rerun (9)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
             token: "test",

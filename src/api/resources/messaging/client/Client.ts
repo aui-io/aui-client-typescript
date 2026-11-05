@@ -33,8 +33,10 @@ export class Messaging {
      * @throws {@link Apollo.ForbiddenError}
      * @throws {@link Apollo.NotFoundError}
      * @throws {@link Apollo.ConflictError}
+     * @throws {@link Apollo.ContentTooLargeError}
      * @throws {@link Apollo.UnprocessableEntityError}
      * @throws {@link Apollo.InternalServerError}
+     * @throws {@link Apollo.ServiceUnavailableError}
      *
      * @example
      *     await client.messaging.sendMessage({
@@ -102,10 +104,20 @@ export class Messaging {
                     throw new Apollo.NotFoundError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
                 case 409:
                     throw new Apollo.ConflictError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 413:
+                    throw new Apollo.ContentTooLargeError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 422:
                     throw new Apollo.UnprocessableEntityError(_response.error.body as unknown, _response.rawResponse);
                 case 500:
                     throw new Apollo.InternalServerError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new Apollo.ServiceUnavailableError(
                         _response.error.body as Apollo.ErrorResponse,
                         _response.rawResponse,
                     );
@@ -216,10 +228,20 @@ export class Messaging {
                     throw new Apollo.NotFoundError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
                 case 409:
                     throw new Apollo.ConflictError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 413:
+                    throw new Apollo.ContentTooLargeError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 422:
                     throw new Apollo.UnprocessableEntityError(_response.error.body as unknown, _response.rawResponse);
                 case 500:
                     throw new Apollo.InternalServerError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new Apollo.ServiceUnavailableError(
                         _response.error.body as Apollo.ErrorResponse,
                         _response.rawResponse,
                     );
@@ -252,6 +274,125 @@ export class Messaging {
     }
 
     /**
+     * Get a link to upload one file to, for attaching it to a message. PUT exactly `size` bytes to `upload_url`, sending every header in `headers`, then pass `file_url` in `file_urls` when you send the message. Both links expire in 15 minutes; create one upload per file. An upload no message attaches is deleted after 1 day; the first message that attaches it keeps it for 30 days, during which it can be attached again. Rerun and the WebSocket session do not take files.
+     *
+     * @param {Apollo.CreateUploadRequest} request
+     * @param {Messaging.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link Apollo.BadRequestError}
+     * @throws {@link Apollo.UnauthorizedError}
+     * @throws {@link Apollo.ForbiddenError}
+     * @throws {@link Apollo.NotFoundError}
+     * @throws {@link Apollo.ConflictError}
+     * @throws {@link Apollo.UnprocessableEntityError}
+     * @throws {@link Apollo.InternalServerError}
+     * @throws {@link Apollo.ServiceUnavailableError}
+     *
+     * @example
+     *     await client.messaging.createUpload({
+     *         filename: "filename",
+     *         size: 1
+     *     })
+     */
+    public createUpload(
+        request: Apollo.CreateUploadRequest,
+        requestOptions?: Messaging.RequestOptions,
+    ): core.HttpResponsePromise<Apollo.Upload> {
+        return core.HttpResponsePromise.fromPromise(this.__createUpload(request, requestOptions));
+    }
+
+    private async __createUpload(
+        request: Apollo.CreateUploadRequest,
+        requestOptions?: Messaging.RequestOptions,
+    ): Promise<core.WithRawResponse<Apollo.Upload>> {
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            this._options?.headers,
+            mergeOnlyDefinedHeaders({
+                Authorization: await this._getAuthorizationHeader(),
+                "x-organization-api-key": requestOptions?.organizationApiKey ?? this._options?.organizationApiKey,
+                "x-agent-api-key": requestOptions?.agentApiKey ?? this._options?.agentApiKey,
+            }),
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    ((await core.Supplier.get(this._options.environment)) ?? environments.ApolloEnvironment.Gcp).base,
+                "messaging/v1/uploads",
+            ),
+            method: "POST",
+            headers: _headers,
+            contentType: "application/json",
+            queryParameters: requestOptions?.queryParams,
+            requestType: "json",
+            body: request,
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as Apollo.Upload, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new Apollo.BadRequestError(_response.error.body as unknown, _response.rawResponse);
+                case 401:
+                    throw new Apollo.UnauthorizedError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 403:
+                    throw new Apollo.ForbiddenError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 404:
+                    throw new Apollo.NotFoundError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 409:
+                    throw new Apollo.ConflictError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 422:
+                    throw new Apollo.UnprocessableEntityError(_response.error.body as unknown, _response.rawResponse);
+                case 500:
+                    throw new Apollo.InternalServerError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 503:
+                    throw new Apollo.ServiceUnavailableError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.ApolloError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        switch (_response.error.reason) {
+            case "non-json":
+                throw new errors.ApolloError({
+                    statusCode: _response.error.statusCode,
+                    body: _response.error.rawBody,
+                    rawResponse: _response.rawResponse,
+                });
+            case "timeout":
+                throw new errors.ApolloTimeoutError("Timeout exceeded when calling POST /messaging/v1/uploads.");
+            case "unknown":
+                throw new errors.ApolloError({
+                    message: _response.error.errorMessage,
+                    rawResponse: _response.rawResponse,
+                });
+        }
+    }
+
+    /**
      * Regenerate ``interaction_id`` on the thread against the agent's live
      * version, then replay ``text`` onto the resulting new thread. The response's
      * ``thread_id`` is the new thread's id, not the original.
@@ -265,6 +406,7 @@ export class Messaging {
      * @throws {@link Apollo.ForbiddenError}
      * @throws {@link Apollo.NotFoundError}
      * @throws {@link Apollo.ConflictError}
+     * @throws {@link Apollo.ContentTooLargeError}
      * @throws {@link Apollo.UnprocessableEntityError}
      * @throws {@link Apollo.InternalServerError}
      *
@@ -336,6 +478,11 @@ export class Messaging {
                     throw new Apollo.NotFoundError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
                 case 409:
                     throw new Apollo.ConflictError(_response.error.body as Apollo.ErrorResponse, _response.rawResponse);
+                case 413:
+                    throw new Apollo.ContentTooLargeError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
                 case 422:
                     throw new Apollo.UnprocessableEntityError(_response.error.body as unknown, _response.rawResponse);
                 case 500:

@@ -159,6 +159,30 @@ describe("Webhooks", () => {
             environment: { base: server.baseUrl, production: server.baseUrl },
         });
         const rawRequestBody = {};
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/events")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(413)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.webhooks.receiveAgentEvent();
+        }).rejects.toThrow(Apollo.ContentTooLargeError);
+    });
+
+    test("receive_agent_event (8)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = {};
         const rawResponseBody = { key: "value" };
         server
             .mockEndpoint()
@@ -174,7 +198,7 @@ describe("Webhooks", () => {
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
-    test("receive_agent_event (8)", async () => {
+    test("receive_agent_event (9)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
             token: "test",

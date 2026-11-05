@@ -11,6 +11,8 @@ export interface SendMessageRequest {
     thread_id?: string;
     /** Signed image URL for vision input. */
     image_url?: string;
+    /** Files attached to this message, up to 10: the file_url of each upload created for this agent with POST /messaging/v1/uploads, after its bytes were PUT. Any other link, or an upload never PUT or no longer kept, is refused. Files are read by agents on runtime v2; any other agent refuses a send with files. An image_url counts toward the same 10-file limit, so send at most 9 file_urls alongside one. */
+    file_urls?: string[];
     /** Per-message values for the agent's configured context variables. */
     agent_variables?: Record<string, unknown>;
     /** Optional runtime build pin (e.g. '0.5.4') for agents on the runtime-v2 engine. Has no effect on which engine serves the agent; omit to use the current default runtime. */

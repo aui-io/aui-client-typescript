@@ -17,6 +17,7 @@ export namespace ErrorEnvelope {
         | {
               error: string;
               code?: number | undefined;
+              error_code?: string | undefined;
           }
         /**
          * Error raised while processing the turn. */
