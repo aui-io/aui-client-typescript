@@ -1,17 +1,31 @@
 # @aui.io/aui-client
 
 [![npm version](https://img.shields.io/npm/v/@aui.io/aui-client)](https://www.npmjs.com/package/@aui.io/aui-client)
+[![docs](https://img.shields.io/badge/docs-docs.aui.io-7c6cf6)](https://docs.aui.io/sdk/overview)
 
 Official TypeScript/JavaScript SDK for the AUI Apollo API. Provides REST access to
-messaging, projects, agents, and threads, plus real-time reply streaming over
-Server-Sent Events. Agents on runtime v1 additionally accept a WebSocket session —
-see [Runtime v1 agents](#runtime-v1-agents).
+messaging, projects, agents, threads, and reasoning traces, real-time reply streaming
+over Server-Sent Events, and a WebSocket feed that pushes a conversation's new
+messages as they arrive. Agents on runtime v1 additionally accept turns over a
+WebSocket session — see [Runtime v1 agents](#runtime-v1-agents).
+
+> **Full documentation:** this README is the quick reference. The complete guides,
+> the API reference (every endpoint, request and response field), and the changelog
+> live at **[docs.aui.io](https://docs.aui.io)** — start with the
+> [SDK overview](https://docs.aui.io/sdk/overview), then
+> [Messaging](https://docs.aui.io/sdk/messaging),
+> [Management](https://docs.aui.io/sdk/management),
+> [Traces](https://docs.aui.io/api/messaging/traces),
+> [Best practices](https://docs.aui.io/sdk/best-practices), and the
+> [Changelog](https://docs.aui.io/changelog).
 
 ## Installation
 
 ```bash
 npm install @aui.io/aui-client
 ```
+
+Requires Node.js 18 or later — or a modern browser, for the messaging client.
 
 ## Clients
 
@@ -20,8 +34,8 @@ matches your environment.
 
 | Client | Credential | Browser | Purpose |
 | --- | --- | --- | --- |
-| `ApolloMessagingClient` | Publishable key (`pk_network_...`) | Yes | End-user messaging, streaming, and channels |
-| `ApolloManagementClient` | Organization API key | No — server only | Managing projects, agents, versions, and threads |
+| `ApolloMessagingClient` | Publishable key (`pk_network_...`) | Yes | End-user messaging, streaming, file attachments, live conversation updates, traces, and channels |
+| `ApolloManagementClient` | Organization API key | No — server only | Managing projects, agents, versions, threads, traces, and usage |
 
 ---
 
@@ -61,6 +75,9 @@ const messages = await client.messaging.listMessages(threadId, {
 const v1Messages = await client.messaging.listMessages(v1ThreadId);
 ```
 
+The trace endpoints are the exception: they take no selector — the thread id's shape
+already says which runtime the thread lives on. See [Traces](#traces).
+
 Not sure which runtime your agent is on? UUID thread ids mean runtime v2; 24-character
 hex ids mean runtime v1. See [Runtime v1 agents](#runtime-v1-agents) for the full
 picture.
@@ -91,6 +108,7 @@ const response = await client.messaging.sendMessage({
   user_id: 'end-user-123',
   text: 'What can you help me with?',
   // thread_id: existingThreadId,
+  // include_trace: true,  // also return the reasoning trace as message.trace_info — see Traces
 });
 
 console.log(response.thread_id);
@@ -98,9 +116,9 @@ console.log(response.message.text);
 ```
 
 You can pass optional per-message values for the agent's configured context
-variables. The response returns your `agent_variables` back — next to
-`thread_id`, exactly as you sent them: same keys, same values, no reshaping —
-so you can correlate each reply with the context that produced it:
+variables as `agent_variables` — a flat object of key/value pairs, whose keys are the
+context variables the agent's program declares (see
+[Agent variables](https://docs.aui.io/api/messaging/send-messages#agent-variables)):
 
 ```ts
 const response = await client.messaging.sendMessage({
@@ -111,11 +129,57 @@ const response = await client.messaging.sendMessage({
     order_id: 'ORD-1042',
   },
 });
-
-console.log(response.agent_variables); // { customer_name: 'Ada', order_id: 'ORD-1042' }
 ```
 
-`streamMessage` echoes them the same way on its terminal `message` frame.
+`streamMessage` takes them the same way, inside `body`. The reply does not carry them
+back — keep your own copy if you need to match a reply to the context it ran with.
+
+### Attach files
+
+Attach a file in three steps: create an upload, `PUT` the file's bytes to it, then
+pass the upload's `file_url` in the message's `file_urls`.
+
+```ts
+const file = fileInput.files[0]; // a File in the browser; a Buffer or Uint8Array works in Node
+
+// 1. Declare the file: its name, with extension, and its exact size in bytes.
+const upload = await client.messaging.createUpload({
+  filename: file.name,
+  size: file.size,
+});
+
+// 2. PUT exactly those bytes, with every header the upload returned.
+const put = await fetch(upload.upload_url, {
+  method: 'PUT',
+  headers: upload.headers,
+  body: file,
+});
+if (!put.ok) throw new Error(`Upload failed with status ${put.status}`);
+
+// 3. Attach it to a message.
+const response = await client.messaging.sendMessage({
+  user_id: 'end-user-123',
+  text: 'What does this invoice say?',
+  file_urls: [upload.file_url],
+});
+```
+
+- **One upload per file.** `filename` must end in one of `png`, `jpg`, `jpeg`, `gif`,
+  `webp`, `pdf`, `docx`, `xlsx`, `pptx`, `csv`, `txt`, `md`, or `json`. `size` is at
+  most 20 MB, and the upload accepts only a body of exactly that size. The file is
+  stored under a cleaned name, returned as `upload.file_name`.
+- **Links expire after 15 minutes.** Until then, `file_url` also reads the file back —
+  for a preview, say. Attaching it to a message still works after the link expires.
+- **Up to 10 files per message.** An `image_url` counts toward the same limit.
+  `streamMessage` takes `file_urls` the same way; `rerun` and WebSocket sessions don't
+  take files.
+- **Retention.** An upload that no message attaches is deleted after 1 day. The first
+  message that attaches it keeps it for 30 days, and it can be attached again during
+  that time.
+- **Runtime v2 agents read files.** A [runtime v1 agent](#runtime-v1-agents) refuses a
+  send that carries files.
+
+> **New in 3.4.1.**
 
 ### Stream a message (SSE)
 
@@ -133,10 +197,12 @@ const stream = await client.messaging.streamMessage({
     user_id: 'end-user-123',
     text: 'Tell me about my account',
     // thread_id: existingThreadId,
+    // include_trace: true,  // the terminal message frame then carries data.trace_info
   },
 });
 
 let reply = '';
+let cards: Apollo.MessageCard[] = [];
 for await (const event of stream) {
   switch (event.type) {
     case 'thread':
@@ -147,10 +213,16 @@ for await (const event of stream) {
       // Token deltas while the agent works — append to render live text.
       if (typeof event.data?.text === 'string') reply += event.data.text;
       break;
+    case 'cards':
+      // Optional (runtime v2 agents): the turn's cards so far, ahead of the reply.
+      // Each frame carries the complete list and replaces the previous one.
+      cards = event.data.cards ?? [];
+      break;
     case 'message':
-      // Terminal frame: the completed reply (authoritative text and cards),
-      // plus your agent_variables echoed back exactly as sent.
+      // Terminal frame: the completed reply (authoritative text and cards) and —
+      // with include_trace — the reasoning trace as data.trace_info.
       reply = event.data?.text ?? reply;
+      cards = event.data?.cards ?? [];
       break;
     case 'suggestions':
       // Optional final frame (runtime v2 agents): ready-made follow-up prompts,
@@ -172,6 +244,13 @@ frame; their `followup_suggestions` ride on the message itself). To resume a dro
 stream without re-running the turn, reconnect with the last `seq` you saw as
 `'Last-Event-ID'`.
 
+**Live cards.** Runtime v2 agents can emit `cards` frames while the turn runs, so
+you can show cards before the reply is complete. Each frame carries the turn's
+complete card list so far and replaces the previous one. The terminal `message`
+frame's `cards` replace them all, and an empty `cards` frame before an `error` or the
+end of the stream withdraws them. The frame is optional — a turn without cards emits
+none — and runtime v1 agents never emit it. New in 3.4.2.
+
 ### Rerun an interaction
 
 `rerun` regenerates one agent reply. Both `interaction_id` (the agent message's id
@@ -182,6 +261,7 @@ thread** — read the response's `thread_id`:
 const rerun = await client.messaging.rerun(threadId, {
   interaction_id: agentMessageId,
   text: 'Where is my order?',
+  // include_trace: true,  // the regenerated reply then carries message.trace_info
 });
 
 console.log(rerun.thread_id); // new thread containing the regenerated reply
@@ -200,6 +280,235 @@ const messages = await client.messaging.listMessages(threadId, {
 });
 const v1Messages = await client.messaging.listMessages(v1ThreadId); // runtime v1 thread
 ```
+
+Transcripts never carry traces — use the trace calls below for history.
+
+### Traces
+
+Every interaction produces a **trace** — a structured record of the agent's reasoning
+for that turn: what it understood, which sources it relied on, what it decided. The
+shape follows the runtime the agent runs on, and every trace carries a `runtime`
+field that says which one you got:
+
+| `trace.runtime` | Agents | Shape |
+| --- | --- | --- |
+| `"v2"` | Agents on the current runtime | The runtime's own turn trace, as typed sections named in your program's vocabulary: `understood`, `learned`, `sources`, `passages_used`, `citations_used`, `decided`, `checks`, `did`, `refused_by`, `answer`, `narrative` |
+| `"v1"` | [Runtime v1 agents](#runtime-v1-agents) | The typed runtime v1 trace: `input`, `understanding`, `decisions`, `computed_parameters`, `rules_evaluations`, `response` |
+
+> **New in 3.4.0:** traces for every agent (previously runtime v1 agents only),
+> `include_trace` on sends, and `Trace` as a discriminated union. No other method
+> changed.
+
+Read `trace.runtime` first — `Apollo.Trace` is a discriminated union, so the branch
+narrows the type:
+
+```ts
+const trace = await client.messaging.interactionTrace(interactionId, { thread_id });
+
+if (trace.runtime === 'v2') {
+  trace.citations_used;   // the passages the reply provably cited — what to show as "sources"
+  trace.did;              // the capabilities the turn carried out
+  trace.narrative;        // the turn in plain sentences
+} else {
+  trace.decisions;        // runtime v1 agents: the typed decision list
+}
+```
+
+**Two endpoints, one rule.** `threadTrace(threadId)` returns every interaction's trace
+in the thread, oldest first and paginated; `interactionTrace(interactionId, { thread_id })`
+returns one. A runtime v2 interaction is identified by its thread *and* its id, so
+`thread_id` is **required for runtime v2 agents** — without it the API answers a
+`400` (`Apollo.BadRequestError`) that says so. Runtime v1 interactions are read by
+their id alone; a `thread_id` passed anyway is ignored. Neither endpoint takes
+`runtime_version` — the thread id's shape decides. Keep the thread id next to
+the interaction id when you store `message.id`.
+
+```ts
+// Every interaction in the thread, paginated:
+let cursor: string | undefined;
+do {
+  const page = await client.messaging.threadTrace(threadId, {
+    'page[size]': 20,
+    'page[after]': cursor,
+  });
+  page.results.forEach((trace) => console.log(trace.runtime));
+  cursor = page.meta.has_more ? page.meta.after_cursor : undefined;
+} while (cursor);
+```
+
+**With the reply, in one request.** Set `include_trace: true` on `sendMessage`,
+`streamMessage`, or `rerun` and the reply carries the same object as
+`message.trace_info` — no second request. On a stream it rides the terminal `message`
+frame. It is off by default (a trace can be large), and `trace_info` is `null` when
+not requested:
+
+```ts
+const { message } = await client.messaging.sendMessage({
+  user_id: 'end-user-123',
+  text: 'Which plan covers dental?',
+  include_trace: true,
+});
+message.trace_info; // Apollo.Trace — runtime "v1" or "v2"
+```
+
+**Showing sources to end users.** For runtime v2 agents, render `citations_used`
+(the passages the reply provably cites — each names its `document` and `section`),
+falling back to `passages_used`. `sources[].evidence` is everything retrieval
+returned, selected or not — useful for debugging, not for the end user.
+
+```ts
+const trace = message.trace_info;
+const cited = trace?.runtime === 'v2' ? (trace.citations_used ?? []) : [];
+const sources = trace?.runtime === 'v2'
+  ? (cited.length ? cited : (trace.passages_used ?? []))
+  : [];
+sources.map((p) => `${p.document}${p.section ? ` — ${p.section}` : ''}`);
+```
+
+Traces are scoped to the agent behind your key — a thread of another agent answers
+`404` (`Apollo.NotFoundError`). The full field reference for both shapes is at
+[docs.aui.io/api/messaging/traces](https://docs.aui.io/api/messaging/traces).
+
+### Watch a conversation live
+
+A reply to a send is not the only message a conversation receives. A person on your
+team can answer in it (see [Human handover](#human-handover)), and the agent can
+speak again on its own — after an outside approval, for example. To show those
+messages as they arrive, open a WebSocket with `connect()` and **watch** the
+conversation: every message it saves is then pushed to you.
+
+Watching is receive-only, and it follows conversations of runtime v2 agents. Keep
+sending turns with `sendMessage` or `streamMessage`.
+
+```ts
+const socket = await client.connect();
+
+const messages = new Map<string, Apollo.Message>(); // on screen, by id, in order
+let lastSequence: number | undefined;
+
+async function loadTranscript(threadId: string) {
+  const transcript = await client.messaging.listMessages(threadId, {
+    runtime_version: '0.8.0',
+  });
+  // Keep anything the feed delivered while the transcript was being read.
+  const newer = [...messages.values()].filter((m) => !transcript.some((t) => t.id === m.id));
+  messages.clear();
+  for (const message of [...transcript, ...newer]) messages.set(message.id, message);
+  render([...messages.values()]);
+}
+
+// Runs on the first connection and again after every automatic reconnect.
+socket.on('open', () => {
+  lastSequence = undefined;
+  socket.sendWatch({ type: 'watch', thread_id: threadId });
+});
+
+socket.on('message', (frame) => {
+  if (frame.type === 'watching') {
+    void loadTranscript(frame.thread_id); // the watch is in place: read the transcript
+    return;
+  }
+  if (frame.type === 'error') {
+    console.error(frame.data); // the watch was refused — see the codes below
+    return;
+  }
+  if (!('sequence' in frame)) return; // not a watched turn
+
+  // frame.type is 'message' (a message to show) or 'silent' (a turn with nothing to show).
+  if (lastSequence !== undefined && frame.sequence > lastSequence + 1) {
+    void loadTranscript(frame.thread_id); // a number was skipped: a turn was missed
+  } else if (frame.type === 'message' && !messages.has(frame.data.id)) {
+    messages.set(frame.data.id, frame.data); // show each id once
+    render([...messages.values()]);
+  }
+  lastSequence = Math.max(lastSequence ?? 0, frame.sequence);
+});
+```
+
+| Frame `type` | Meaning | Carries |
+| --- | --- | --- |
+| `watching` | The answer to `watch`: the conversation's turns are pushed from now on. | `thread_id` |
+| `message` | A message the end user is shown — a reply, an answer from a person on your team, the agent speaking after an outside approval. | `thread_id`, `sequence`, and `data`: an `Apollo.Message`, the same object `sendMessage` returns |
+| `silent` | A turn with nothing to show — the conversation returned to the agent, say. `data.text` is `null`, and `data.disposition` says what happened. | `thread_id`, `sequence`, `data` |
+| `error` | The watch was refused. The socket stays open. | `data.error`, `data.code`, `data.error_code` |
+
+The rules to follow:
+
+- **Wait for `watching`, then read the transcript.** The feed carries what the
+  conversation saves from then on, not its history.
+- **Show each `data.id` once.** The reply to your own `sendMessage` or `streamMessage`
+  is pushed too, and a message can be pushed again after a reconnect.
+- **Show what the end user typed yourself.** A frame carries the turn's outcome, not
+  the end user's message that started it. A transcript read returns both.
+- **Keep `sequence` order.** `sequence` numbers the conversation's turns in the order
+  they were saved. A frame that skips a number means a turn was missed: read the
+  transcript again.
+- **After a reconnect, watch again and read the transcript again.** The socket
+  reconnects on its own (30 attempts by default), so sending `watch` from the `open`
+  handler covers it.
+- **One conversation per socket.** A new `watch` replaces the socket's previous one.
+
+A refused watch says why in `data.code`: `400` for a thread of a runtime v1 agent,
+`404` for a thread that is not your agent's, `429` when too many sessions already
+watch the conversation (try again shortly), and `503` when live events are not
+available — with `error_code: 'messaging.watch_retry'`, send `watch` again shortly.
+The socket closes with `1013` when the server could not keep the watch whole: let it
+reconnect, then watch and read the transcript again. `1008` is an authentication
+failure and `1011` a server error.
+
+> **New in 3.4.2.** Existing TypeScript socket handlers may need a small change — see
+> [Upgrading to 3.4.2](#upgrading-to-342).
+
+### Human handover
+
+An agent can hand a conversation to a person on your team. While the person holds
+it, the end user's messages go to that person instead of the agent, and the person's
+answers arrive in the same conversation. `message.disposition` says what happened to
+each message of such a conversation. It is `null` on every other message.
+
+Two cases matter in a chat UI:
+
+```ts
+// 1. A send while a person holds the conversation: the agent does not answer.
+const { message } = await client.messaging.sendMessage({ user_id, thread_id, text });
+if (message.disposition?.kind === 'passed_on' && message.disposition.to === 'human') {
+  // message.text is null: there is no reply to render. The person's answer
+  // arrives later — watch the conversation to receive it.
+}
+
+// 2. A message a person on your team wrote — pushed on the watch feed, and in
+//    the transcript afterwards.
+if (pushed.sender?.type === 'human') {
+  showFromPerson(pushed.sender.name, pushed.text); // sender.name: the name to show
+}
+```
+
+`sender.name` is set only when `sender.type` is `human`. The `disposition` fields:
+
+| Field | Values | Meaning |
+| --- | --- | --- |
+| `kind` | `passed_on` · `authority` · `refused` | `passed_on`: the message went between the end user and the person. `authority`: who answers the conversation changed. `refused`: your team asked for a change the conversation does not allow. |
+| `to` | `human` | The end user's message went to the person, and the agent did not answer it. |
+| `from` | `human` | The person wrote this message. |
+| `human` | `{ id, name }` | The person who wrote the message, or who took the conversation over, returned it, or stopped the agent. |
+| `holder` | `human` · `apollo` · `human_for_good` | Who answers the conversation now: the person the agent handed it to, the agent, or the person for good. |
+| `by` | `apollo` · `client` | Who moved it: the agent, handing the conversation to the person, or your team. |
+| `via` | `help_desk` · `playground` | Where the person who moved it works from. |
+| `asked` | `pass_on` · `take_over` · `return` · `pull_out` | On a refusal: what your team asked for. |
+| `reason` | `apollo_holds_authority` · `apollo_pulled_out` · `newer_end_user_message` · `held_by_another` | On a refusal: why. |
+| `held_by` | `{ id, name, via, since }` | On a `held_by_another` refusal: the person who holds the conversation. |
+
+Only `kind` is always present, and every value is typed as a plain `string` — compare
+against the values above and keep a default branch. Transcripts (`listMessages`,
+`threads.getThreadMessages`) carry the same `disposition` and `sender.name`, so a
+conversation renders the same way live and on reload.
+
+Your team's side — the person's messages, taking a conversation over, returning it to
+the agent — is sent from your backend, not through this SDK: `POST
+/messaging/v1/events` with a `handover` body and your agent API key. See
+[Events](https://docs.aui.io/api/messaging/events#human-handover).
+
+> **New in 3.4.2.** Human handover applies to runtime v2 agents.
 
 ### Welcome message
 
@@ -247,15 +556,16 @@ streaming `suggestions` frame — no extra call needed.)
 
 | Method | Description | `runtime_version`? |
 | --- | --- | --- |
-| `sendMessage(request)` | Send a message and return the reply. | Optional build pin — normally omit |
-| `streamMessage({ body })` | Send a message and stream the reply (SSE). | Optional build pin — normally omit |
-| `rerun(threadId, request)` | Regenerate one reply onto a new thread. Requires `interaction_id` and `text`. | Optional build pin — normally omit |
+| `sendMessage(request)` | Send a message and return the reply. Set `include_trace` to get the trace with it. | Optional build pin — normally omit |
+| `streamMessage({ body })` | Send a message and stream the reply (SSE). `include_trace` applies to the terminal frame. | Optional build pin — normally omit |
+| `createUpload(request)` | Get a link to upload one file to, then attach it to a message with `file_urls`. | — |
+| `rerun(threadId, request)` | Regenerate one reply onto a new thread. Requires `interaction_id` and `text`; accepts `include_trace`. | Optional build pin — normally omit |
 | `listMessages(threadId, request?)` | Return the messages in a thread. | **Required for runtime v2 threads** (e.g. `'0.8.0'`) |
-| `threadTrace(threadId, request?)` | Reasoning trace per interaction (paginated). | Runtime v1 agents only |
-| `interactionTrace(interactionId)` | Reasoning trace for one interaction. | Runtime v1 agents only |
+| `threadTrace(threadId, request?)` | Reasoning trace per interaction (paginated); `trace.runtime` says which shape. | — (both runtimes; the thread id decides) |
+| `interactionTrace(interactionId, request?)` | Reasoning trace for one interaction; pass `{ thread_id }` for runtime v2 agents. | — (both runtimes) |
 | `getWelcomeMessage(request?)` | Return the agent's welcome message; pass `placeholders` to resolve its dynamic template. | — |
 | `generateFollowupSuggestions(request)` | Generate follow-up prompts from a context. | — |
-| `connect(args?)` | Open a [WebSocket session](#websocket-sessions-runtime-v1-agents). | Runtime v1 agents only |
+| `connect(args?)` | Open a WebSocket: [watch a conversation](#watch-a-conversation-live) (runtime v2 agents), or run a [session](#websocket-sessions-runtime-v1-agents) (runtime v1 agents). | — |
 | `getContext()` | Resolve the key's agent and organization. | — |
 
 ### Message cards
@@ -348,7 +658,7 @@ and CI. Do not expose the organization API key in the browser.
 import { ApolloManagementClient } from '@aui.io/aui-client';
 
 const client = new ApolloManagementClient({
-  organizationApiKey: process.env.AUI_ORG_API_KEY,
+  organizationApiKey: process.env.AUI_ORG_API_KEY!,
 });
 ```
 
@@ -365,7 +675,7 @@ const client = new ApolloManagementClient({
 | `createProject(request)` | Create a project. |
 | `getProject(projectId)` | Fetch one project. |
 | `deleteProject(projectId)` | Delete a project. |
-| `getProjectUsage(projectId)` | Usage metrics aggregated across the project. |
+| `getProjectUsage(projectId, request?)` | Usage metrics aggregated across the project (optional `created_from` / `created_to` window). |
 
 ```ts
 const page = await client.projects.listProjects();
@@ -382,7 +692,7 @@ const usage = await client.projects.getProjectUsage(project.id);
 | `getAgent(agentId)` | Fetch one agent. |
 | `updateAgent(agentId, request)` | Rename an agent (re-publishes the live version with the new name). |
 | `deleteAgent(agentId)` | Delete an agent and its versions. |
-| `getAgentUsage(agentId)` | Usage metrics for one agent. |
+| `getAgentUsage(agentId, request?)` | Usage metrics for one agent (optional `created_from` / `created_to` window). |
 
 ```ts
 const page = await client.agents.listAgents(projectId, {});
@@ -390,6 +700,13 @@ const filtered = await client.agents.listAgents(projectId, { name: 'support' });
 const agent = await client.agents.createAgent(projectId, { name: 'Support bot' });
 const usage = await client.agents.getAgentUsage(agent.id);
 ```
+
+Both usage calls return an `Apollo.UsageResponse`: `interaction_count`,
+`input_tokens`, `output_tokens`, `cache_read_tokens`, `cache_write_tokens`,
+`reasoning_tokens`, `incomplete_usage_calls`, and `total_tokens`.
+`cache_write_tokens` is the part of `input_tokens` that was written to the cache —
+not an addition to it — and `incomplete_usage_calls` counts the model calls whose
+token usage was reported incompletely. Both fields are new in 3.4.2.
 
 ### Agent versions
 
@@ -425,8 +742,8 @@ v1.
 | `getThread(threadId, request?)` | Fetch one thread. | **Required for runtime v2 threads** (e.g. `'0.8.0'`) |
 | `updateThread(threadId, request)` | Update a thread (currently `title`). | **Required for runtime v2 threads** (e.g. `'0.8.0'`) |
 | `getThreadMessages(threadId, request?)` | Return the thread's transcript. | **Required for runtime v2 threads** (e.g. `'0.8.0'`) |
-| `getThreadTrace(threadId, request?)` | Reasoning trace per interaction (paginated). | Runtime v1 agents only |
-| `getInteractionTrace(interactionId)` | Reasoning trace for one interaction. | Runtime v1 agents only |
+| `getThreadTrace(threadId, request?)` | Reasoning trace per interaction (paginated); `trace.runtime` says which shape. | — (both runtimes; the thread id decides) |
+| `getInteractionTrace(interactionId, request?)` | Reasoning trace for one interaction; pass `{ thread_id }` for runtime v2 threads. | — (both runtimes) |
 
 Reads and renames name the runtime the thread lives on — pass the selector for
 runtime v2 threads; runtime v1 threads take no extra fields:
@@ -445,6 +762,16 @@ await client.threads.updateThread(threadId, {
 // Runtime v1 thread — nothing extra:
 const v1Thread = await client.threads.getThread(v1ThreadId);
 await client.threads.updateThread(v1ThreadId, { title: 'Renamed conversation' });
+```
+
+The trace methods are the management twins of the messaging ones — same shapes,
+same `thread_id` rule (see [Traces](#traces)), authenticated with the organization
+API key:
+
+```ts
+const page = await client.threads.getThreadTrace(threadId, { 'page[size]': 20 });
+const trace = await client.threads.getInteractionTrace(interactionId, { thread_id: threadId });
+if (trace.runtime === 'v2') trace.citations_used;
 ```
 
 #### Listing threads
@@ -504,7 +831,11 @@ places only:
 | Reading threads back (`listMessages`, `threads.*`) | No selector needed | Pass `runtime_version` (e.g. `'0.8.0'`) |
 | Live streaming | `streamMessage` (SSE) or a [WebSocket session](#websocket-sessions-runtime-v1-agents) | `streamMessage` (SSE) |
 | `suggestions` stream frame | Not emitted — `followup_suggestions` ride on the message | Emitted after the terminal `message` |
-| Traces (`threadTrace`, `interactionTrace`) | ✅ | Not yet available |
+| `cards` stream frame | Not emitted — cards ride on the message | Emitted ahead of the terminal `message` |
+| File attachments (`createUpload`, `file_urls`) | A send with files is refused | ✅ |
+| Watching a conversation (`sendWatch`) | Refused with code `400` — replies stream on the session as each turn runs | ✅ |
+| Human handover (`message.disposition`, `sender.name`) | — | ✅ |
+| Traces (`threadTrace`, `interactionTrace`) | ✅ — the typed runtime v1 trace, `runtime: "v1"`; read by the interaction id alone | ✅ — the runtime's own turn trace, `runtime: "v2"`; `interactionTrace` also takes `{ thread_id }` |
 | `runtime_version` build pin on sends | Ignored | Honored (advanced; normally omit) |
 | Thread id format | 24-character hex | UUID |
 
@@ -513,11 +844,12 @@ places only:
 `connect()` opens a bidirectional real-time messaging session. Authentication is
 handled for you, and it works in both Node and the browser.
 
-> **Runtime v1 agents only.** Runtime v2 agents don't accept WebSocket sessions — the
-> socket replies with an error frame explaining the session is SSE-only. Runtime v2
-> agents stream over HTTP with [`streamMessage`](#stream-a-message-sse): the same
-> token-by-token reply, one call per turn, resumable with `Last-Event-ID`, and no
-> socket to keep alive.
+> **Runtime v1 agents only.** Runtime v2 agents don't run turns over the socket — a
+> `message` frame is answered with an `error` frame explaining the agent is SSE-only.
+> Runtime v2 agents stream over HTTP with [`streamMessage`](#stream-a-message-sse):
+> the same token-by-token reply, one call per turn, resumable with `Last-Event-ID`.
+> They use the socket for one thing only: to
+> [watch a conversation](#watch-a-conversation-live).
 
 ```ts
 const socket = await client.connect();
@@ -541,9 +873,30 @@ socket.close();
 ```
 
 The socket exposes `waitForOpen()`, `on(event, handler)` (events: `open`, `message`,
-`error`, `close`), `sendMessage(request)`, `sendResume(request)`, and `close()`.
+`error`, `close`), `sendMessage(request)`, `sendResume(request)`, `sendWatch(request)`,
+and `close()`.
 Note that `on()` registers a single handler per event; calling it again for the same
 event replaces the previous handler. The socket type is exported as `SessionSocket`.
+The terminal `message` envelope embeds the turn's trace as `data.trace_info`
+(sessions are opened with `include_trace=true` by default) — the same
+`Apollo.Trace` object as the trace calls, with `runtime: "v1"`.
+
+Session envelopes (`thread`, `event`, `message`, `error`) carry a `seq` — the cursor
+for `sendResume`. The frames of a [watched conversation](#watch-a-conversation-live)
+arrive on the same handler and carry a `sequence` instead, so narrow before you read
+`seq`:
+
+```ts
+let lastSeq = -1;
+
+socket.on('message', (envelope) => {
+  if ('seq' in envelope && envelope.seq > 0) lastSeq = envelope.seq; // session envelopes only
+  if (envelope.type === 'message') console.log(envelope.data.text);
+});
+
+// After a reconnect, replay what you missed instead of re-running the turn:
+socket.sendResume({ type: 'resume', resume_after: lastSeq });
+```
 
 Moving from the socket to `streamMessage` is close to one-to-one:
 
@@ -551,18 +904,20 @@ Moving from the socket to `streamMessage` is close to one-to-one:
 | --- | --- |
 | `client.connect()` then `socket.sendMessage({ type: 'message', agent_id, user_id, text })` | `client.messaging.streamMessage({ body: { user_id, text } })` |
 | `socket.on('message', (envelope) => …)`, switch on `envelope.type` | `for await (const event of stream)`, switch on `event.type` |
-| `thread` · `event` · `message` · `error` envelopes | The same four types, plus `suggestions` after the terminal `message` |
+| `thread` · `event` · `message` · `error` envelopes | The same four types, plus `cards` before and `suggestions` after the terminal `message` |
 | `agent_id` required on every frame | Not needed — the agent comes from your key |
 | Reconnect, then `socket.sendResume({ type: 'resume', resume_after: lastSeq })` | Call again with `'Last-Event-ID': String(lastSeq)` |
 | `socket.close()` | Nothing to close — the stream ends with the turn |
 
-### Traces (runtime v1 agents)
+### Traces on runtime v1 agents
 
-Runtime v1 agents expose the reasoning trace behind every interaction through
-`messaging.threadTrace` / `messaging.interactionTrace` (publishable key) and
-`threads.getThreadTrace` / `threads.getInteractionTrace` (organization API key).
-`threadTrace` and `getThreadTrace` are paginated. Trace support for runtime v2 is
-coming; until then these calls apply to runtime v1 agents only.
+The same calls apply — `messaging.threadTrace` / `messaging.interactionTrace`
+(publishable key) and `threads.getThreadTrace` / `threads.getInteractionTrace`
+(organization API key), and `include_trace` on sends — with two differences: the
+trace is the typed runtime v1 record (`runtime: "v1"`: `input`, `understanding`,
+`decisions`, `computed_parameters`, `rules_evaluations`, `response`), and an
+interaction is read by its id alone (`interactionTrace(interactionId)` — a
+`thread_id` passed anyway is ignored). See [Traces](#traces).
 
 ### Moving an integration to runtime v2
 
@@ -579,14 +934,19 @@ For everything else:
   `resume` frame.
 - **Follow-up suggestions** — handle the `suggestions` frame
   (`data.followup_suggestions`) instead of reading them off the message.
-- **Traces** — guard trace calls until runtime v2 trace support lands.
+- **Live cards** — optionally handle the `cards` frame to show cards before the
+  reply completes; the terminal `message` still carries the final list.
+- **Traces** — branch on `trace.runtime` (`"v1"` keeps today's fields; `"v2"` is the
+  runtime's own turn trace), and pass `{ thread_id }` to `interactionTrace` /
+  `getInteractionTrace` for runtime v2 interactions.
 
 ---
 
 ## Pagination
 
 List endpoints — including thread traces — return `{ results, meta }`. Use
-`meta.has_more` to detect further pages.
+`meta.has_more` to detect further pages and pass `meta.after_cursor` as
+`page[after]` to fetch the next one.
 
 ## Timeouts
 
@@ -598,8 +958,12 @@ await client.threads.listThreads({}, { timeoutInSeconds: 120 });
 
 ## Error handling
 
-`ApolloError` and `ApolloTimeoutError` are exported at the top level. Per-status errors,
-such as `UnprocessableEntityError`, are available under the `Apollo` namespace.
+`ApolloError` and `ApolloTimeoutError` are exported at the top level. Per-status errors
+are available under the `Apollo` namespace: `BadRequestError` (400),
+`UnauthorizedError` (401), `ForbiddenError` (403), `NotFoundError` (404),
+`ConflictError` (409), `ContentTooLargeError` (413), `UnprocessableEntityError` (422),
+`InternalServerError` (500), and `ServiceUnavailableError` (503). Any other status
+arrives as a plain `ApolloError` — read its `statusCode`.
 
 ```ts
 import { ApolloError, Apollo } from '@aui.io/aui-client';
@@ -617,9 +981,14 @@ try {
 }
 ```
 
-A common one to know: a **404 when reading a thread** usually means the
-`runtime_version` selector didn't match where the thread lives — see
-[Threads and runtime versions](#threads-and-runtime-versions).
+Every error body is the API's envelope — `{ error: { code, message, request_id } }`
+— so `error.body.error.message` says what went wrong. Two common ones to know:
+
+- A **404 when reading a thread** usually means the `runtime_version` selector didn't
+  match where the thread lives — see
+  [Threads and runtime versions](#threads-and-runtime-versions).
+- A **400 on `interactionTrace` / `getInteractionTrace`** for a runtime v2 agent means
+  `thread_id` is missing — see [Traces](#traces).
 
 ## TypeScript
 
@@ -635,8 +1004,33 @@ const request: Apollo.SendMessageRequest = {
 };
 ```
 
+Traces are typed per runtime: `Apollo.Trace` is the union of `Apollo.Trace.V1`
+(`Apollo.RuntimeV1Trace` with `runtime: "v1"`) and `Apollo.Trace.V2`
+(`Apollo.RuntimeV2Trace` with `runtime: "v2"`), narrowed by checking `runtime`; the
+runtime v2 sections are typed as well (`Apollo.RuntimeTraceFact`,
+`Apollo.RuntimeTracePassage`, and the item types under `Apollo.RuntimeV2Trace`).
+`Apollo.Message.trace_info` and `Apollo.PageTrace` (`{ results, meta, links }`) use
+the same types.
+
+### Upgrading to 3.4.2
+
+3.4.2 only adds to the SDK, and nothing changes at runtime. Three compile-time changes
+can surface in existing TypeScript code:
+
+- **Socket frames.** `socket.on('message', …)` now also receives the frames of a
+  [watched conversation](#watch-a-conversation-live): `watching`, and `message` /
+  `silent` frames that carry `sequence` instead of `seq`. Reading `frame.seq` without
+  narrowing no longer compiles — guard it with `'seq' in frame`.
+- **Exhaustive switches.** A `switch` with a `never` check on a socket frame's `type`
+  needs the new `watching` and `silent` cases; one on a stream event's `type` needs
+  `cards`.
+- **Envelopes.** `type` and `data` are now required on `ThreadEnvelope`,
+  `MessageEnvelope`, `EventEnvelope`, and `ErrorEnvelope`. Code that reads them keeps
+  compiling; code that builds one by hand — a test fixture, say — must set both.
+
 ## Resources
 
+- Documentation: [docs.aui.io](https://docs.aui.io) — [SDK guide](https://docs.aui.io/sdk/overview) · [API reference](https://docs.aui.io/api/overview) · [Traces](https://docs.aui.io/api/messaging/traces) · [Changelog](https://docs.aui.io/changelog)
 - npm: [@aui.io/aui-client](https://www.npmjs.com/package/@aui.io/aui-client)
 - GitHub: [aui-io/aui-client-typescript](https://github.com/aui-io/aui-client-typescript)
 - Issues: [GitHub Issues](https://github.com/aui-io/aui-client-typescript/issues)
