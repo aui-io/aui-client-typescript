@@ -21,13 +21,14 @@ export class Webhooks {
     }
 
     /**
-     * Enqueues an event for the agent bound to your agent API key, sent in the `x-agent-api-key` header. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously. `text` is limited to 262,144 characters and the body to 1 MiB; over either, the event is refused with `413` and never queued.
+     * Enqueues an event for the agent bound to your agent API key, sent in the `x-agent-api-key` header. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously. `text` is limited to 262,144 characters and the body to 1 MiB; over either, the event is refused with `413` and never queued. When the organization's balance is exhausted the event is refused with `402` (`insufficient_funds`) and never queued; retrying will not succeed until the balance is topped up.
      *
      * @param {Apollo.WebhookEvent} request
      * @param {Webhooks.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link Apollo.BadRequestError}
      * @throws {@link Apollo.UnauthorizedError}
+     * @throws {@link Apollo.PaymentRequiredError}
      * @throws {@link Apollo.ForbiddenError}
      * @throws {@link Apollo.NotFoundError}
      * @throws {@link Apollo.ConflictError}
@@ -86,6 +87,11 @@ export class Webhooks {
                     throw new Apollo.BadRequestError(_response.error.body as unknown, _response.rawResponse);
                 case 401:
                     throw new Apollo.UnauthorizedError(
+                        _response.error.body as Apollo.ErrorResponse,
+                        _response.rawResponse,
+                    );
+                case 402:
+                    throw new Apollo.PaymentRequiredError(
                         _response.error.body as Apollo.ErrorResponse,
                         _response.rawResponse,
                     );

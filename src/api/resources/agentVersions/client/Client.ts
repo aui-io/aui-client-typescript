@@ -38,6 +38,7 @@ export class AgentVersions {
      *
      * @example
      *     await client.agentVersions.listVersions("agentId", {
+     *         status: ["draft"],
      *         tag: "tag",
      *         version_number: 1,
      *         label: "label",

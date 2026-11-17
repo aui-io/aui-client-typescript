@@ -3,7 +3,7 @@
 import type * as Apollo from "../index.js";
 
 /**
- * Structured form of the card. `entity` is a flat {code: value} map of the card's fields; `sub_entities` holds nested groups such as product variants. Keys are defined by the agent's card templates.
+ * Structured form of the card. `entity` is a {code: value} map of the card's fields, where a value may also be an object or an array; `sub_entities` holds nested groups such as product variants. Keys are defined by the agent's card templates.
  */
 export interface MessageCardJsonData {
     entity?: Record<string, unknown>;

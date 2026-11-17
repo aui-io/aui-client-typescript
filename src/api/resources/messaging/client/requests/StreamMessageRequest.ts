@@ -5,7 +5,6 @@ import type * as Apollo from "../../../../index.js";
 /**
  * @example
  *     {
- *         "Last-Event-ID": "Last-Event-ID",
  *         body: {
  *             text: "text",
  *             user_id: "user_id"

@@ -9,7 +9,14 @@ export declare namespace SessionSocket {
         socket: core.ReconnectingWebSocket;
     }
 
-    export type Response = Apollo.ThreadEnvelope | Apollo.MessageEnvelope | Apollo.EventEnvelope | Apollo.ErrorEnvelope;
+    export type Response =
+        | Apollo.ThreadEnvelope
+        | Apollo.MessageEnvelope
+        | Apollo.EventEnvelope
+        | Apollo.ErrorEnvelope
+        | Apollo.WatchingFrame
+        | Apollo.WatchedMessageFrame
+        | Apollo.WatchedSilentFrame;
     type EventHandlers = {
         open?: () => void;
         message?: (message: Response) => void;
@@ -74,6 +81,11 @@ export class SessionSocket {
         this.sendJson(message);
     }
 
+    public sendWatch(message: Apollo.WatchRequest): void {
+        this.assertSocketIsOpen();
+        this.sendJson(message);
+    }
+
     /** Connect to the websocket and register event handlers. */
     public connect(): SessionSocket {
         this.socket.reconnect();
@@ -132,7 +144,7 @@ export class SessionSocket {
     }
 
     /** Send a JSON payload to the websocket. */
-    protected sendJson(payload: Apollo.SubmitMessageRequest | Apollo.ResumeRequest): void {
+    protected sendJson(payload: Apollo.SubmitMessageRequest | Apollo.ResumeRequest | Apollo.WatchRequest): void {
         const jsonPayload = toJson(payload);
         this.socket.send(jsonPayload);
     }

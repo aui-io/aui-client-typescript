@@ -6,14 +6,18 @@
 export interface UsageResponse {
     /** Number of billed interactions (one per interaction). */
     interaction_count?: number;
-    /** Total input tokens. */
+    /** Total input tokens, cache writes included. */
     input_tokens?: number;
     /** Total output tokens. */
     output_tokens?: number;
     /** Total cached (read) input tokens. */
     cache_read_tokens?: number;
+    /** Total input tokens written to the cache. Part of input_tokens, not in addition to it. */
+    cache_write_tokens?: number;
     /** Total reasoning tokens. */
     reasoning_tokens?: number;
+    /** Number of model calls whose token usage was reported incompletely. */
+    incomplete_usage_calls?: number;
     /** Sum of input + output + cache-read + reasoning tokens. */
     total_tokens?: number;
 }

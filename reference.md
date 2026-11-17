@@ -511,6 +511,7 @@ or version number; set ``exclude_revisions`` to see only base versions.
 
 ```typescript
 await client.agentVersions.listVersions("agentId", {
+    status: ["draft"],
     tag: "tag",
     version_number: 1,
     label: "label",
@@ -1403,6 +1404,11 @@ await client.threads.listThreads({
     project_id: "project_id",
     user_id: "user_id",
     external_id: "external_id",
+    created: ["created"],
+    tool: ["tool"],
+    rule: ["rule"],
+    param: ["param"],
+    agent_id: ["agent_id"],
     runtime_version: "runtime_version",
     "page[size]": 1,
     "page[after]": "page[after]",
@@ -1920,7 +1926,6 @@ without running the turn again.
 
 ```typescript
 const response = await client.messaging.streamMessage({
-    "Last-Event-ID": "Last-Event-ID",
     body: {
         text: "text",
         user_id: "user_id"
@@ -2620,7 +2625,7 @@ await client.auth.issueToken({
 <dl>
 <dd>
 
-Enqueues an event for the agent bound to your agent API key, sent in the `x-agent-api-key` header. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously. `text` is limited to 262,144 characters and the body to 1 MiB; over either, the event is refused with `413` and never queued.
+Enqueues an event for the agent bound to your agent API key, sent in the `x-agent-api-key` header. Pass `text` and/or `agent_variables` as the agent's input, and an optional `thread_id` (your own conversation id) to continue an existing conversation — omit it to start a new one. A `202` means the event was durably accepted — processing happens asynchronously. `text` is limited to 262,144 characters and the body to 1 MiB; over either, the event is refused with `413` and never queued. When the organization's balance is exhausted the event is refused with `402` (`insufficient_funds`) and never queued; retrying will not succeed until the balance is topped up.
 </dd>
 </dl>
 </dd>

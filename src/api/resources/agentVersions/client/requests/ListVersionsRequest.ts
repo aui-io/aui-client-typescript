@@ -5,6 +5,7 @@ import type * as Apollo from "../../../../index.js";
 /**
  * @example
  *     {
+ *         status: ["draft"],
  *         tag: "tag",
  *         version_number: 1,
  *         label: "label",

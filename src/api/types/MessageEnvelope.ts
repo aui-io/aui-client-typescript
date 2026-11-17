@@ -6,8 +6,8 @@ import type * as Apollo from "../index.js";
  * type=message — the completed agent reply. `data.trace_info` carries the reasoning trace when the session was opened with include_trace=true.
  */
 export interface MessageEnvelope {
-    type?: "message";
-    data?: Apollo.Message;
+    type: "message";
+    data: Apollo.Message;
     /** Monotonic sequence for gap detection / replay. Locally-generated errors use -1. */
     seq: number;
 }

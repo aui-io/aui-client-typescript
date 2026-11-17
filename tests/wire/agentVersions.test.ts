@@ -27,7 +27,6 @@ describe("AgentVersions", () => {
                     label: "label",
                     tags: ["tags"],
                     notes: "notes",
-                    stats: {},
                     runtime_version: "runtime_version",
                     schema_version: "schema_version",
                     created_at: "2024-01-15T09:30:00Z",
@@ -46,6 +45,7 @@ describe("AgentVersions", () => {
             .build();
 
         const response = await client.agentVersions.listVersions("agentId", {
+            status: ["draft"],
             tag: "tag",
             version_number: 1,
             label: "label",
@@ -69,7 +69,6 @@ describe("AgentVersions", () => {
                     label: "label",
                     tags: ["tags"],
                     notes: "notes",
-                    stats: {},
                     runtime_version: "runtime_version",
                     schema_version: "schema_version",
                     created_at: "2024-01-15T09:30:00Z",

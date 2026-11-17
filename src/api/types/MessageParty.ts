@@ -3,4 +3,6 @@
 export interface MessageParty {
     id?: string;
     type?: string;
+    /** The name of the person on your team who wrote the message; set only when `type` is `human`. */
+    name?: string;
 }

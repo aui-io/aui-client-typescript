@@ -4,8 +4,8 @@
  * type=error — either a session-level error (seq -1) or an error raised while processing the turn.
  */
 export interface ErrorEnvelope {
-    type?: "error";
-    data?: ErrorEnvelope.Data;
+    type: "error";
+    data: ErrorEnvelope.Data;
     /** Monotonic sequence for gap detection / replay. Locally-generated errors use -1. */
     seq: number;
 }

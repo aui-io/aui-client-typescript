@@ -93,6 +93,30 @@ describe("Webhooks", () => {
             .post("/messaging/v1/events")
             .jsonBody(rawRequestBody)
             .respondWith()
+            .statusCode(402)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.webhooks.receiveAgentEvent();
+        }).rejects.toThrow(Apollo.PaymentRequiredError);
+    });
+
+    test("receive_agent_event (5)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = {};
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/events")
+            .jsonBody(rawRequestBody)
+            .respondWith()
             .statusCode(403)
             .jsonBody(rawResponseBody)
             .build();
@@ -102,7 +126,7 @@ describe("Webhooks", () => {
         }).rejects.toThrow(Apollo.ForbiddenError);
     });
 
-    test("receive_agent_event (5)", async () => {
+    test("receive_agent_event (6)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
             token: "test",
@@ -126,7 +150,7 @@ describe("Webhooks", () => {
         }).rejects.toThrow(Apollo.NotFoundError);
     });
 
-    test("receive_agent_event (6)", async () => {
+    test("receive_agent_event (7)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
             token: "test",
@@ -150,7 +174,7 @@ describe("Webhooks", () => {
         }).rejects.toThrow(Apollo.ConflictError);
     });
 
-    test("receive_agent_event (7)", async () => {
+    test("receive_agent_event (8)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
             token: "test",
@@ -174,7 +198,7 @@ describe("Webhooks", () => {
         }).rejects.toThrow(Apollo.ContentTooLargeError);
     });
 
-    test("receive_agent_event (8)", async () => {
+    test("receive_agent_event (9)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
             token: "test",
@@ -198,7 +222,7 @@ describe("Webhooks", () => {
         }).rejects.toThrow(Apollo.UnprocessableEntityError);
     });
 
-    test("receive_agent_event (9)", async () => {
+    test("receive_agent_event (10)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
             token: "test",

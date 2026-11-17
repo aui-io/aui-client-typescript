@@ -19,5 +19,8 @@ export interface Message {
     url?: string;
     input_tokens?: number;
     output_tokens?: number;
+    /** The reasoning trace behind this reply. Present on a send or stream reply when the request set include_trace; never on a transcript read. */
     trace_info?: Apollo.Trace;
+    /** What happened to this message on a conversation the agent handed to a person on your team; null on every other message. */
+    disposition?: Apollo.MessageDisposition;
 }

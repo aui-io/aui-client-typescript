@@ -818,7 +818,9 @@ describe("Projects", () => {
             input_tokens: 1,
             output_tokens: 1,
             cache_read_tokens: 1,
+            cache_write_tokens: 1,
             reasoning_tokens: 1,
+            incomplete_usage_calls: 1,
             total_tokens: 1,
         };
         server
@@ -838,7 +840,9 @@ describe("Projects", () => {
             input_tokens: 1,
             output_tokens: 1,
             cache_read_tokens: 1,
+            cache_write_tokens: 1,
             reasoning_tokens: 1,
+            incomplete_usage_calls: 1,
             total_tokens: 1,
         });
     });
