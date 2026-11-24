@@ -26,6 +26,7 @@ describe("Messaging", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 url: "url",
+                voice_url: "voice_url",
                 input_tokens: 1,
                 output_tokens: 1,
                 trace_info: { runtime: "v1", decisions: [{}], computed_parameters: [{}], rules_evaluations: [{}] },
@@ -74,6 +75,7 @@ describe("Messaging", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 url: "url",
+                voice_url: "voice_url",
                 input_tokens: 1,
                 output_tokens: 1,
                 trace_info: {
@@ -593,6 +595,241 @@ describe("Messaging", () => {
         }).rejects.toThrow(Apollo.ServiceUnavailableError);
     });
 
+    test("transcribe (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { file_url: "file_url" };
+        const rawResponseBody = { text: "text" };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/transcriptions")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.messaging.transcribe({
+            file_url: "file_url",
+        });
+        expect(response).toEqual({
+            text: "text",
+        });
+    });
+
+    test("transcribe (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { file_url: "x" };
+        const rawResponseBody = { key: "value" };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/transcriptions")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(400)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.transcribe({
+                file_url: "x",
+            });
+        }).rejects.toThrow(Apollo.BadRequestError);
+    });
+
+    test("transcribe (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { file_url: "x" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/transcriptions")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(401)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.transcribe({
+                file_url: "x",
+            });
+        }).rejects.toThrow(Apollo.UnauthorizedError);
+    });
+
+    test("transcribe (4)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { file_url: "x" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/transcriptions")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(403)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.transcribe({
+                file_url: "x",
+            });
+        }).rejects.toThrow(Apollo.ForbiddenError);
+    });
+
+    test("transcribe (5)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { file_url: "x" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/transcriptions")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.transcribe({
+                file_url: "x",
+            });
+        }).rejects.toThrow(Apollo.NotFoundError);
+    });
+
+    test("transcribe (6)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { file_url: "x" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/transcriptions")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(409)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.transcribe({
+                file_url: "x",
+            });
+        }).rejects.toThrow(Apollo.ConflictError);
+    });
+
+    test("transcribe (7)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { file_url: "x" };
+        const rawResponseBody = { key: "value" };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/transcriptions")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(422)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.transcribe({
+                file_url: "x",
+            });
+        }).rejects.toThrow(Apollo.UnprocessableEntityError);
+    });
+
+    test("transcribe (8)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { file_url: "x" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/transcriptions")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(500)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.transcribe({
+                file_url: "x",
+            });
+        }).rejects.toThrow(Apollo.InternalServerError);
+    });
+
+    test("transcribe (9)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new ApolloClient({
+            token: "test",
+            organizationApiKey: "test",
+            agentApiKey: "test",
+            environment: { base: server.baseUrl, production: server.baseUrl },
+        });
+        const rawRequestBody = { file_url: "x" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+        server
+            .mockEndpoint()
+            .post("/messaging/v1/transcriptions")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(503)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.messaging.transcribe({
+                file_url: "x",
+            });
+        }).rejects.toThrow(Apollo.ServiceUnavailableError);
+    });
+
     test("rerun (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new ApolloClient({
@@ -614,6 +851,7 @@ describe("Messaging", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 url: "url",
+                voice_url: "voice_url",
                 input_tokens: 1,
                 output_tokens: 1,
                 trace_info: { runtime: "v1", decisions: [{}], computed_parameters: [{}], rules_evaluations: [{}] },
@@ -662,6 +900,7 @@ describe("Messaging", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 url: "url",
+                voice_url: "voice_url",
                 input_tokens: 1,
                 output_tokens: 1,
                 trace_info: {
@@ -920,6 +1159,7 @@ describe("Messaging", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 url: "url",
+                voice_url: "voice_url",
                 input_tokens: 1,
                 output_tokens: 1,
                 trace_info: { runtime: "v1", decisions: [{}], computed_parameters: [{}], rules_evaluations: [{}] },
@@ -965,6 +1205,7 @@ describe("Messaging", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 url: "url",
+                voice_url: "voice_url",
                 input_tokens: 1,
                 output_tokens: 1,
                 trace_info: {

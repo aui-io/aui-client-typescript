@@ -17,6 +17,8 @@ export interface Message {
     welcome_message?: string;
     followup_suggestions?: string[];
     url?: string;
+    /** Link to play this message's recording, when available from a transcript read. */
+    voice_url?: string;
     input_tokens?: number;
     output_tokens?: number;
     /** The reasoning trace behind this reply. Present on a send or stream reply when the request set include_trace; never on a transcript read. */

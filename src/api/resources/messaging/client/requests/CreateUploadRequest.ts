@@ -8,7 +8,7 @@
  *     }
  */
 export interface CreateUploadRequest {
-    /** Name of the file, with its extension: one of png, jpg, jpeg, gif, webp, pdf, docx, xlsx, pptx, csv, txt, md, json. It is stored under a cleaned name, returned as file_name: only the part after the last / or \, without control characters and without leading dots or spaces, Unicode-normalized (NFC), the extension lower-cased, and cut to 100 characters. */
+    /** Name of the file, with its extension. Use png, jpg, jpeg, gif, webp, pdf, docx, xlsx, pptx, csv, txt, md, json for an attachment or webm, ogg, m4a, mp4 for a recording. It is stored under a cleaned name, returned as file_name: only the part after the last / or \, without control characters and without leading dots or spaces, Unicode-normalized (NFC), the extension lower-cased, and cut to 100 characters. */
     filename: string;
     /** Exact size of the file in bytes, at most 20 MB. The upload accepts only a body of this size. */
     size: number;

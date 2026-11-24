@@ -80,6 +80,7 @@ export * from "./TraceRuleEvaluation.js";
 export * from "./TraceRuleReason.js";
 export * from "./TraceTrigger.js";
 export * from "./TraceUnderstanding.js";
+export * from "./Transcription.js";
 export * from "./Upload.js";
 export * from "./UsageResponse.js";
 export * from "./ValidationError.js";

@@ -1131,6 +1131,7 @@ describe("Threads", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 url: "url",
+                voice_url: "voice_url",
                 input_tokens: 1,
                 output_tokens: 1,
                 trace_info: { runtime: "v1", decisions: [{}], computed_parameters: [{}], rules_evaluations: [{}] },
@@ -1176,6 +1177,7 @@ describe("Threads", () => {
                 welcome_message: "welcome_message",
                 followup_suggestions: ["followup_suggestions"],
                 url: "url",
+                voice_url: "voice_url",
                 input_tokens: 1,
                 output_tokens: 1,
                 trace_info: {

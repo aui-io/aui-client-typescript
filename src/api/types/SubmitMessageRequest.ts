@@ -11,6 +11,8 @@ export interface SubmitMessageRequest {
     text?: string;
     /** Signed image URL for vision input. */
     image_url?: string;
+    /** The recording this message was sent as. Use the file_url of a webm, ogg, m4a or mp4 upload created for this agent with POST /messaging/v1/uploads, after its bytes were PUT. Kept with the message and returned on transcript reads. The agent reads only the text of the voice message. */
+    voice_url?: string;
     context?: SubmitMessageRequest.Context;
     /** Arbitrary runtime variables for the turn. */
     agent_variables?: Record<string, unknown>;

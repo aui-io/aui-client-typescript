@@ -1981,7 +1981,7 @@ for await (const item of response) {
 <dl>
 <dd>
 
-Get a link to upload one file to, for attaching it to a message. PUT exactly `size` bytes to `upload_url`, sending every header in `headers`, then pass `file_url` in `file_urls` when you send the message. Both links expire in 15 minutes; create one upload per file. An upload no message attaches is deleted after 1 day; the first message that attaches it keeps it for 30 days, during which it can be attached again. Rerun and the WebSocket session do not take files.
+Get a link to upload a file or a recording. PUT exactly `size` bytes to `upload_url`, sending every header in `headers`. Pass `file_url` in `file_urls` when attaching a file. Send a recording (webm, ogg, m4a, mp4) as `voice_url` or pass it to `POST /messaging/v1/transcriptions`. Both links expire in 15 minutes. Create one upload per file. An unsent upload is deleted after 1 day. The first message that uses it keeps it for 30 days, during which it can be sent again. The WebSocket session accepts recordings for agents on runtime v1.
 </dd>
 </dl>
 </dd>
@@ -2016,6 +2016,73 @@ await client.messaging.createUpload({
 <dd>
 
 **request:** `Apollo.CreateUploadRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `Messaging.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.messaging.<a href="/src/api/resources/messaging/client/Client.ts">transcribe</a>({ ...params }) -> Apollo.Transcription</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Pass the `file_url` of an uploaded webm, ogg, m4a or mp4 recording.
+The returned text is empty when no speech was heard. Send the same upload
+as `voice_url` to keep the recording with the message.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.messaging.transcribe({
+    file_url: "file_url"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `Apollo.TranscribeRequest` 
     
 </dd>
 </dl>
